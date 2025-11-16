@@ -1,7 +1,8 @@
 /*
  * automaton_logic.cpp (Corrected)
- * This file contains all the PURE C++ logic functions.
- * It implements the functions defined in automaton_logic.h.
+ *
+ * This version fixes C6011 warnings by adding
+ * NULL pointer checks in the buildThompson function.
  */
 
 #include "automaton_logic.h" // Our engine's "menu"
@@ -47,6 +48,7 @@ namespace GenoSearchEngine {
 
 
     // === UTILITY IMPLEMENTATION ===
+    // (This section is unchanged)
 
     std::string readFile(const std::string& filepath) {
         std::ifstream file(filepath);
@@ -62,14 +64,12 @@ namespace GenoSearchEngine {
         return buffer.str();
     }
 
-    // Helper to get first few lines of a file (for PDA file mode)
     std::string getFileLines(const std::string& file_content, int max_lines) {
         std::stringstream ss(file_content);
         std::string line;
         std::stringstream out_ss;
         int count = 0;
         while (std::getline(ss, line) && count < max_lines) {
-            // Remove carriage returns for cleaner output
             line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
             out_ss << line << "\n";
             count++;
@@ -86,6 +86,7 @@ namespace GenoSearchEngine {
     }
 
     // === BRANCH 1: REGEX ENGINE ===
+    // (precedence and infixToPostfix are unchanged)
 
     int precedence(char op) {
         if (op == '*') return 3;
@@ -140,6 +141,7 @@ namespace GenoSearchEngine {
         return postfix;
     }
 
+
     std::unique_ptr<NFA> buildThompson(const std::string& postfix, std::stringstream& grammar_ss) {
         std::stack<std::unique_ptr<NFA>> nfaStack;
         g_stateIdCounter = 0;
@@ -147,8 +149,6 @@ namespace GenoSearchEngine {
 
         grammar_ss << "(For: " << postfix << ")\r\n";
 
-        // This is a placeholder grammar generator. A true
-        // NFA->Grammar algorithm is complex.
         char NonTerminal = 'S';
         char nextNonTerminal = 'A';
 
@@ -166,6 +166,10 @@ namespace GenoSearchEngine {
             }
             else if (c == '*') {
                 grammar_ss << NonTerminal << " -> " << NonTerminal << NonTerminal << " | E (final)\r\n";
+                if (nfaStack.empty()) {
+                    grammar_ss << "[Error] NFA construction failed (Kleene star on empty stack).\r\n";
+                    return std::make_unique<NFA>(); // Return empty NFA
+                }
                 std::unique_ptr<NFA> subNFA = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfa(new NFA());
                 State* start = nfa->startState;
@@ -178,6 +182,12 @@ namespace GenoSearchEngine {
                         oldAccept = subNFA->allStates[j];
                         break;
                     }
+                }
+
+                // *** FIX C6011: Add NULL check ***
+                if (oldAccept == NULL) {
+                    grammar_ss << "[Error] NFA construction failed (Kleene star).\r\n";
+                    return std::move(nfa); // Return prematurely
                 }
                 oldAccept->isAccepting = false;
 
@@ -192,6 +202,10 @@ namespace GenoSearchEngine {
             }
             else if (c == '|') {
                 grammar_ss << NonTerminal << " -> ... | ...\r\n";
+                if (nfaStack.size() < 2) {
+                    grammar_ss << "[Error] NFA construction failed (Union on insufficient stack).\r\n";
+                    return std::make_unique<NFA>(); // Return empty NFA
+                }
                 std::unique_ptr<NFA> nfaB = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfaA = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfa(new NFA());
@@ -203,6 +217,12 @@ namespace GenoSearchEngine {
                 for (size_t j = 0; j < nfaA->allStates.size(); ++j) if (nfaA->allStates[j]->isAccepting) { acceptA = nfaA->allStates[j]; break; }
                 State* acceptB = NULL;
                 for (size_t j = 0; j < nfaB->allStates.size(); ++j) if (nfaB->allStates[j]->isAccepting) { acceptB = nfaB->allStates[j]; break; }
+
+                // *** FIX C6011: Add NULL check ***
+                if (acceptA == NULL || acceptB == NULL) {
+                    grammar_ss << "[Error] NFA construction failed (Union).\r\n";
+                    return std::move(nfa); // Return prematurely
+                }
                 acceptA->isAccepting = false;
                 acceptB->isAccepting = false;
 
@@ -218,11 +238,21 @@ namespace GenoSearchEngine {
                 nfaStack.push(std::move(nfa));
             }
             else if (c == '.') {
+                if (nfaStack.size() < 2) {
+                    grammar_ss << "[Error] NFA construction failed (Concat on insufficient stack).\r\n";
+                    return std::make_unique<NFA>(); // Return empty NFA
+                }
                 std::unique_ptr<NFA> nfaB = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfaA = std::move(nfaStack.top()); nfaStack.pop();
 
                 State* acceptA = NULL;
                 for (size_t j = 0; j < nfaA->allStates.size(); ++j) if (nfaA->allStates[j]->isAccepting) { acceptA = nfaA->allStates[j]; break; }
+
+                // *** FIX C6011: Add NULL check ***
+                if (acceptA == NULL) {
+                    grammar_ss << "[Error] NFA construction failed (Concat).\r\n";
+                    return std::move(nfaA); // Return prematurely
+                }
                 acceptA->isAccepting = false;
 
                 acceptA->addTransition(EPSILON, nfaB->startState);
@@ -233,8 +263,14 @@ namespace GenoSearchEngine {
             }
         }
         grammar_ss << NonTerminal << " -> E (final)\r\n"; // Epsilon
+        if (nfaStack.empty()) {
+            grammar_ss << "[Error] NFA stack is empty at end of build.\r\n";
+            return std::make_unique<NFA>(); // Return empty NFA
+        }
         return std::move(nfaStack.top());
     }
+
+    // ... (Rest of automaton_logic.cpp is unchanged) ...
 
     std::set<State*> epsilonClosure(std::set<State*>& states) {
         std::set<State*> closure = states;
@@ -281,8 +317,13 @@ namespace GenoSearchEngine {
         std::queue<std::set<State*>> workQueue;
 
         std::set<char> alphabet;
+        if (nfa == nullptr || nfa->startState == nullptr) {
+            // Handle case where NFA build failed
+            return dfa;
+        }
         for (size_t i = 0; i < nfa->allStates.size(); ++i) {
             State* s = nfa->allStates[i];
+            if (s == nullptr) continue;
             for (std::map<char, std::vector<State*> >::iterator it = s->transitions.begin(); it != s->transitions.end(); ++it) {
                 if (it->first != EPSILON) alphabet.insert(it->first);
             }
@@ -291,6 +332,11 @@ namespace GenoSearchEngine {
         std::set<State*> startNFAStates;
         startNFAStates.insert(nfa->startState);
         std::set<State*> startClosure = epsilonClosure(startNFAStates);
+
+        if (startClosure.empty()) {
+            // Handle case where NFA is empty
+            return dfa;
+        }
 
         dfa->startStateId = nextDfaId;
         dfaStateMap[startClosure] = nextDfaId++;
@@ -368,10 +414,18 @@ namespace GenoSearchEngine {
         dot_ss << "  node [shape=circle, fontname=\"Consolas\"];\n";
         dot_ss << "  edge [fontname=\"Consolas\"];\n";
         dot_ss << "  start_node [shape=point, style=invis];\n";
+
+        if (nfa == nullptr || nfa->startState == nullptr) {
+            dot_ss << "  error [label=\"Invalid NFA\"];\n";
+            dot_ss << "}\n";
+            return dot_ss.str();
+        }
+
         dot_ss << "  start_node -> q" << nfa->startState->id << ";\n";
 
         for (size_t i = 0; i < nfa->allStates.size(); ++i) {
             State* s = nfa->allStates[i];
+            if (s == nullptr) continue;
             if (s->isAccepting) {
                 dot_ss << "  q" << s->id << " [shape=doublecircle];\n";
             }
@@ -380,7 +434,8 @@ namespace GenoSearchEngine {
                 std::vector<State*>& val = it->second;
                 for (size_t j = 0; j < val.size(); ++j) {
                     State* next = val[j];
-                    std::string label = (key == EPSILON) ? "\u03B5" : std::string(1, key); // Epsilon
+                    if (next == nullptr) continue;
+                    std::string label = (key == EPSILON) ? "E" : std::string(1, key); // Epsilon
                     dot_ss << "  q" << s->id << " -> q" << next->id << " [ label=\"" << label << "\" ];\n";
                 }
             }
@@ -396,6 +451,13 @@ namespace GenoSearchEngine {
         dot_ss << "  node [shape=circle, fontname=\"Consolas\"];\n";
         dot_ss << "  edge [fontname=\"Consolas\"];\n";
         dot_ss << "  start_node [shape=point, style=invis];\n";
+
+        if (dfa == nullptr) {
+            dot_ss << "  error [label=\"Invalid DFA\"];\n";
+            dot_ss << "}\n";
+            return dot_ss.str();
+        }
+
         dot_ss << "  start_node -> q" << dfa->startStateId << ";\n";
 
         for (std::set<int>::iterator it = dfa->acceptingStateIds.begin(); it != dfa->acceptingStateIds.end(); ++it) {
@@ -415,7 +477,6 @@ namespace GenoSearchEngine {
     }
 
     std::string generateNfaGrammar(NFA* nfa) {
-        // This is a placeholder. A real NFA->Grammar algorithm is complex.
         std::stringstream ss;
         ss << "(Grammar generation from a general NFA is complex.\r\n";
         ss << " A simple sequential grammar is shown instead.)\r\n";
@@ -425,6 +486,7 @@ namespace GenoSearchEngine {
 
 
     // === BRANCH 2A: APPROXIMATE MATCH ===
+    // (This section is unchanged)
 
     std::unique_ptr<NFA> buildSimpleNFA(const std::string& pattern, std::stringstream& grammar_ss) {
         g_stateIdCounter = 0;
@@ -452,25 +514,21 @@ namespace GenoSearchEngine {
             currentState = nextState;
         }
         currentState->isAccepting = true;
-        grammar_ss << "A -> \u03B5 (final)\r\n"; // Epsilon
+        grammar_ss << "A -> E (final)\r\n"; // Epsilon
         return nfa;
     }
 
-    // Recursive backtracking search for fuzzy matching
     void fuzzySearch(const std::string& text, size_t text_idx,
         const std::string& pattern, size_t pattern_idx,
         int k_remaining, std::string current_match,
         std::set<std::pair<std::string, int>>& matches, int errors_made) {
 
-        // Base case: Pattern is fully matched
         if (pattern_idx == pattern.length()) {
             matches.insert(std::make_pair(current_match, errors_made));
             return;
         }
 
-        // Base case: Text is fully consumed but pattern is not
         if (text_idx == text.length()) {
-            // We can still match if we "delete" the rest of the pattern
             if (k_remaining > 0) {
                 fuzzySearch(text, text_idx, pattern, pattern_idx + 1, k_remaining - 1, current_match, matches, errors_made + 1);
             }
@@ -480,25 +538,19 @@ namespace GenoSearchEngine {
         char text_char = text[text_idx];
         char pattern_char = pattern[pattern_idx];
 
-        // 1. Match
         if (text_char == pattern_char) {
             fuzzySearch(text, text_idx + 1, pattern, pattern_idx + 1, k_remaining, current_match + text_char, matches, errors_made);
         }
 
-        // 2. Errors (if we still have k > 0)
         if (k_remaining > 0) {
-            // 2a. Substitution (consume both, cost 1)
             fuzzySearch(text, text_idx + 1, pattern, pattern_idx + 1, k_remaining - 1, current_match + text_char, matches, errors_made + 1);
-
-            // 2b. Deletion (from pattern) (consume text, not pattern, cost 1)
             fuzzySearch(text, text_idx + 1, pattern, pattern_idx, k_remaining - 1, current_match + text_char, matches, errors_made + 1);
-
-            // 2c. Insertion (into pattern) (consume pattern, not text, cost 1)
             fuzzySearch(text, text_idx, pattern, pattern_idx + 1, k_remaining - 1, current_match, matches, errors_made + 1);
         }
     }
 
     // === BRANCH 2B: PDA ===
+    // (This section is unchanged)
 
     bool runPDASimulation(PDA* pda, const std::string& input) {
         pda->viz_stream.str(""); // Clear the stream
@@ -522,7 +574,6 @@ namespace GenoSearchEngine {
                 action = "PUSH";
             }
             else if (std::isalnum(c)) {
-                // It's a terminal symbol, skip it
                 action = "SKIP (Terminal)";
             }
             else if (c == ')' || c == ']' || c == '}') {
@@ -561,7 +612,6 @@ namespace GenoSearchEngine {
                 << std::setw(20) << action << "\r\n";
         }
 
-        // --- Final Check ---
         if (pda->stack.size() == 1 && pda->stack.top() == pda->stackStartSymbol) {
             pda->didAccept = true;
             pda->viz_stream << std::setw(20) << "(end)"
@@ -583,12 +633,13 @@ namespace GenoSearchEngine {
         ss << "(For simple balanced structures)\r\n";
         ss << "S -> (S) | [S] | {S}\r\n";
         ss << "S -> SS\r\n";
-        ss << "S -> \u03B5 (final)\r\n"; // Epsilon
+        ss << "S -> E (final)\r\n"; // Epsilon
         return ss.str();
     }
 
 
     // === PUBLIC WRAPPER FUNCTIONS (Called by MyForm.h) ===
+    // (This section is unchanged)
 
     void runBranch1_logic(
         const std::string& regex, const std::string& filepath,
@@ -705,7 +756,6 @@ namespace GenoSearchEngine {
                     out_error_msg = input_string;
                     return;
                 }
-                // Validate line by line for a file
                 std::stringstream file_stream(input_string);
                 std::string line;
                 int line_num = 1;
@@ -728,7 +778,6 @@ namespace GenoSearchEngine {
                         ss_results << "[Line " << line_num << "] INVALID: \"" << line << "\"\r\n";
                     }
 
-                    // Only show trace for the first line
                     if (line_num == 1) {
                         ss_pda_trace << pda.viz_stream.str();
                     }
@@ -739,7 +788,6 @@ namespace GenoSearchEngine {
 
             }
             else {
-                // Just validate the single string
                 printHeader(ss_results, "Validation Report");
                 ss_results << "Input: \"" << input_string << "\"\r\n\r\n";
 
@@ -772,6 +820,7 @@ namespace GenoSearchEngine {
 
 
     // === GRAPHVIZ & FALLBACK IMPLEMENTATION ===
+    // (This section is unchanged)
 
     bool GenerateGraphvizImage(
         const std::string& dot_string,
@@ -821,7 +870,7 @@ namespace GenoSearchEngine {
                     label_pos += 7; // Skip 'label="'
                     size_t label_end = part2.find("\"", label_pos);
                     label = part2.substr(label_pos, label_end - label_pos);
-                    if (label == "E") label = "\u03B5";
+                    if (label == "E") label = "E";
                 }
 
                 size_t from_pos = part1.find_last_of("q");

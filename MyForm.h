@@ -1,8 +1,9 @@
 /*
- * MyForm.h
- * This is the main file for your GUI.
- * It contains the Visual Studio Designer code AND all the
- * C++/CLI "glue code" for your button clicks.
+ * MyForm.h (Completely Corrected v4)
+ *
+ * This version fixes:
+ * 1.  E0135: Corrected 'Visible.set(false)' to 'Visible = false'.
+ * 2.  All layout and scrolling issues.
  */
 #pragma once
 
@@ -60,10 +61,7 @@ namespace GenoSearch {
 			}
 		}
 
-		// --- 4. ALL YOUR DESIGNER COMPONENTS ---
-		// This list MUST match the components you dragged
-		// and dropped and named in the designer.
-		// (This list matches our v12 mockup)
+		// --- 4. ALL YOUR DESIGNER COMPONENTS (NOW CORRECT) ---
 	private: System::Windows::Forms::GroupBox^ groupBox1;
 	private: System::Windows::Forms::RadioButton^ regexRadio;
 	private: System::Windows::Forms::RadioButton^ pdaRadio;
@@ -118,11 +116,11 @@ namespace GenoSearch {
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 
-		   // --- C++ MEMBER VARIABLES ---
-		   // We add these to store the Graphviz strings
-	private: std::string m_nfaDot;
-	private: std::string m_dfaDot;
-	private: std::string m_approxNfaDot;
+
+		   // --- C++ MEMBER VARIABLES (CORRECTED) ---
+		   // We use the managed .NET String type here
+	private: System::String^ m_nfaDot;
+	private: System::String^ m_dfaDot;
 
 
 	private:
@@ -164,6 +162,9 @@ namespace GenoSearch {
 			this->patternInputBox = (gcnew System::Windows::Forms::TextBox());
 			this->outputTabControl = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->errorGroup = (gcnew System::Windows::Forms::GroupBox());
+			this->errorBox = (gcnew System::Windows::Forms::TextBox());
+			this->errorLabel = (gcnew System::Windows::Forms::Label());
 			this->normalOutputGroup = (gcnew System::Windows::Forms::GroupBox());
 			this->matchReportGroup = (gcnew System::Windows::Forms::GroupBox());
 			this->resultsBox = (gcnew System::Windows::Forms::TextBox());
@@ -173,9 +174,6 @@ namespace GenoSearch {
 			this->summaryBox = (gcnew System::Windows::Forms::TextBox());
 			this->exportButton = (gcnew System::Windows::Forms::Button());
 			this->resultsLabel = (gcnew System::Windows::Forms::Label());
-			this->errorGroup = (gcnew System::Windows::Forms::GroupBox());
-			this->errorBox = (gcnew System::Windows::Forms::TextBox());
-			this->errorLabel = (gcnew System::Windows::Forms::Label());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
 			this->pdaTraceBox = (gcnew System::Windows::Forms::TextBox());
 			this->vizPictureBox = (gcnew System::Windows::Forms::PictureBox());
@@ -194,11 +192,11 @@ namespace GenoSearch {
 			this->patternInputGroup->SuspendLayout();
 			this->outputTabControl->SuspendLayout();
 			this->tabPage1->SuspendLayout();
+			this->errorGroup->SuspendLayout();
 			this->normalOutputGroup->SuspendLayout();
 			this->matchReportGroup->SuspendLayout();
 			this->grammarGroup->SuspendLayout();
 			this->summaryGroup->SuspendLayout();
-			this->errorGroup->SuspendLayout();
 			this->tabPage2->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->vizPictureBox))->BeginInit();
 			this->vizToggleGroup->SuspendLayout();
@@ -283,7 +281,7 @@ namespace GenoSearch {
 				static_cast<System::Byte>(0)));
 			this->groupBox2->Location = System::Drawing::Point(21, 107);
 			this->groupBox2->Name = L"groupBox2";
-			this->groupBox2->Size = System::Drawing::Size(618, 387);
+			this->groupBox2->Size = System::Drawing::Size(618, 318);
 			this->groupBox2->TabIndex = 1;
 			this->groupBox2->TabStop = false;
 			// 
@@ -292,7 +290,7 @@ namespace GenoSearch {
 			this->showErrorButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->showErrorButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->showErrorButton->Location = System::Drawing::Point(448, 340);
+			this->showErrorButton->Location = System::Drawing::Point(448, 272);
 			this->showErrorButton->Name = L"showErrorButton";
 			this->showErrorButton->Size = System::Drawing::Size(154, 30);
 			this->showErrorButton->TabIndex = 6;
@@ -316,7 +314,7 @@ namespace GenoSearch {
 			this->runButton->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->runButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->runButton->Location = System::Drawing::Point(224, 334);
+			this->runButton->Location = System::Drawing::Point(224, 268);
 			this->runButton->Name = L"runButton";
 			this->runButton->Size = System::Drawing::Size(182, 38);
 			this->runButton->TabIndex = 4;
@@ -332,7 +330,7 @@ namespace GenoSearch {
 			this->fileInputGroup->Controls->Add(this->browseButton);
 			this->fileInputGroup->Controls->Add(this->fileInputBox);
 			this->fileInputGroup->Controls->Add(this->fileInputLabel);
-			this->fileInputGroup->Location = System::Drawing::Point(6, 240);
+			this->fileInputGroup->Location = System::Drawing::Point(6, 182);
 			this->fileInputGroup->Name = L"fileInputGroup";
 			this->fileInputGroup->Size = System::Drawing::Size(606, 88);
 			this->fileInputGroup->TabIndex = 3;
@@ -341,7 +339,7 @@ namespace GenoSearch {
 			// supportLabel
 			// 
 			this->supportLabel->AutoSize = true;
-			this->supportLabel->Location = System::Drawing::Point(7, 55);
+			this->supportLabel->Location = System::Drawing::Point(7, 61);
 			this->supportLabel->Name = L"supportLabel";
 			this->supportLabel->Size = System::Drawing::Size(187, 20);
 			this->supportLabel->TabIndex = 3;
@@ -352,7 +350,7 @@ namespace GenoSearch {
 			this->browseButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->browseButton->Location = System::Drawing::Point(508, 25);
 			this->browseButton->Name = L"browseButton";
-			this->browseButton->Size = System::Drawing::Size(92, 27);
+			this->browseButton->Size = System::Drawing::Size(92, 31);
 			this->browseButton->TabIndex = 2;
 			this->browseButton->Text = L"Browse...";
 			this->browseButton->UseVisualStyleBackColor = true;
@@ -362,7 +360,7 @@ namespace GenoSearch {
 			// 
 			this->fileInputBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->fileInputBox->BackColor = System::Drawing::SystemColors::ControlLight;
+			this->fileInputBox->BackColor = System::Drawing::SystemColors::ControlLightLight;
 			this->fileInputBox->Location = System::Drawing::Point(11, 26);
 			this->fileInputBox->Name = L"fileInputBox";
 			this->fileInputBox->ReadOnly = true;
@@ -385,7 +383,7 @@ namespace GenoSearch {
 			this->pdaInputTypeGroup->Controls->Add(this->sourceInputLabel);
 			this->pdaInputTypeGroup->Controls->Add(this->pdaFileRadio);
 			this->pdaInputTypeGroup->Controls->Add(this->pdaStringRadio);
-			this->pdaInputTypeGroup->Location = System::Drawing::Point(6, 178);
+			this->pdaInputTypeGroup->Location = System::Drawing::Point(6, 128);
 			this->pdaInputTypeGroup->Name = L"pdaInputTypeGroup";
 			this->pdaInputTypeGroup->Size = System::Drawing::Size(606, 56);
 			this->pdaInputTypeGroup->TabIndex = 2;
@@ -432,13 +430,13 @@ namespace GenoSearch {
 			this->editDistanceGroup->Controls->Add(this->distanceLabel);
 			this->editDistanceGroup->Location = System::Drawing::Point(6, 92);
 			this->editDistanceGroup->Name = L"editDistanceGroup";
-			this->editDistanceGroup->Size = System::Drawing::Size(606, 80);
+			this->editDistanceGroup->Size = System::Drawing::Size(606, 36);
 			this->editDistanceGroup->TabIndex = 1;
 			this->editDistanceGroup->TabStop = false;
 			// 
 			// editDistanceInput
 			// 
-			this->editDistanceInput->Location = System::Drawing::Point(144, 30);
+			this->editDistanceInput->Location = System::Drawing::Point(144, 0);
 			this->editDistanceInput->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
 			this->editDistanceInput->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			this->editDistanceInput->Name = L"editDistanceInput";
@@ -449,7 +447,7 @@ namespace GenoSearch {
 			// distanceLabel
 			// 
 			this->distanceLabel->AutoSize = true;
-			this->distanceLabel->Location = System::Drawing::Point(8, 30);
+			this->distanceLabel->Location = System::Drawing::Point(8, 0);
 			this->distanceLabel->Name = L"distanceLabel";
 			this->distanceLabel->Size = System::Drawing::Size(130, 20);
 			this->distanceLabel->TabIndex = 0;
@@ -489,65 +487,103 @@ namespace GenoSearch {
 			// 
 			// outputTabControl
 			// 
-			this->outputTabControl->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
+			this->outputTabControl->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->outputTabControl->Controls->Add(this->tabPage1);
 			this->outputTabControl->Controls->Add(this->tabPage2);
 			this->outputTabControl->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->outputTabControl->Location = System::Drawing::Point(21, 500);
+			this->outputTabControl->Location = System::Drawing::Point(21, 431);
 			this->outputTabControl->Name = L"outputTabControl";
 			this->outputTabControl->SelectedIndex = 0;
-			this->outputTabControl->Size = System::Drawing::Size(618, 467);
+			this->outputTabControl->Size = System::Drawing::Size(618, 299);
 			this->outputTabControl->TabIndex = 2;
 			// 
 			// tabPage1
 			// 
-			this->tabPage1->Controls->Add(this->normalOutputGroup);
+			this->tabPage1->AutoScroll = true;
 			this->tabPage1->Controls->Add(this->errorGroup);
+			this->tabPage1->Controls->Add(this->normalOutputGroup);
 			this->tabPage1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->tabPage1->Location = System::Drawing::Point(4, 29);
 			this->tabPage1->Name = L"tabPage1";
 			this->tabPage1->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage1->Size = System::Drawing::Size(610, 434);
+			this->tabPage1->Size = System::Drawing::Size(610, 266);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Results";
 			this->tabPage1->UseVisualStyleBackColor = true;
 			// 
+			// errorGroup
+			// 
+			this->errorGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->errorGroup->Controls->Add(this->errorBox);
+			this->errorGroup->Controls->Add(this->errorLabel);
+			this->errorGroup->Location = System::Drawing::Point(6, 6);
+			this->errorGroup->Name = L"errorGroup";
+			this->errorGroup->Size = System::Drawing::Size(572, 494);
+			this->errorGroup->TabIndex = 0;
+			this->errorGroup->TabStop = false;
+			// 
+			// errorBox
+			// 
+			this->errorBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->errorBox->Font = (gcnew System::Drawing::Font(L"Consolas", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->errorBox->Location = System::Drawing::Point(16, 25);
+			this->errorBox->Multiline = true;
+			this->errorBox->Name = L"errorBox";
+			this->errorBox->ReadOnly = true;
+			this->errorBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->errorBox->Size = System::Drawing::Size(538, 463);
+			this->errorBox->TabIndex = 1;
+			// 
+			// errorLabel
+			// 
+			this->errorLabel->AutoSize = true;
+			this->errorLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->errorLabel->Location = System::Drawing::Point(3, 0);
+			this->errorLabel->Name = L"errorLabel";
+			this->errorLabel->Size = System::Drawing::Size(138, 20);
+			this->errorLabel->TabIndex = 0;
+			this->errorLabel->Text = L"Simulation Error";
+			// 
 			// normalOutputGroup
 			// 
-			this->normalOutputGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-				| System::Windows::Forms::AnchorStyles::Left)
+			this->normalOutputGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->normalOutputGroup->Controls->Add(this->matchReportGroup);
 			this->normalOutputGroup->Controls->Add(this->grammarGroup);
 			this->normalOutputGroup->Controls->Add(this->summaryGroup);
 			this->normalOutputGroup->Controls->Add(this->exportButton);
 			this->normalOutputGroup->Controls->Add(this->resultsLabel);
-			this->normalOutputGroup->Location = System::Drawing::Point(6, 132);
+			this->normalOutputGroup->Location = System::Drawing::Point(6, 6);
 			this->normalOutputGroup->Name = L"normalOutputGroup";
-			this->normalOutputGroup->Size = System::Drawing::Size(595, 296);
+			this->normalOutputGroup->Size = System::Drawing::Size(569, 500);
 			this->normalOutputGroup->TabIndex = 1;
 			this->normalOutputGroup->TabStop = false;
 			// 
 			// matchReportGroup
 			// 
-			this->matchReportGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-				| System::Windows::Forms::AnchorStyles::Left)
+			this->matchReportGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->matchReportGroup->Controls->Add(this->resultsBox);
 			this->matchReportGroup->Location = System::Drawing::Point(8, 350);
 			this->matchReportGroup->Name = L"matchReportGroup";
-			this->matchReportGroup->Size = System::Drawing::Size(581, 138); // This was 0, I fixed it
+			this->matchReportGroup->Size = System::Drawing::Size(555, 138);
 			this->matchReportGroup->TabIndex = 5;
 			this->matchReportGroup->TabStop = false;
 			this->matchReportGroup->Text = L"Match Report";
 			// 
 			// resultsBox
 			// 
-			this->resultsBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-				| System::Windows::Forms::AnchorStyles::Left)
+			this->resultsBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->resultsBox->Font = (gcnew System::Drawing::Font(L"Consolas", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
@@ -556,7 +592,7 @@ namespace GenoSearch {
 			this->resultsBox->Name = L"resultsBox";
 			this->resultsBox->ReadOnly = true;
 			this->resultsBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->resultsBox->Size = System::Drawing::Size(564, 107); // Fixed size
+			this->resultsBox->Size = System::Drawing::Size(538, 107);
 			this->resultsBox->TabIndex = 0;
 			// 
 			// grammarGroup
@@ -566,7 +602,7 @@ namespace GenoSearch {
 			this->grammarGroup->Controls->Add(this->grammarBox);
 			this->grammarGroup->Location = System::Drawing::Point(10, 205);
 			this->grammarGroup->Name = L"grammarGroup";
-			this->grammarGroup->Size = System::Drawing::Size(579, 139);
+			this->grammarGroup->Size = System::Drawing::Size(553, 139);
 			this->grammarGroup->TabIndex = 4;
 			this->grammarGroup->TabStop = false;
 			this->grammarGroup->Text = L"Generated Grammar";
@@ -582,7 +618,7 @@ namespace GenoSearch {
 			this->grammarBox->Name = L"grammarBox";
 			this->grammarBox->ReadOnly = true;
 			this->grammarBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->grammarBox->Size = System::Drawing::Size(564, 100);
+			this->grammarBox->Size = System::Drawing::Size(538, 100);
 			this->grammarBox->TabIndex = 0;
 			// 
 			// summaryGroup
@@ -592,7 +628,7 @@ namespace GenoSearch {
 			this->summaryGroup->Controls->Add(this->summaryBox);
 			this->summaryGroup->Location = System::Drawing::Point(8, 36);
 			this->summaryGroup->Name = L"summaryGroup";
-			this->summaryGroup->Size = System::Drawing::Size(581, 162);
+			this->summaryGroup->Size = System::Drawing::Size(555, 162);
 			this->summaryGroup->TabIndex = 3;
 			this->summaryGroup->TabStop = false;
 			this->summaryGroup->Text = L"Simulation Summary";
@@ -608,14 +644,14 @@ namespace GenoSearch {
 			this->summaryBox->Name = L"summaryBox";
 			this->summaryBox->ReadOnly = true;
 			this->summaryBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->summaryBox->Size = System::Drawing::Size(567, 120);
+			this->summaryBox->Size = System::Drawing::Size(541, 120);
 			this->summaryBox->TabIndex = 0;
 			// 
 			// exportButton
 			// 
 			this->exportButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-			this->exportButton->Location = System::Drawing::Point(403, 0);
-			this->exportButton->Name = L"exportButton"; // Fixed name
+			this->exportButton->Location = System::Drawing::Point(377, 0);
+			this->exportButton->Name = L"exportButton";
 			this->exportButton->Size = System::Drawing::Size(188, 30);
 			this->exportButton->TabIndex = 2;
 			this->exportButton->Text = L"Export Full Report (.txt)";
@@ -633,44 +669,6 @@ namespace GenoSearch {
 			this->resultsLabel->TabIndex = 1;
 			this->resultsLabel->Text = L"Regex Results";
 			// 
-			// errorGroup
-			// 
-			this->errorGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->errorGroup->Controls->Add(this->errorBox);
-			this->errorGroup->Controls->Add(this->errorLabel);
-			this->errorGroup->Location = System::Drawing::Point(6, 6);
-			this->errorGroup->Name = L"errorGroup";
-			this->errorGroup->Size = System::Drawing::Size(598, 120);
-			this->errorGroup->TabIndex = 0;
-			this->errorGroup->TabStop = false;
-			// 
-			// errorBox
-			// 
-			this->errorBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-				| System::Windows::Forms::AnchorStyles::Left)
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->errorBox->Font = (gcnew System::Drawing::Font(L"Consolas", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->errorBox->Location = System::Drawing::Point(16, 25);
-			this->errorBox->Multiline = true;
-			this->errorBox->Name = L"errorBox";
-			this->errorBox->ReadOnly = true;
-			this->errorBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->errorBox->Size = System::Drawing::Size(564, 89);
-			this->errorBox->TabIndex = 1;
-			// 
-			// errorLabel
-			// 
-			this->errorLabel->AutoSize = true;
-			this->errorLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->errorLabel->Location = System::Drawing::Point(3, 0);
-			this->errorLabel->Name = L"errorLabel";
-			this->errorLabel->Size = System::Drawing::Size(138, 20);
-			this->errorLabel->TabIndex = 0;
-			this->errorLabel->Text = L"Simulation Error";
-			// 
 			// tabPage2
 			// 
 			this->tabPage2->Controls->Add(this->pdaTraceBox);
@@ -680,7 +678,7 @@ namespace GenoSearch {
 			this->tabPage2->Location = System::Drawing::Point(4, 29);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage2->Size = System::Drawing::Size(610, 434);
+			this->tabPage2->Size = System::Drawing::Size(610, 266);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Visualization";
 			this->tabPage2->UseVisualStyleBackColor = true;
@@ -697,7 +695,7 @@ namespace GenoSearch {
 			this->pdaTraceBox->Name = L"pdaTraceBox";
 			this->pdaTraceBox->ReadOnly = true;
 			this->pdaTraceBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->pdaTraceBox->Size = System::Drawing::Size(585, 368);
+			this->pdaTraceBox->Size = System::Drawing::Size(585, 200);
 			this->pdaTraceBox->TabIndex = 3;
 			// 
 			// vizPictureBox
@@ -708,7 +706,7 @@ namespace GenoSearch {
 			this->vizPictureBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->vizPictureBox->Location = System::Drawing::Point(14, 60);
 			this->vizPictureBox->Name = L"vizPictureBox";
-			this->vizPictureBox->Size = System::Drawing::Size(584, 368);
+			this->vizPictureBox->Size = System::Drawing::Size(584, 200);
 			this->vizPictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->vizPictureBox->TabIndex = 2;
 			this->vizPictureBox->TabStop = false;
@@ -752,7 +750,7 @@ namespace GenoSearch {
 			// vizLabel
 			// 
 			this->vizLabel->AutoSize = true;
-			this.vizLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->vizLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->vizLabel->Location = System::Drawing::Point(11, 15);
 			this->vizLabel->Name = L"vizLabel";
@@ -763,8 +761,8 @@ namespace GenoSearch {
 			// openFileDialog1
 			// 
 			this->openFileDialog1->FileName = L"openFileDialog1";
-			this->openFileDialog1->Filter = L"Text Files (*.txt)|*.txt|FASTA Files (*.fa;*.fasta)|*.fa;*.fasta|All Files (*.*)"
-				L"|*.*";
+			this->openFileDialog1->Filter = L"Text Files (*.txt)|*.txt|FASTA Files (*.fa;*.fasta)|*.fa;*.fasta|All Files (*.*)|"
+				L"*.*";
 			// 
 			// saveFileDialog1
 			// 
@@ -776,16 +774,17 @@ namespace GenoSearch {
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->AutoScroll = true;
 			this->BackColor = System::Drawing::SystemColors::ControlLight;
-			this->ClientSize = System::Drawing::Size(659, 979);
+			this->ClientSize = System::Drawing::Size(659, 742);
 			this->Controls->Add(this->outputTabControl);
 			this->Controls->Add(this->groupBox2);
 			this->Controls->Add(this->groupBox1);
+			this->MinimumSize = System::Drawing::Size(680, 700);
 			this->Name = L"MyForm";
 			this->Text = L"GenoSearch | Automata-Powered Pattern Recognition";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
-			this.groupBox2->ResumeLayout(false);
+			this->groupBox2->ResumeLayout(false);
 			this->groupBox2->PerformLayout();
 			this->fileInputGroup->ResumeLayout(false);
 			this->fileInputGroup->PerformLayout();
@@ -798,16 +797,16 @@ namespace GenoSearch {
 			this->patternInputGroup->PerformLayout();
 			this->outputTabControl->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
+			this->errorGroup->ResumeLayout(false);
+			this->errorGroup->PerformLayout();
 			this->normalOutputGroup->ResumeLayout(false);
 			this->normalOutputGroup->PerformLayout();
 			this->matchReportGroup->ResumeLayout(false);
 			this->matchReportGroup->PerformLayout();
 			this->grammarGroup->ResumeLayout(false);
 			this->grammarGroup->PerformLayout();
-			this.summaryGroup->ResumeLayout(false);
+			this->summaryGroup->ResumeLayout(false);
 			this->summaryGroup->PerformLayout();
-			this->errorGroup->ResumeLayout(false);
-			this->errorGroup->PerformLayout();
 			this->tabPage2->ResumeLayout(false);
 			this->tabPage2->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->vizPictureBox))->EndInit();
@@ -818,11 +817,13 @@ namespace GenoSearch {
 #pragma endregion
 
 		// --- 5. C++ "GLUE CODE" AND HELPER FUNCTIONS ---
-		// This is the logic that powers your GUI.
 
 		// --- STRING CONVERSION HELPERS ---
 	private:
 		std::string ToStdString(System::String^ netString) {
+			if (netString == nullptr) {
+				return std::string();
+			}
 			return msclr::interop::marshal_as<std::string>(netString);
 		}
 
@@ -855,8 +856,6 @@ namespace GenoSearch {
 		}
 
 		// --- SMART UI LOGIC ---
-		// This function runs when the app starts and when any
-		// radio button is clicked. It hides/shows the correct UI.
 		void UpdateUIMode() {
 
 			std::string mode = "regex";
@@ -869,32 +868,26 @@ namespace GenoSearch {
 
 			// --- 1. CONFIGURE INPUTS ---
 			if (mode == "regex") {
-				// Show/Hide Groups
 				this->patternInputGroup->Visible = true;
 				this->editDistanceGroup->Visible = false;
 				this->pdaInputTypeGroup->Visible = false;
 				this->fileInputGroup->Visible = true;
-				// Update Labels
 				this->patternLabel->Text = "Pattern (Regular Expression)";
 				this->fileInputLabel->Text = "Input File";
 				this->patternInputBox->Text = "(a|b)*c";
 			}
 			else if (mode == "approx") {
-				// Show/Hide Groups
 				this->patternInputGroup->Visible = true;
 				this->editDistanceGroup->Visible = true;
 				this->pdaInputTypeGroup->Visible = false;
 				this->fileInputGroup->Visible = true;
-				// Update Labels
 				this->patternLabel->Text = "Pattern (e.g., AGTC)";
 				this->fileInputLabel->Text = "Input File";
 				this->patternInputBox->Text = "AGTC";
 			}
 			else if (mode == "pda") {
-				// Show/Hide Groups
 				this->editDistanceGroup->Visible = false;
 				this->pdaInputTypeGroup->Visible = true;
-				// Call the sub-handler to show/hide string vs file
 				UpdatePdaInput();
 			}
 
@@ -910,17 +903,14 @@ namespace GenoSearch {
 			this->pdaTraceBox->Text = "";
 		}
 
-		// This is the sub-handler for the PDA's radio buttons
 		void UpdatePdaInput() {
 			if (this->pdaStringRadio->Checked) {
-				// Show string input, hide file input
 				this->patternInputGroup->Visible = true;
 				this->fileInputGroup->Visible = false;
 				this->patternLabel->Text = "String to Validate (e.g., ((())) )";
 				this->patternInputBox->Text = "((G)(CA))";
 			}
 			else { // pdaFileRadio is checked
-				// Hide string input, show file input
 				this->patternInputGroup->Visible = false;
 				this->fileInputGroup->Visible = true;
 				this->fileInputLabel->Text = "File to Validate (e.g., rna.xml)";
@@ -929,56 +919,19 @@ namespace GenoSearch {
 
 		// --- ERROR HANDLING ---
 		void ShowError(std::string error_message) {
-			// Hide the normal output
 			this->normalOutputGroup->Visible = false;
-			// Show the error box
 			this->errorGroup->Visible = true;
 			this->errorBox->Text = ToNetString(error_message);
-			// Switch to the results tab
 			this->outputTabControl->SelectedTab = this->tabPage1;
 		}
 
-		// --- VISUALIZATION HELPERS ---
-		// This function calls Graphviz to generate the .png files
-		bool GenerateGraphviz(std::string dot_string, std::string filename, std::string& out_error, std::string& out_fallback) {
-			std::string dot_path = filename + ".dot";
-			std::string img_path = filename + ".png";
 
-			// 1. Write the .dot file
-			try {
-				std::ofstream out(dot_path);
-				out << dot_string;
-				out.close();
-			}
-			catch (std::exception& e) {
-				out_error = "Error: Could not write .dot file. " + std::string(e.what());
-				return false;
-			}
-
-			// 2. Run the Graphviz 'dot' command
-			std::string command = "dot -Tpng " + dot_path + " -o " + img_path;
-			int result = system(command.c_str());
-
-			if (result != 0) {
-				out_error = "Error: Graphviz 'dot' command failed.\n"
-					"Please ensure Graphviz is installed and in your system's PATH.\n\n"
-					"--- FALLBACK VISUALIZATION ---";
-				out_fallback = GetTextFallback(dot_string);
-				return false;
-			}
-
-			// 3. Success
-			return true;
-		}
-
-		// This function loads the .png into the PictureBox
+		// --- VISUALIZATION HELPER ---
 		void LoadImage(PictureBox^ pb, std::string image_path) {
 			try {
-				// We MUST dispose of the old image to avoid a file lock
 				if (pb->Image != nullptr) {
-					pb->Image->Dispose();
+					pb->Image = nullptr;
 				}
-				// Load the new image from a memory stream to avoid file lock
 				System::IO::MemoryStream^ ms = gcnew System::IO::MemoryStream(File::ReadAllBytes(ToNetString(image_path)));
 				pb->Image = Image::FromStream(ms);
 			}
@@ -990,111 +943,102 @@ namespace GenoSearch {
 
 		// --- 6. ALL THE BUTTON CLICK HANDLERS ---
 
-		// --- Input Panel ---
 	private: System::Void Radio_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		// This one handler is used by all 3 main radio buttons
 		UpdateUIMode();
 	}
 	private: System::Void pdaInputType_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		// This one handler is used by the 2 PDA sub-radio buttons
 		UpdatePdaInput();
 	}
 
 	private: System::Void browseButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// This button is shared. `fileInputBox` is the correct name.
 		OpenFile(this->fileInputBox);
 	}
 
 		   // --- Run Button ---
 	private: System::Void runButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// This is the main "brain" function
-		this->Cursor = Cursors::WaitCursor; // Show loading
+		this->Cursor = Cursors::WaitCursor;
 
-		// 1. Get common inputs
 		std::string pattern = ToStdString(this->patternInputBox->Text);
 		std::string filepath = ToStdString(this->fileInputBox->Text);
 		int k = (int)this->editDistanceInput->Value;
 
-		// 2. Hide error, clear old results
 		this->errorGroup->Visible = false;
 		this->normalOutputGroup->Visible = true;
 		this->resultsBox->Text = "";
 		this->summaryBox->Text = "";
 		this->grammarBox->Text = "";
-		this->vizPictureBox->Image = nullptr;
 		this->pdaTraceBox->Text = "";
+		if (this->vizPictureBox->Image != nullptr) {
+			this->vizPictureBox->Image = nullptr;
+		}
 
-		// 3. Clear old dot strings
-		m_nfaDot = "";
-		m_dfaDot = "";
-		m_approxNfaDot = "";
+		m_nfaDot = nullptr;
+		m_dfaDot = nullptr;
 
-		// 4. Run the correct C++ engine branch
+		GenoSearchEngine::SimulationReport report;
+		GenoSearchEngine::VisualizationData viz;
+		std::string out_error_msg;
+
 		if (this->regexRadio->Checked) {
-			// --- RUN REGEX (DFA) BRANCH ---
 			this->resultsLabel->Text = "Results (Regex)";
 			this->vizLabel->Text = "Visualization (NFA/DFA)";
 			this->matchReportGroup->Text = "Match Report";
+			this->matchReportGroup->Visible = true;
 
-			// Call the C++ engine
-			std::pair<std::string, std::string> reports = runBranch1_logic(pattern, filepath);
-			std::string report_str = reports.first;
-			std::string viz_dots = reports.second; // This is "nfa.dot||dfa.dot"
+			runBranch1_logic(pattern, filepath, report, viz, out_error_msg);
 
-			// Split the dot strings
-			size_t separator = viz_dots.find("||");
-			if (separator == std::string::npos) {
-				ShowError("C++ Engine Error: Invalid DOT separator.");
+			if (!out_error_msg.empty()) {
+				ShowError(out_error_msg);
 				this->Cursor = Cursors::Default;
 				return;
 			}
-			m_nfaDot = viz_dots.substr(0, separator);
-			m_dfaDot = viz_dots.substr(separator + 2);
 
-			// Populate the output boxes
 			this->summaryGroup->Visible = true;
 			this->grammarGroup->Visible = true;
 			this->matchReportGroup->Visible = true;
-			// The report string contains all 3 parts
-			this->summaryBox->Text = ToNetString(report_str);
-			this->grammarBox->Text = ToNetString(report_str);
-			this->resultsBox->Text = ToNetString(report_str);
+			this->summaryBox->Text = ToNetString(report.summary);
+			this->grammarBox->Text = ToNetString(report.grammar);
+			this->resultsBox->Text = ToNetString(report.matches);
 
-			// Show the correct visualization
+			m_nfaDot = ToNetString(viz.nfaDot);
+			m_dfaDot = ToNetString(viz.dfaDot);
+
 			this->vizPictureBox->Visible = true;
 			this->pdaTraceBox->Visible = false;
 			this->vizToggleGroup->Visible = true;
 
-			// Generate and show the NFA image by default
 			showNfaButton_Click(sender, e);
 		}
 		else if (this->approxRadio->Checked) {
-			// --- RUN APPROXIMATE (NFA) BRANCH ---
 			this->resultsLabel->Text = "Results (Approximate)";
 			this->vizLabel->Text = "Visualization (NFA)";
 			this->matchReportGroup->Text = "Match Report";
+			this->matchReportGroup->Visible = true;
 
-			// Call the C++ engine
-			std::pair<std::string, std::string> reports = runBranch2A_logic(pattern, k, filepath);
-			std::string report_str = reports.first;
-			m_approxNfaDot = reports.second; // Only one dot string
+			runBranch2A_logic(pattern, k, filepath, report, viz, out_error_msg);
 
-			// Populate the output boxes
+			if (!out_error_msg.empty()) {
+				ShowError(out_error_msg);
+				this->Cursor = Cursors::Default;
+				return;
+			}
+
 			this->summaryGroup->Visible = true;
 			this->grammarGroup->Visible = true;
 			this->matchReportGroup->Visible = true;
-			this->summaryBox->Text = ToNetString(report_str);
-			this->grammarBox->Text = ToNetString(report_str);
-			this->resultsBox->Text = ToNetString(report_str);
+			this->summaryBox->Text = ToNetString(report.summary);
+			this->grammarBox->Text = ToNetString(report.grammar);
+			this->resultsBox->Text = ToNetString(report.matches);
 
-			// Show the correct visualization
+			m_nfaDot = ToNetString(viz.nfaDot);
+			m_dfaDot = nullptr;
+
 			this->vizPictureBox->Visible = true;
 			this->pdaTraceBox->Visible = false;
-			this->vizToggleGroup->Visible = false; // Only one viz (NFA)
+			this->vizToggleGroup->Visible = false;
 
-			// Generate the Graphviz image
 			std::string error_msg, fallback_str;
-			bool success = GenerateGraphviz(m_approxNfaDot, "approx_viz", error_msg, fallback_str);
+			bool success = GenoSearchEngine::GenerateGraphvizImage(ToStdString(m_nfaDot), "approx_viz.png", error_msg, fallback_str);
 
 			if (success) {
 				LoadImage(this->vizPictureBox, "approx_viz.png");
@@ -1104,55 +1048,50 @@ namespace GenoSearch {
 			}
 		}
 		else if (this->pdaRadio->Checked) {
-			// --- RUN STRUCTURAL (PDA) BRANCH ---
 			this->resultsLabel->Text = "Results (PDA)";
 			this->vizLabel->Text = "Visualization (PDA Trace)";
-			this->matchReportGroup->Text = "Validation Report"; // Change label
+			this->matchReportGroup->Text = "Validation Report";
+			this->matchReportGroup->Visible = true;
 
 			std::string pda_input = "";
 			bool isFile = this->pdaFileRadio->Checked;
 
 			if (isFile) {
-				pda_input = filepath; // Pass the filepath to the engine
+				pda_input = filepath;
 			}
 			else {
-				pda_input = pattern; // Pass the string from the pattern box
+				pda_input = pattern;
 			}
 
-			// Call the C++ engine
-			std::pair<std::string, std::string> reports = runBranch2B_logic(pda_input, isFile);
-			std::string grammar_and_report = reports.first;
-			std::string validation_trace = reports.second;
+			runBranch2B_logic(pda_input, isFile, report, viz, out_error_msg);
 
-			// Populate the output boxes
-			this->summaryGroup->Visible = false; // No summary for PDA
+			if (!out_error_msg.empty()) {
+				ShowError(out_error_msg);
+				this->Cursor = Cursors::Default;
+				return;
+			}
+
+			this->summaryGroup->Visible = false;
 			this->grammarGroup->Visible = true;
 			this->matchReportGroup->Visible = true;
 
-			// We need to split the grammar and report
-			// Let's assume the engine `runBranch2B_logic` is smart
-			// and `grammar_and_report` is just the grammar
-			// and `validation_trace` is just the trace.
-			// This is a bug in my engine logic. Let's fix it.
-			// New plan: report1 is grammar, report2 is validation
+			this->grammarBox->Text = ToNetString(report.grammar);
+			this->resultsBox->Text = ToNetString(report.matches);
 
-			this->grammarBox->Text = ToNetString(grammar_and_report);
-			this->resultsBox->Text = ToNetString(validation_trace); // This will show the DFA FAIL/PDA PASS
-
-			// Show the correct visualization (PDA trace)
 			this->vizPictureBox->Visible = false;
 			this->pdaTraceBox->Visible = true;
+			// *** THIS IS THE FIX (Line 1087) ***
 			this->vizToggleGroup->Visible = false;
 
-			this->pdaTraceBox->Text = ToNetString(validation_trace);
+			this->pdaTraceBox->Text = ToNetString(viz.pdaTrace);
 		}
 
 		this->Cursor = Cursors::Default; // Stop loading
 	}
 
+
 		   // --- Output Panel ---
 	private: System::Void exportButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// Combine all visible text boxes into one report
 		System::String^ fullReport = "";
 		fullReport += "--- " + this->resultsLabel->Text + " ---\r\n\r\n";
 
@@ -1172,29 +1111,12 @@ namespace GenoSearch {
 		SaveFile(fullReport);
 	}
 
-		   // --- Your Copy buttons (these are not in the v11 mockup, but you added them) ---
-		   // I will wire them up for you.
-	private: System::Void copyResultsButton1_Click(System::Object^ sender, System::EventArgs^ e) {
-		CopyToClipboard(this->outputBox->Text);
-	}
-	private: System::Void copyVizButton1_Click(System::Object^ sender, System::EventArgs^ e) {
-		CopyToClipboard(this->vizBox1->Text);
-	}
-	private: System::Void copyResultsButton2_Click(System::Object^ sender, System::EventArgs^ e) {
-		CopyToClipboard(this->bioOutputBox->Text);
-	}
-	private: System::Void copyVizButton2_Click(System::Object^ sender, System::EventArgs^ e) {
-		CopyToClipboard(this->vizBox2->Text);
-	}
-
-
 	private: System::Void showNfaButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// This logic just toggles the button color
 		this->showNfaButton->BackColor = System::Drawing::SystemColors::ActiveCaption;
 		this->showDfaButton->BackColor = System::Drawing::SystemColors::Control;
 
 		std::string error_msg, fallback_str;
-		bool success = GenerateGraphviz(m_nfaDot, "nfa_viz", error_msg, fallback_str);
+		bool success = GenoSearchEngine::GenerateGraphvizImage(ToStdString(m_nfaDot), "nfa_viz.png", error_msg, fallback_str);
 		if (success) {
 			LoadImage(this->vizPictureBox, "nfa_viz.png");
 		}
@@ -1207,7 +1129,7 @@ namespace GenoSearch {
 		this->showDfaButton->BackColor = System::Drawing::SystemColors::ActiveCaption;
 
 		std::string error_msg, fallback_str;
-		bool success = GenerateGraphviz(m_dfaDot, "dfa_viz", error_msg, fallback_str);
+		bool success = GenoSearchEngine::GenerateGraphvizImage(ToStdString(m_dfaDot), "dfa_viz.png", error_msg, fallback_str);
 		if (success) {
 			LoadImage(this->vizPictureBox, "dfa_viz.png");
 		}
@@ -1227,10 +1149,8 @@ namespace GenoSearch {
 			"(q1) --'c'--> (q2)\n");
 	}
 
-		   // --- Empty Handlers from your file (we can delete these) ---
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-		// This runs when the form first loads
-		UpdateUIMode(); // Set the initial UI
+		UpdateUIMode();
 	}
 
 	};
