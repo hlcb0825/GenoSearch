@@ -215,26 +215,27 @@ namespace GenoSearch {
 			// 
 			// headerPanel
 			// 
-			this->headerPanel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(38)), static_cast<System::Int32>(static_cast<System::Byte>(70)),
-				static_cast<System::Int32>(static_cast<System::Byte>(83)));
+			this->headerPanel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
+				static_cast<System::Int32>(static_cast<System::Byte>(143)));
 			this->headerPanel->Controls->Add(this->subtitleLabel);
 			this->headerPanel->Controls->Add(this->titleLabel);
 			this->headerPanel->Dock = System::Windows::Forms::DockStyle::Top;
 			this->headerPanel->Location = System::Drawing::Point(0, 0);
+			this->headerPanel->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->headerPanel->Name = L"headerPanel";
-			this->headerPanel->Size = System::Drawing::Size(1520, 100);
+			this->headerPanel->Size = System::Drawing::Size(856, 65);
 			this->headerPanel->TabIndex = 0;
 			// 
 			// subtitleLabel
 			// 
 			this->subtitleLabel->AutoSize = true;
-			this->subtitleLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->subtitleLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->subtitleLabel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(163)), static_cast<System::Int32>(static_cast<System::Byte>(221)),
-				static_cast<System::Int32>(static_cast<System::Byte>(203)));
-			this->subtitleLabel->Location = System::Drawing::Point(30, 59);
+			this->subtitleLabel->ForeColor = System::Drawing::SystemColors::Control;
+			this->subtitleLabel->Location = System::Drawing::Point(20, 38);
+			this->subtitleLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->subtitleLabel->Name = L"subtitleLabel";
-			this->subtitleLabel->Size = System::Drawing::Size(381, 28);
+			this->subtitleLabel->Size = System::Drawing::Size(318, 21);
 			this->subtitleLabel->TabIndex = 1;
 			this->subtitleLabel->Text = L"A Unified Simulator for Formal Languages.";
 			this->subtitleLabel->Click += gcnew System::EventHandler(this, &MyForm::subtitleLabel_Click);
@@ -245,9 +246,10 @@ namespace GenoSearch {
 			this->titleLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 20, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->titleLabel->ForeColor = System::Drawing::Color::White;
-			this->titleLabel->Location = System::Drawing::Point(25, 9);
+			this->titleLabel->Location = System::Drawing::Point(17, 6);
+			this->titleLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->titleLabel->Name = L"titleLabel";
-			this->titleLabel->Size = System::Drawing::Size(1038, 54);
+			this->titleLabel->Size = System::Drawing::Size(709, 37);
 			this->titleLabel->TabIndex = 0;
 			this->titleLabel->Text = L"GenoSearch | Automata-Powered Pattern Recognition";
 			// 
@@ -258,20 +260,22 @@ namespace GenoSearch {
 			this->mainContainer->Controls->Add(this->rightPanel);
 			this->mainContainer->Controls->Add(this->leftPanel);
 			this->mainContainer->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->mainContainer->Location = System::Drawing::Point(0, 100);
+			this->mainContainer->Location = System::Drawing::Point(0, 65);
+			this->mainContainer->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->mainContainer->Name = L"mainContainer";
-			this->mainContainer->Padding = System::Windows::Forms::Padding(20);
-			this->mainContainer->Size = System::Drawing::Size(1520, 838);
+			this->mainContainer->Padding = System::Windows::Forms::Padding(13, 13, 13, 13);
+			this->mainContainer->Size = System::Drawing::Size(856, 583);
 			this->mainContainer->TabIndex = 1;
 			// 
 			// rightPanel
 			// 
 			this->rightPanel->Controls->Add(this->outputTabControl);
 			this->rightPanel->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->rightPanel->Location = System::Drawing::Point(775, 20);
+			this->rightPanel->Location = System::Drawing::Point(516, 13);
+			this->rightPanel->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->rightPanel->Name = L"rightPanel";
-			this->rightPanel->Padding = System::Windows::Forms::Padding(10, 0, 0, 0);
-			this->rightPanel->Size = System::Drawing::Size(725, 798);
+			this->rightPanel->Padding = System::Windows::Forms::Padding(7, 0, 0, 0);
+			this->rightPanel->Size = System::Drawing::Size(327, 557);
 			this->rightPanel->TabIndex = 1;
 			// 
 			// outputTabControl
@@ -281,10 +285,11 @@ namespace GenoSearch {
 			this->outputTabControl->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->outputTabControl->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
 			this->outputTabControl->ItemSize = System::Drawing::Size(120, 40);
-			this->outputTabControl->Location = System::Drawing::Point(10, 0);
+			this->outputTabControl->Location = System::Drawing::Point(7, 0);
+			this->outputTabControl->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->outputTabControl->Name = L"outputTabControl";
 			this->outputTabControl->SelectedIndex = 0;
-			this->outputTabControl->Size = System::Drawing::Size(715, 798);
+			this->outputTabControl->Size = System::Drawing::Size(320, 557);
 			this->outputTabControl->TabIndex = 0;
 			// 
 			// tabPage1
@@ -293,9 +298,10 @@ namespace GenoSearch {
 			this->tabPage1->Controls->Add(this->errorGroup);
 			this->tabPage1->Controls->Add(this->normalOutputGroup);
 			this->tabPage1->Location = System::Drawing::Point(4, 44);
+			this->tabPage1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->tabPage1->Name = L"tabPage1";
-			this->tabPage1->Padding = System::Windows::Forms::Padding(15);
-			this->tabPage1->Size = System::Drawing::Size(707, 750);
+			this->tabPage1->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->tabPage1->Size = System::Drawing::Size(312, 509);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Results";
 			// 
@@ -304,10 +310,11 @@ namespace GenoSearch {
 			this->errorGroup->Controls->Add(this->errorBox);
 			this->errorGroup->Controls->Add(this->errorLabel);
 			this->errorGroup->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->errorGroup->Location = System::Drawing::Point(15, 15);
+			this->errorGroup->Location = System::Drawing::Point(10, 10);
+			this->errorGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->errorGroup->Name = L"errorGroup";
-			this->errorGroup->Padding = System::Windows::Forms::Padding(15);
-			this->errorGroup->Size = System::Drawing::Size(677, 720);
+			this->errorGroup->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->errorGroup->Size = System::Drawing::Size(292, 489);
 			this->errorGroup->TabIndex = 0;
 			this->errorGroup->TabStop = false;
 			// 
@@ -320,12 +327,13 @@ namespace GenoSearch {
 			this->errorBox->Font = (gcnew System::Drawing::Font(L"Consolas", 10));
 			this->errorBox->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(200)), static_cast<System::Int32>(static_cast<System::Byte>(50)),
 				static_cast<System::Int32>(static_cast<System::Byte>(50)));
-			this->errorBox->Location = System::Drawing::Point(15, 94);
+			this->errorBox->Location = System::Drawing::Point(10, 62);
+			this->errorBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->errorBox->Multiline = true;
 			this->errorBox->Name = L"errorBox";
 			this->errorBox->ReadOnly = true;
 			this->errorBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->errorBox->Size = System::Drawing::Size(647, 611);
+			this->errorBox->Size = System::Drawing::Size(272, 417);
 			this->errorBox->TabIndex = 1;
 			// 
 			// errorLabel
@@ -335,10 +343,11 @@ namespace GenoSearch {
 			this->errorLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
 			this->errorLabel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(220)), static_cast<System::Int32>(static_cast<System::Byte>(53)),
 				static_cast<System::Int32>(static_cast<System::Byte>(69)));
-			this->errorLabel->Location = System::Drawing::Point(15, 42);
+			this->errorLabel->Location = System::Drawing::Point(10, 28);
+			this->errorLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->errorLabel->Name = L"errorLabel";
-			this->errorLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 20);
-			this->errorLabel->Size = System::Drawing::Size(243, 52);
+			this->errorLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 13);
+			this->errorLabel->Size = System::Drawing::Size(135, 34);
 			this->errorLabel->TabIndex = 0;
 			this->errorLabel->Text = L"Simulation Error";
 			// 
@@ -348,10 +357,11 @@ namespace GenoSearch {
 			this->normalOutputGroup->Controls->Add(this->exportButton);
 			this->normalOutputGroup->Controls->Add(this->resultsLabel);
 			this->normalOutputGroup->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->normalOutputGroup->Location = System::Drawing::Point(15, 15);
+			this->normalOutputGroup->Location = System::Drawing::Point(10, 10);
+			this->normalOutputGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->normalOutputGroup->Name = L"normalOutputGroup";
-			this->normalOutputGroup->Padding = System::Windows::Forms::Padding(15);
-			this->normalOutputGroup->Size = System::Drawing::Size(677, 720);
+			this->normalOutputGroup->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->normalOutputGroup->Size = System::Drawing::Size(292, 489);
 			this->normalOutputGroup->TabIndex = 1;
 			this->normalOutputGroup->TabStop = false;
 			// 
@@ -366,12 +376,13 @@ namespace GenoSearch {
 			this->resultsTableLayout->Controls->Add(this->grammarGroup, 0, 1);
 			this->resultsTableLayout->Controls->Add(this->matchReportGroup, 1, 0);
 			this->resultsTableLayout->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->resultsTableLayout->Location = System::Drawing::Point(15, 150);
+			this->resultsTableLayout->Location = System::Drawing::Point(10, 98);
+			this->resultsTableLayout->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->resultsTableLayout->Name = L"resultsTableLayout";
 			this->resultsTableLayout->RowCount = 2;
 			this->resultsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
 			this->resultsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
-			this->resultsTableLayout->Size = System::Drawing::Size(647, 555);
+			this->resultsTableLayout->Size = System::Drawing::Size(272, 381);
 			this->resultsTableLayout->TabIndex = 5;
 			// 
 			// summaryGroup
@@ -379,10 +390,11 @@ namespace GenoSearch {
 			this->summaryGroup->Controls->Add(this->summaryBox);
 			this->summaryGroup->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->summaryGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->summaryGroup->Location = System::Drawing::Point(3, 3);
+			this->summaryGroup->Location = System::Drawing::Point(2, 2);
+			this->summaryGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->summaryGroup->Name = L"summaryGroup";
-			this->summaryGroup->Padding = System::Windows::Forms::Padding(10);
-			this->summaryGroup->Size = System::Drawing::Size(317, 271);
+			this->summaryGroup->Padding = System::Windows::Forms::Padding(7, 6, 7, 6);
+			this->summaryGroup->Size = System::Drawing::Size(132, 186);
 			this->summaryGroup->TabIndex = 2;
 			this->summaryGroup->TabStop = false;
 			this->summaryGroup->Text = L"Simulation Summary";
@@ -394,12 +406,13 @@ namespace GenoSearch {
 			this->summaryBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->summaryBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->summaryBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->summaryBox->Location = System::Drawing::Point(10, 37);
+			this->summaryBox->Location = System::Drawing::Point(7, 24);
+			this->summaryBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->summaryBox->Multiline = true;
 			this->summaryBox->Name = L"summaryBox";
 			this->summaryBox->ReadOnly = true;
 			this->summaryBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->summaryBox->Size = System::Drawing::Size(297, 224);
+			this->summaryBox->Size = System::Drawing::Size(118, 156);
 			this->summaryBox->TabIndex = 0;
 			// 
 			// grammarGroup
@@ -407,10 +420,11 @@ namespace GenoSearch {
 			this->grammarGroup->Controls->Add(this->grammarBox);
 			this->grammarGroup->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->grammarGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->grammarGroup->Location = System::Drawing::Point(3, 280);
+			this->grammarGroup->Location = System::Drawing::Point(2, 192);
+			this->grammarGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->grammarGroup->Name = L"grammarGroup";
-			this->grammarGroup->Padding = System::Windows::Forms::Padding(10);
-			this->grammarGroup->Size = System::Drawing::Size(317, 272);
+			this->grammarGroup->Padding = System::Windows::Forms::Padding(7, 6, 7, 6);
+			this->grammarGroup->Size = System::Drawing::Size(132, 187);
 			this->grammarGroup->TabIndex = 3;
 			this->grammarGroup->TabStop = false;
 			this->grammarGroup->Text = L"Generated Grammar";
@@ -422,12 +436,13 @@ namespace GenoSearch {
 			this->grammarBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->grammarBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->grammarBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->grammarBox->Location = System::Drawing::Point(10, 37);
+			this->grammarBox->Location = System::Drawing::Point(7, 24);
+			this->grammarBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->grammarBox->Multiline = true;
 			this->grammarBox->Name = L"grammarBox";
 			this->grammarBox->ReadOnly = true;
 			this->grammarBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->grammarBox->Size = System::Drawing::Size(297, 225);
+			this->grammarBox->Size = System::Drawing::Size(118, 157);
 			this->grammarBox->TabIndex = 0;
 			// 
 			// matchReportGroup
@@ -435,11 +450,12 @@ namespace GenoSearch {
 			this->matchReportGroup->Controls->Add(this->resultsBox);
 			this->matchReportGroup->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->matchReportGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->matchReportGroup->Location = System::Drawing::Point(326, 3);
+			this->matchReportGroup->Location = System::Drawing::Point(138, 2);
+			this->matchReportGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->matchReportGroup->Name = L"matchReportGroup";
-			this->matchReportGroup->Padding = System::Windows::Forms::Padding(10);
+			this->matchReportGroup->Padding = System::Windows::Forms::Padding(7, 6, 7, 6);
 			this->resultsTableLayout->SetRowSpan(this->matchReportGroup, 2);
-			this->matchReportGroup->Size = System::Drawing::Size(318, 549);
+			this->matchReportGroup->Size = System::Drawing::Size(132, 377);
 			this->matchReportGroup->TabIndex = 4;
 			this->matchReportGroup->TabStop = false;
 			this->matchReportGroup->Text = L"Match Report";
@@ -451,12 +467,13 @@ namespace GenoSearch {
 			this->resultsBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->resultsBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->resultsBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->resultsBox->Location = System::Drawing::Point(10, 37);
+			this->resultsBox->Location = System::Drawing::Point(7, 24);
+			this->resultsBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->resultsBox->Multiline = true;
 			this->resultsBox->Name = L"resultsBox";
 			this->resultsBox->ReadOnly = true;
 			this->resultsBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->resultsBox->Size = System::Drawing::Size(298, 502);
+			this->resultsBox->Size = System::Drawing::Size(118, 347);
 			this->resultsBox->TabIndex = 0;
 			// 
 			// exportButton
@@ -469,9 +486,10 @@ namespace GenoSearch {
 			this->exportButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->exportButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
 			this->exportButton->ForeColor = System::Drawing::Color::White;
-			this->exportButton->Location = System::Drawing::Point(15, 100);
+			this->exportButton->Location = System::Drawing::Point(10, 66);
+			this->exportButton->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->exportButton->Name = L"exportButton";
-			this->exportButton->Size = System::Drawing::Size(647, 50);
+			this->exportButton->Size = System::Drawing::Size(272, 32);
 			this->exportButton->TabIndex = 1;
 			this->exportButton->Text = L"Export Full Report (.txt)";
 			this->exportButton->UseVisualStyleBackColor = false;
@@ -486,10 +504,11 @@ namespace GenoSearch {
 			this->resultsLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold));
 			this->resultsLabel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(111)),
 				static_cast<System::Int32>(static_cast<System::Byte>(101)));
-			this->resultsLabel->Location = System::Drawing::Point(15, 42);
+			this->resultsLabel->Location = System::Drawing::Point(10, 28);
+			this->resultsLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->resultsLabel->Name = L"resultsLabel";
-			this->resultsLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 20);
-			this->resultsLabel->Size = System::Drawing::Size(109, 58);
+			this->resultsLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 13);
+			this->resultsLabel->Size = System::Drawing::Size(74, 38);
 			this->resultsLabel->TabIndex = 0;
 			this->resultsLabel->Text = L"Results";
 			// 
@@ -501,9 +520,10 @@ namespace GenoSearch {
 			this->tabPage2->Controls->Add(this->vizToggleGroup);
 			this->tabPage2->Controls->Add(this->vizLabel);
 			this->tabPage2->Location = System::Drawing::Point(4, 44);
+			this->tabPage2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->tabPage2->Name = L"tabPage2";
-			this->tabPage2->Padding = System::Windows::Forms::Padding(15);
-			this->tabPage2->Size = System::Drawing::Size(707, 750);
+			this->tabPage2->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->tabPage2->Size = System::Drawing::Size(469, 471);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Visualization";
 			// 
@@ -514,12 +534,13 @@ namespace GenoSearch {
 			this->pdaTraceBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->pdaTraceBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->pdaTraceBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->pdaTraceBox->Location = System::Drawing::Point(15, 133);
+			this->pdaTraceBox->Location = System::Drawing::Point(10, 87);
+			this->pdaTraceBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->pdaTraceBox->Multiline = true;
 			this->pdaTraceBox->Name = L"pdaTraceBox";
 			this->pdaTraceBox->ReadOnly = true;
 			this->pdaTraceBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->pdaTraceBox->Size = System::Drawing::Size(677, 602);
+			this->pdaTraceBox->Size = System::Drawing::Size(449, 374);
 			this->pdaTraceBox->TabIndex = 3;
 			// 
 			// vizPictureBox
@@ -528,9 +549,10 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->vizPictureBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->vizPictureBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->vizPictureBox->Location = System::Drawing::Point(15, 133);
+			this->vizPictureBox->Location = System::Drawing::Point(10, 87);
+			this->vizPictureBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->vizPictureBox->Name = L"vizPictureBox";
-			this->vizPictureBox->Size = System::Drawing::Size(677, 602);
+			this->vizPictureBox->Size = System::Drawing::Size(449, 374);
 			this->vizPictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->vizPictureBox->TabIndex = 2;
 			this->vizPictureBox->TabStop = false;
@@ -540,10 +562,11 @@ namespace GenoSearch {
 			this->vizToggleGroup->Controls->Add(this->showDfaButton);
 			this->vizToggleGroup->Controls->Add(this->showNfaButton);
 			this->vizToggleGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->vizToggleGroup->Location = System::Drawing::Point(15, 73);
+			this->vizToggleGroup->Location = System::Drawing::Point(10, 48);
+			this->vizToggleGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->vizToggleGroup->Name = L"vizToggleGroup";
-			this->vizToggleGroup->Padding = System::Windows::Forms::Padding(0, 10, 0, 10);
-			this->vizToggleGroup->Size = System::Drawing::Size(677, 60);
+			this->vizToggleGroup->Padding = System::Windows::Forms::Padding(0, 6, 0, 6);
+			this->vizToggleGroup->Size = System::Drawing::Size(449, 39);
 			this->vizToggleGroup->TabIndex = 1;
 			// 
 			// showDfaButton
@@ -555,9 +578,10 @@ namespace GenoSearch {
 			this->showDfaButton->FlatAppearance->BorderSize = 0;
 			this->showDfaButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->showDfaButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->showDfaButton->Location = System::Drawing::Point(180, 10);
+			this->showDfaButton->Location = System::Drawing::Point(120, 6);
+			this->showDfaButton->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->showDfaButton->Name = L"showDfaButton";
-			this->showDfaButton->Size = System::Drawing::Size(180, 40);
+			this->showDfaButton->Size = System::Drawing::Size(120, 27);
 			this->showDfaButton->TabIndex = 1;
 			this->showDfaButton->Text = L"Show DFA";
 			this->showDfaButton->UseVisualStyleBackColor = false;
@@ -575,9 +599,10 @@ namespace GenoSearch {
 			this->showNfaButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->showNfaButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
 			this->showNfaButton->ForeColor = System::Drawing::Color::White;
-			this->showNfaButton->Location = System::Drawing::Point(0, 10);
+			this->showNfaButton->Location = System::Drawing::Point(0, 6);
+			this->showNfaButton->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->showNfaButton->Name = L"showNfaButton";
-			this->showNfaButton->Size = System::Drawing::Size(180, 40);
+			this->showNfaButton->Size = System::Drawing::Size(120, 27);
 			this->showNfaButton->TabIndex = 0;
 			this->showNfaButton->Text = L"Show NFA";
 			this->showNfaButton->UseVisualStyleBackColor = false;
@@ -592,10 +617,11 @@ namespace GenoSearch {
 			this->vizLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold));
 			this->vizLabel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(111)),
 				static_cast<System::Int32>(static_cast<System::Byte>(101)));
-			this->vizLabel->Location = System::Drawing::Point(15, 15);
+			this->vizLabel->Location = System::Drawing::Point(10, 10);
+			this->vizLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->vizLabel->Name = L"vizLabel";
-			this->vizLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 20);
-			this->vizLabel->Size = System::Drawing::Size(381, 58);
+			this->vizLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 13);
+			this->vizLabel->Size = System::Drawing::Size(252, 38);
 			this->vizLabel->TabIndex = 0;
 			this->vizLabel->Text = L"🎨 Visualization (NFA/DFA)";
 			// 
@@ -606,10 +632,11 @@ namespace GenoSearch {
 			this->leftPanel->Controls->Add(this->groupBox2);
 			this->leftPanel->Controls->Add(this->groupBox1);
 			this->leftPanel->Dock = System::Windows::Forms::DockStyle::Left;
-			this->leftPanel->Location = System::Drawing::Point(20, 20);
+			this->leftPanel->Location = System::Drawing::Point(13, 13);
+			this->leftPanel->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->leftPanel->Name = L"leftPanel";
-			this->leftPanel->Padding = System::Windows::Forms::Padding(15);
-			this->leftPanel->Size = System::Drawing::Size(755, 798);
+			this->leftPanel->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->leftPanel->Size = System::Drawing::Size(503, 557);
 			this->leftPanel->TabIndex = 0;
 			// 
 			// progressBar
@@ -617,10 +644,11 @@ namespace GenoSearch {
 			this->progressBar->Dock = System::Windows::Forms::DockStyle::Bottom;
 			this->progressBar->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(143)));
-			this->progressBar->Location = System::Drawing::Point(15, 773);
+			this->progressBar->Location = System::Drawing::Point(10, 541);
+			this->progressBar->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->progressBar->MarqueeAnimationSpeed = 30;
 			this->progressBar->Name = L"progressBar";
-			this->progressBar->Size = System::Drawing::Size(725, 10);
+			this->progressBar->Size = System::Drawing::Size(483, 6);
 			this->progressBar->Style = System::Windows::Forms::ProgressBarStyle::Marquee;
 			this->progressBar->TabIndex = 2;
 			this->progressBar->Visible = false;
@@ -637,10 +665,11 @@ namespace GenoSearch {
 			this->groupBox2->Controls->Add(this->patternInputGroup);
 			this->groupBox2->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->groupBox2->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-			this->groupBox2->Location = System::Drawing::Point(15, 147);
+			this->groupBox2->Location = System::Drawing::Point(10, 96);
+			this->groupBox2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->groupBox2->Name = L"groupBox2";
-			this->groupBox2->Padding = System::Windows::Forms::Padding(15);
-			this->groupBox2->Size = System::Drawing::Size(725, 636);
+			this->groupBox2->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->groupBox2->Size = System::Drawing::Size(483, 451);
 			this->groupBox2->TabIndex = 1;
 			this->groupBox2->TabStop = false;
 			// 
@@ -655,9 +684,10 @@ namespace GenoSearch {
 			this->resetButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
 			this->resetButton->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(52)),
 				static_cast<System::Int32>(static_cast<System::Byte>(71)));
-			this->resetButton->Location = System::Drawing::Point(15, 579);
+			this->resetButton->Location = System::Drawing::Point(10, 414);
+			this->resetButton->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->resetButton->Name = L"resetButton";
-			this->resetButton->Size = System::Drawing::Size(170, 35);
+			this->resetButton->Size = System::Drawing::Size(113, 23);
 			this->resetButton->TabIndex = 7;
 			this->resetButton->Text = L"Reset All";
 			this->resetButton->UseVisualStyleBackColor = false;
@@ -676,9 +706,10 @@ namespace GenoSearch {
 			this->showErrorButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
 			this->showErrorButton->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(52)),
 				static_cast<System::Int32>(static_cast<System::Byte>(71)));
-			this->showErrorButton->Location = System::Drawing::Point(540, 579);
+			this->showErrorButton->Location = System::Drawing::Point(360, 414);
+			this->showErrorButton->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->showErrorButton->Name = L"showErrorButton";
-			this->showErrorButton->Size = System::Drawing::Size(170, 35);
+			this->showErrorButton->Size = System::Drawing::Size(113, 23);
 			this->showErrorButton->TabIndex = 6;
 			this->showErrorButton->Text = L"Show Error Demo";
 			this->showErrorButton->UseVisualStyleBackColor = false;
@@ -692,9 +723,10 @@ namespace GenoSearch {
 			this->step2Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
 			this->step2Label->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(111)),
 				static_cast<System::Int32>(static_cast<System::Byte>(101)));
-			this->step2Label->Location = System::Drawing::Point(15, 15);
+			this->step2Label->Location = System::Drawing::Point(10, 10);
+			this->step2Label->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->step2Label->Name = L"step2Label";
-			this->step2Label->Size = System::Drawing::Size(292, 32);
+			this->step2Label->Size = System::Drawing::Size(193, 21);
 			this->step2Label->TabIndex = 5;
 			this->step2Label->Text = L"Step 2: Configure Inputs";
 			// 
@@ -709,9 +741,10 @@ namespace GenoSearch {
 			this->runButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->runButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
 			this->runButton->ForeColor = System::Drawing::Color::White;
-			this->runButton->Location = System::Drawing::Point(15, 518);
+			this->runButton->Location = System::Drawing::Point(10, 375);
+			this->runButton->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->runButton->Name = L"runButton";
-			this->runButton->Size = System::Drawing::Size(695, 50);
+			this->runButton->Size = System::Drawing::Size(463, 32);
 			this->runButton->TabIndex = 4;
 			this->runButton->Text = L"Run Simulation";
 			this->runButton->UseVisualStyleBackColor = false;
@@ -726,10 +759,11 @@ namespace GenoSearch {
 			this->fileInputGroup->Controls->Add(this->fileInputBox);
 			this->fileInputGroup->Controls->Add(this->fileInputLabel);
 			this->fileInputGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->fileInputGroup->Location = System::Drawing::Point(15, 295);
+			this->fileInputGroup->Location = System::Drawing::Point(10, 193);
+			this->fileInputGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->fileInputGroup->Name = L"fileInputGroup";
-			this->fileInputGroup->Padding = System::Windows::Forms::Padding(10);
-			this->fileInputGroup->Size = System::Drawing::Size(695, 130);
+			this->fileInputGroup->Padding = System::Windows::Forms::Padding(7, 6, 7, 6);
+			this->fileInputGroup->Size = System::Drawing::Size(463, 84);
 			this->fileInputGroup->TabIndex = 3;
 			this->fileInputGroup->TabStop = false;
 			// 
@@ -739,9 +773,10 @@ namespace GenoSearch {
 			this->supportLabel->AutoSize = true;
 			this->supportLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8));
 			this->supportLabel->ForeColor = System::Drawing::Color::Gray;
-			this->supportLabel->Location = System::Drawing::Point(26, 93);
+			this->supportLabel->Location = System::Drawing::Point(17, 60);
+			this->supportLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->supportLabel->Name = L"supportLabel";
-			this->supportLabel->Size = System::Drawing::Size(198, 21);
+			this->supportLabel->Size = System::Drawing::Size(153, 13);
 			this->supportLabel->TabIndex = 3;
 			this->supportLabel->Text = L"Supports: .txt, .fa, .fasta files";
 			// 
@@ -755,9 +790,10 @@ namespace GenoSearch {
 			this->browseButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->browseButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
 			this->browseButton->ForeColor = System::Drawing::Color::White;
-			this->browseButton->Location = System::Drawing::Point(565, 56);
+			this->browseButton->Location = System::Drawing::Point(377, 36);
+			this->browseButton->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->browseButton->Name = L"browseButton";
-			this->browseButton->Size = System::Drawing::Size(100, 34);
+			this->browseButton->Size = System::Drawing::Size(67, 22);
 			this->browseButton->TabIndex = 2;
 			this->browseButton->Text = L"Browse";
 			this->browseButton->UseVisualStyleBackColor = false;
@@ -772,10 +808,11 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->fileInputBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->fileInputBox->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
-			this->fileInputBox->Location = System::Drawing::Point(29, 56);
+			this->fileInputBox->Location = System::Drawing::Point(19, 36);
+			this->fileInputBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->fileInputBox->Name = L"fileInputBox";
 			this->fileInputBox->ReadOnly = true;
-			this->fileInputBox->Size = System::Drawing::Size(516, 34);
+			this->fileInputBox->Size = System::Drawing::Size(345, 25);
 			this->fileInputBox->TabIndex = 1;
 			// 
 			// fileInputLabel
@@ -783,9 +820,10 @@ namespace GenoSearch {
 			this->fileInputLabel->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->fileInputLabel->AutoSize = true;
 			this->fileInputLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->fileInputLabel->Location = System::Drawing::Point(25, 21);
+			this->fileInputLabel->Location = System::Drawing::Point(17, 14);
+			this->fileInputLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->fileInputLabel->Name = L"fileInputLabel";
-			this->fileInputLabel->Size = System::Drawing::Size(101, 28);
+			this->fileInputLabel->Size = System::Drawing::Size(70, 19);
 			this->fileInputLabel->TabIndex = 0;
 			this->fileInputLabel->Text = L"Input File";
 			// 
@@ -795,10 +833,11 @@ namespace GenoSearch {
 			this->pdaInputTypeGroup->Controls->Add(this->pdaFileRadio);
 			this->pdaInputTypeGroup->Controls->Add(this->pdaStringRadio);
 			this->pdaInputTypeGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->pdaInputTypeGroup->Location = System::Drawing::Point(15, 221);
+			this->pdaInputTypeGroup->Location = System::Drawing::Point(10, 145);
+			this->pdaInputTypeGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->pdaInputTypeGroup->Name = L"pdaInputTypeGroup";
-			this->pdaInputTypeGroup->Padding = System::Windows::Forms::Padding(10);
-			this->pdaInputTypeGroup->Size = System::Drawing::Size(695, 74);
+			this->pdaInputTypeGroup->Padding = System::Windows::Forms::Padding(7, 6, 7, 6);
+			this->pdaInputTypeGroup->Size = System::Drawing::Size(463, 48);
 			this->pdaInputTypeGroup->TabIndex = 2;
 			this->pdaInputTypeGroup->TabStop = false;
 			// 
@@ -807,9 +846,10 @@ namespace GenoSearch {
 			this->sourceInputLabel->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->sourceInputLabel->AutoSize = true;
 			this->sourceInputLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->sourceInputLabel->Location = System::Drawing::Point(24, 28);
+			this->sourceInputLabel->Location = System::Drawing::Point(16, 18);
+			this->sourceInputLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->sourceInputLabel->Name = L"sourceInputLabel";
-			this->sourceInputLabel->Size = System::Drawing::Size(137, 28);
+			this->sourceInputLabel->Size = System::Drawing::Size(97, 19);
 			this->sourceInputLabel->TabIndex = 2;
 			this->sourceInputLabel->Text = L"Input Source:";
 			// 
@@ -817,9 +857,10 @@ namespace GenoSearch {
 			// 
 			this->pdaFileRadio->AutoSize = true;
 			this->pdaFileRadio->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->pdaFileRadio->Location = System::Drawing::Point(323, 29);
+			this->pdaFileRadio->Location = System::Drawing::Point(215, 19);
+			this->pdaFileRadio->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->pdaFileRadio->Name = L"pdaFileRadio";
-			this->pdaFileRadio->Size = System::Drawing::Size(130, 29);
+			this->pdaFileRadio->Size = System::Drawing::Size(87, 19);
 			this->pdaFileRadio->TabIndex = 1;
 			this->pdaFileRadio->Text = L"Validate File";
 			this->pdaFileRadio->UseVisualStyleBackColor = true;
@@ -830,9 +871,10 @@ namespace GenoSearch {
 			this->pdaStringRadio->AutoSize = true;
 			this->pdaStringRadio->Checked = true;
 			this->pdaStringRadio->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->pdaStringRadio->Location = System::Drawing::Point(167, 29);
+			this->pdaStringRadio->Location = System::Drawing::Point(111, 19);
+			this->pdaStringRadio->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->pdaStringRadio->Name = L"pdaStringRadio";
-			this->pdaStringRadio->Size = System::Drawing::Size(150, 29);
+			this->pdaStringRadio->Size = System::Drawing::Size(100, 19);
 			this->pdaStringRadio->TabIndex = 0;
 			this->pdaStringRadio->TabStop = true;
 			this->pdaStringRadio->Text = L"Validate String";
@@ -844,10 +886,11 @@ namespace GenoSearch {
 			this->editDistanceGroup->Controls->Add(this->editDistanceInput);
 			this->editDistanceGroup->Controls->Add(this->distanceLabel);
 			this->editDistanceGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->editDistanceGroup->Location = System::Drawing::Point(15, 151);
+			this->editDistanceGroup->Location = System::Drawing::Point(10, 99);
+			this->editDistanceGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->editDistanceGroup->Name = L"editDistanceGroup";
-			this->editDistanceGroup->Padding = System::Windows::Forms::Padding(10);
-			this->editDistanceGroup->Size = System::Drawing::Size(695, 70);
+			this->editDistanceGroup->Padding = System::Windows::Forms::Padding(7, 6, 7, 6);
+			this->editDistanceGroup->Size = System::Drawing::Size(463, 46);
 			this->editDistanceGroup->TabIndex = 1;
 			this->editDistanceGroup->TabStop = false;
 			// 
@@ -857,11 +900,12 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(252)), static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->editDistanceInput->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->editDistanceInput->Font = (gcnew System::Drawing::Font(L"Segoe UI", 11));
-			this->editDistanceInput->Location = System::Drawing::Point(232, 24);
+			this->editDistanceInput->Location = System::Drawing::Point(155, 16);
+			this->editDistanceInput->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->editDistanceInput->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
 			this->editDistanceInput->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			this->editDistanceInput->Name = L"editDistanceInput";
-			this->editDistanceInput->Size = System::Drawing::Size(80, 37);
+			this->editDistanceInput->Size = System::Drawing::Size(53, 27);
 			this->editDistanceInput->TabIndex = 1;
 			this->editDistanceInput->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			// 
@@ -869,9 +913,10 @@ namespace GenoSearch {
 			// 
 			this->distanceLabel->AutoSize = true;
 			this->distanceLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->distanceLabel->Location = System::Drawing::Point(25, 27);
+			this->distanceLabel->Location = System::Drawing::Point(17, 18);
+			this->distanceLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->distanceLabel->Name = L"distanceLabel";
-			this->distanceLabel->Size = System::Drawing::Size(173, 28);
+			this->distanceLabel->Size = System::Drawing::Size(120, 19);
 			this->distanceLabel->TabIndex = 0;
 			this->distanceLabel->Text = L"Edit Distance (k):";
 			// 
@@ -880,10 +925,11 @@ namespace GenoSearch {
 			this->patternInputGroup->Controls->Add(this->patternLabel);
 			this->patternInputGroup->Controls->Add(this->patternInputBox);
 			this->patternInputGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->patternInputGroup->Location = System::Drawing::Point(15, 39);
+			this->patternInputGroup->Location = System::Drawing::Point(10, 26);
+			this->patternInputGroup->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->patternInputGroup->Name = L"patternInputGroup";
-			this->patternInputGroup->Padding = System::Windows::Forms::Padding(10);
-			this->patternInputGroup->Size = System::Drawing::Size(695, 112);
+			this->patternInputGroup->Padding = System::Windows::Forms::Padding(7, 6, 7, 6);
+			this->patternInputGroup->Size = System::Drawing::Size(463, 73);
 			this->patternInputGroup->TabIndex = 0;
 			this->patternInputGroup->TabStop = false;
 			// 
@@ -892,9 +938,10 @@ namespace GenoSearch {
 			this->patternLabel->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->patternLabel->AutoSize = true;
 			this->patternLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->patternLabel->Location = System::Drawing::Point(24, 23);
+			this->patternLabel->Location = System::Drawing::Point(16, 15);
+			this->patternLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->patternLabel->Name = L"patternLabel";
-			this->patternLabel->Size = System::Drawing::Size(282, 28);
+			this->patternLabel->Size = System::Drawing::Size(199, 19);
 			this->patternLabel->TabIndex = 1;
 			this->patternLabel->Text = L"Pattern (Regular Expression)";
 			// 
@@ -905,9 +952,10 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->patternInputBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->patternInputBox->Font = (gcnew System::Drawing::Font(L"Consolas", 11));
-			this->patternInputBox->Location = System::Drawing::Point(30, 61);
+			this->patternInputBox->Location = System::Drawing::Point(20, 40);
+			this->patternInputBox->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->patternInputBox->Name = L"patternInputBox";
-			this->patternInputBox->Size = System::Drawing::Size(635, 33);
+			this->patternInputBox->Size = System::Drawing::Size(424, 25);
 			this->patternInputBox->TabIndex = 0;
 			// 
 			// groupBox1
@@ -921,10 +969,11 @@ namespace GenoSearch {
 			this->groupBox1->Controls->Add(this->regexRadio);
 			this->groupBox1->Dock = System::Windows::Forms::DockStyle::Top;
 			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-			this->groupBox1->Location = System::Drawing::Point(15, 15);
+			this->groupBox1->Location = System::Drawing::Point(10, 10);
+			this->groupBox1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Padding = System::Windows::Forms::Padding(15);
-			this->groupBox1->Size = System::Drawing::Size(725, 132);
+			this->groupBox1->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->groupBox1->Size = System::Drawing::Size(483, 86);
 			this->groupBox1->TabIndex = 0;
 			this->groupBox1->TabStop = false;
 			// 
@@ -934,9 +983,10 @@ namespace GenoSearch {
 			this->sim3Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->sim3Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
-			this->sim3Label->Location = System::Drawing::Point(486, 92);
+			this->sim3Label->Location = System::Drawing::Point(324, 60);
+			this->sim3Label->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->sim3Label->Name = L"sim3Label";
-			this->sim3Label->Size = System::Drawing::Size(222, 21);
+			this->sim3Label->Size = System::Drawing::Size(163, 13);
 			this->sim3Label->TabIndex = 6;
 			this->sim3Label->Text = L"Check nested structures (PDA).";
 			// 
@@ -946,9 +996,10 @@ namespace GenoSearch {
 			this->sim2Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->sim2Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
-			this->sim2Label->Location = System::Drawing::Point(254, 92);
+			this->sim2Label->Location = System::Drawing::Point(169, 60);
+			this->sim2Label->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->sim2Label->Name = L"sim2Label";
-			this->sim2Label->Size = System::Drawing::Size(199, 21);
+			this->sim2Label->Size = System::Drawing::Size(145, 13);
 			this->sim2Label->TabIndex = 5;
 			this->sim2Label->Text = L"Find \"fuzzy\" patterns (NFA).";
 			// 
@@ -958,9 +1009,10 @@ namespace GenoSearch {
 			this->sim1Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->sim1Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
-			this->sim1Label->Location = System::Drawing::Point(31, 91);
+			this->sim1Label->Location = System::Drawing::Point(21, 59);
+			this->sim1Label->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->sim1Label->Name = L"sim1Label";
-			this->sim1Label->Size = System::Drawing::Size(185, 21);
+			this->sim1Label->Size = System::Drawing::Size(137, 13);
 			this->sim1Label->TabIndex = 4;
 			this->sim1Label->Text = L"Find exact patterns (DFA).";
 			this->sim1Label->Click += gcnew System::EventHandler(this, &MyForm::label2_Click);
@@ -971,9 +1023,10 @@ namespace GenoSearch {
 			this->label1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
 			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(111)),
 				static_cast<System::Int32>(static_cast<System::Byte>(101)));
-			this->label1->Location = System::Drawing::Point(15, 15);
+			this->label1->Location = System::Drawing::Point(10, 10);
+			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(356, 32);
+			this->label1->Size = System::Drawing::Size(239, 21);
 			this->label1->TabIndex = 3;
 			this->label1->Text = L"Step 1: Select Simulation Type";
 			// 
@@ -983,9 +1036,10 @@ namespace GenoSearch {
 			this->pdaRadio->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->pdaRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->pdaRadio->Location = System::Drawing::Point(486, 57);
+			this->pdaRadio->Location = System::Drawing::Point(324, 37);
+			this->pdaRadio->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->pdaRadio->Name = L"pdaRadio";
-			this->pdaRadio->Size = System::Drawing::Size(219, 32);
+			this->pdaRadio->Size = System::Drawing::Size(156, 23);
 			this->pdaRadio->TabIndex = 2;
 			this->pdaRadio->Text = L"Structural Validation";
 			this->pdaRadio->UseVisualStyleBackColor = true;
@@ -997,9 +1051,10 @@ namespace GenoSearch {
 			this->approxRadio->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->approxRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->approxRadio->Location = System::Drawing::Point(247, 58);
+			this->approxRadio->Location = System::Drawing::Point(165, 38);
+			this->approxRadio->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->approxRadio->Name = L"approxRadio";
-			this->approxRadio->Size = System::Drawing::Size(216, 32);
+			this->approxRadio->Size = System::Drawing::Size(151, 23);
 			this->approxRadio->TabIndex = 1;
 			this->approxRadio->Text = L"Approximate Match";
 			this->approxRadio->UseVisualStyleBackColor = true;
@@ -1012,9 +1067,10 @@ namespace GenoSearch {
 			this->regexRadio->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->regexRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->regexRadio->Location = System::Drawing::Point(20, 57);
+			this->regexRadio->Location = System::Drawing::Point(13, 37);
+			this->regexRadio->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->regexRadio->Name = L"regexRadio";
-			this->regexRadio->Size = System::Drawing::Size(208, 32);
+			this->regexRadio->Size = System::Drawing::Size(145, 23);
 			this->regexRadio->TabIndex = 0;
 			this->regexRadio->TabStop = true;
 			this->regexRadio->Text = L"Regular Expression";
@@ -1037,13 +1093,14 @@ namespace GenoSearch {
 			// 
 			// MyForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::White;
-			this->ClientSize = System::Drawing::Size(1520, 938);
+			this->ClientSize = System::Drawing::Size(856, 648);
 			this->Controls->Add(this->mainContainer);
 			this->Controls->Add(this->headerPanel);
-			this->MinimumSize = System::Drawing::Size(1200, 800);
+			this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->MinimumSize = System::Drawing::Size(805, 449);
 			this->Name = L"MyForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"GenoSearch ";
