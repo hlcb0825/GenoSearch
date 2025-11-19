@@ -57,30 +57,30 @@ namespace GenoSearch {
 	private: System::Windows::Forms::Panel^ mainContainer;
 	private: System::Windows::Forms::Panel^ leftPanel;
 	private: System::Windows::Forms::Panel^ rightPanel;
-	private: System::Windows::Forms::GroupBox^ groupBox1;
-	private: System::Windows::Forms::RadioButton^ regexRadio;
-	private: System::Windows::Forms::RadioButton^ pdaRadio;
-	private: System::Windows::Forms::RadioButton^ approxRadio;
-	private: System::Windows::Forms::GroupBox^ groupBox2;
-	private: System::Windows::Forms::GroupBox^ patternInputGroup;
-	private: System::Windows::Forms::TextBox^ patternInputBox;
-	private: System::Windows::Forms::GroupBox^ editDistanceGroup;
-	private: System::Windows::Forms::Label^ patternLabel;
-	private: System::Windows::Forms::Label^ distanceLabel;
-	private: System::Windows::Forms::GroupBox^ pdaInputTypeGroup;
-	private: System::Windows::Forms::RadioButton^ pdaStringRadio;
-	private: System::Windows::Forms::NumericUpDown^ editDistanceInput;
-	private: System::Windows::Forms::GroupBox^ fileInputGroup;
-	private: System::Windows::Forms::RadioButton^ pdaFileRadio;
-	private: System::Windows::Forms::Button^ browseButton;
-	private: System::Windows::Forms::TextBox^ fileInputBox;
-	private: System::Windows::Forms::Label^ fileInputLabel;
-	private: System::Windows::Forms::Label^ supportLabel;
-	private: System::Windows::Forms::Label^ sourceInputLabel;
-	private: System::Windows::Forms::Label^ step2Label;
-	private: System::Windows::Forms::Button^ runButton;
-	private: System::Windows::Forms::Label^ label1;
-	private: System::Windows::Forms::Button^ showErrorButton;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	private: System::Windows::Forms::TabControl^ outputTabControl;
 	private: System::Windows::Forms::TabPage^ tabPage1;
 	private: System::Windows::Forms::GroupBox^ errorGroup;
@@ -106,18 +106,46 @@ namespace GenoSearch {
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 	private: System::Windows::Forms::ProgressBar^ progressBar;
 	private: System::Windows::Forms::Timer^ animationTimer;
-	private: System::Windows::Forms::Button^ resetButton;
+
 
 
 	private: System::String^ m_nfaDot;
 	private: System::String^ m_dfaDot;
-	private: System::Windows::Forms::Label^ sim1Label;
-	private: System::Windows::Forms::Label^ sim3Label;
 
-	private: System::Windows::Forms::Label^ sim2Label;
+
+
+
 
 		   // *** MODIFICATION: Added TableLayoutPanel for 2-column results ***
 	private: System::Windows::Forms::TableLayoutPanel^ resultsTableLayout;
+	private: System::Windows::Forms::GroupBox^ groupBox2;
+	private: System::Windows::Forms::Button^ resetButton;
+	private: System::Windows::Forms::GroupBox^ groupBox1;
+	private: System::Windows::Forms::Label^ sim3Label;
+	private: System::Windows::Forms::Label^ sim2Label;
+	private: System::Windows::Forms::Label^ sim1Label;
+	private: System::Windows::Forms::RadioButton^ pdaRadio;
+	private: System::Windows::Forms::RadioButton^ approxRadio;
+	private: System::Windows::Forms::RadioButton^ regexRadio;
+	private: System::Windows::Forms::Button^ showErrorButton;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ step2Label;
+	private: System::Windows::Forms::Button^ runButton;
+	private: System::Windows::Forms::GroupBox^ fileInputGroup;
+	private: System::Windows::Forms::Label^ supportLabel;
+	private: System::Windows::Forms::Button^ browseButton;
+	private: System::Windows::Forms::TextBox^ fileInputBox;
+	private: System::Windows::Forms::Label^ fileInputLabel;
+	private: System::Windows::Forms::GroupBox^ pdaInputTypeGroup;
+	private: System::Windows::Forms::Label^ sourceInputLabel;
+	private: System::Windows::Forms::RadioButton^ pdaFileRadio;
+	private: System::Windows::Forms::RadioButton^ pdaStringRadio;
+	private: System::Windows::Forms::GroupBox^ editDistanceGroup;
+	private: System::Windows::Forms::NumericUpDown^ editDistanceInput;
+	private: System::Windows::Forms::Label^ distanceLabel;
+	private: System::Windows::Forms::GroupBox^ patternInputGroup;
+	private: System::Windows::Forms::Label^ patternLabel;
+	private: System::Windows::Forms::TextBox^ patternInputBox;
 
 
 	private: System::ComponentModel::IContainer^ components;
@@ -130,15 +158,13 @@ namespace GenoSearch {
 		{
 			this->components = (gcnew System::ComponentModel::Container());
 			this->headerPanel = (gcnew System::Windows::Forms::Panel());
+			this->exportButton = (gcnew System::Windows::Forms::Button());
 			this->subtitleLabel = (gcnew System::Windows::Forms::Label());
 			this->titleLabel = (gcnew System::Windows::Forms::Label());
 			this->mainContainer = (gcnew System::Windows::Forms::Panel());
 			this->rightPanel = (gcnew System::Windows::Forms::Panel());
 			this->outputTabControl = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
-			this->errorGroup = (gcnew System::Windows::Forms::GroupBox());
-			this->errorBox = (gcnew System::Windows::Forms::TextBox());
-			this->errorLabel = (gcnew System::Windows::Forms::Label());
 			this->normalOutputGroup = (gcnew System::Windows::Forms::GroupBox());
 			this->resultsTableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->summaryGroup = (gcnew System::Windows::Forms::GroupBox());
@@ -147,8 +173,10 @@ namespace GenoSearch {
 			this->grammarBox = (gcnew System::Windows::Forms::TextBox());
 			this->matchReportGroup = (gcnew System::Windows::Forms::GroupBox());
 			this->resultsBox = (gcnew System::Windows::Forms::TextBox());
-			this->exportButton = (gcnew System::Windows::Forms::Button());
 			this->resultsLabel = (gcnew System::Windows::Forms::Label());
+			this->errorGroup = (gcnew System::Windows::Forms::GroupBox());
+			this->errorBox = (gcnew System::Windows::Forms::TextBox());
+			this->errorLabel = (gcnew System::Windows::Forms::Label());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
 			this->pdaTraceBox = (gcnew System::Windows::Forms::TextBox());
 			this->vizPictureBox = (gcnew System::Windows::Forms::PictureBox());
@@ -158,72 +186,93 @@ namespace GenoSearch {
 			this->vizLabel = (gcnew System::Windows::Forms::Label());
 			this->leftPanel = (gcnew System::Windows::Forms::Panel());
 			this->progressBar = (gcnew System::Windows::Forms::ProgressBar());
-			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
-			this->resetButton = (gcnew System::Windows::Forms::Button());
-			this->showErrorButton = (gcnew System::Windows::Forms::Button());
-			this->step2Label = (gcnew System::Windows::Forms::Label());
-			this->runButton = (gcnew System::Windows::Forms::Button());
-			this->fileInputGroup = (gcnew System::Windows::Forms::GroupBox());
-			this->supportLabel = (gcnew System::Windows::Forms::Label());
-			this->browseButton = (gcnew System::Windows::Forms::Button());
-			this->fileInputBox = (gcnew System::Windows::Forms::TextBox());
-			this->fileInputLabel = (gcnew System::Windows::Forms::Label());
-			this->pdaInputTypeGroup = (gcnew System::Windows::Forms::GroupBox());
-			this->sourceInputLabel = (gcnew System::Windows::Forms::Label());
-			this->pdaFileRadio = (gcnew System::Windows::Forms::RadioButton());
-			this->pdaStringRadio = (gcnew System::Windows::Forms::RadioButton());
-			this->editDistanceGroup = (gcnew System::Windows::Forms::GroupBox());
-			this->editDistanceInput = (gcnew System::Windows::Forms::NumericUpDown());
-			this->distanceLabel = (gcnew System::Windows::Forms::Label());
-			this->patternInputGroup = (gcnew System::Windows::Forms::GroupBox());
-			this->patternLabel = (gcnew System::Windows::Forms::Label());
-			this->patternInputBox = (gcnew System::Windows::Forms::TextBox());
-			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
-			this->sim3Label = (gcnew System::Windows::Forms::Label());
-			this->sim2Label = (gcnew System::Windows::Forms::Label());
-			this->sim1Label = (gcnew System::Windows::Forms::Label());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->pdaRadio = (gcnew System::Windows::Forms::RadioButton());
-			this->approxRadio = (gcnew System::Windows::Forms::RadioButton());
-			this->regexRadio = (gcnew System::Windows::Forms::RadioButton());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->animationTimer = (gcnew System::Windows::Forms::Timer(this->components));
+			this->patternInputGroup = (gcnew System::Windows::Forms::GroupBox());
+			this->patternInputBox = (gcnew System::Windows::Forms::TextBox());
+			this->patternLabel = (gcnew System::Windows::Forms::Label());
+			this->editDistanceGroup = (gcnew System::Windows::Forms::GroupBox());
+			this->distanceLabel = (gcnew System::Windows::Forms::Label());
+			this->editDistanceInput = (gcnew System::Windows::Forms::NumericUpDown());
+			this->pdaInputTypeGroup = (gcnew System::Windows::Forms::GroupBox());
+			this->pdaStringRadio = (gcnew System::Windows::Forms::RadioButton());
+			this->pdaFileRadio = (gcnew System::Windows::Forms::RadioButton());
+			this->sourceInputLabel = (gcnew System::Windows::Forms::Label());
+			this->fileInputGroup = (gcnew System::Windows::Forms::GroupBox());
+			this->fileInputLabel = (gcnew System::Windows::Forms::Label());
+			this->fileInputBox = (gcnew System::Windows::Forms::TextBox());
+			this->browseButton = (gcnew System::Windows::Forms::Button());
+			this->supportLabel = (gcnew System::Windows::Forms::Label());
+			this->runButton = (gcnew System::Windows::Forms::Button());
+			this->step2Label = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->showErrorButton = (gcnew System::Windows::Forms::Button());
+			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->regexRadio = (gcnew System::Windows::Forms::RadioButton());
+			this->approxRadio = (gcnew System::Windows::Forms::RadioButton());
+			this->pdaRadio = (gcnew System::Windows::Forms::RadioButton());
+			this->sim1Label = (gcnew System::Windows::Forms::Label());
+			this->sim2Label = (gcnew System::Windows::Forms::Label());
+			this->sim3Label = (gcnew System::Windows::Forms::Label());
+			this->resetButton = (gcnew System::Windows::Forms::Button());
+			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
 			this->headerPanel->SuspendLayout();
 			this->mainContainer->SuspendLayout();
 			this->rightPanel->SuspendLayout();
 			this->outputTabControl->SuspendLayout();
 			this->tabPage1->SuspendLayout();
-			this->errorGroup->SuspendLayout();
 			this->normalOutputGroup->SuspendLayout();
 			this->resultsTableLayout->SuspendLayout();
 			this->summaryGroup->SuspendLayout();
 			this->grammarGroup->SuspendLayout();
 			this->matchReportGroup->SuspendLayout();
+			this->errorGroup->SuspendLayout();
 			this->tabPage2->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->vizPictureBox))->BeginInit();
 			this->vizToggleGroup->SuspendLayout();
 			this->leftPanel->SuspendLayout();
-			this->groupBox2->SuspendLayout();
-			this->fileInputGroup->SuspendLayout();
-			this->pdaInputTypeGroup->SuspendLayout();
+			this->patternInputGroup->SuspendLayout();
 			this->editDistanceGroup->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->editDistanceInput))->BeginInit();
-			this->patternInputGroup->SuspendLayout();
+			this->pdaInputTypeGroup->SuspendLayout();
+			this->fileInputGroup->SuspendLayout();
 			this->groupBox1->SuspendLayout();
+			this->groupBox2->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// headerPanel
 			// 
 			this->headerPanel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(143)));
+			this->headerPanel->Controls->Add(this->exportButton);
 			this->headerPanel->Controls->Add(this->subtitleLabel);
 			this->headerPanel->Controls->Add(this->titleLabel);
 			this->headerPanel->Dock = System::Windows::Forms::DockStyle::Top;
 			this->headerPanel->Location = System::Drawing::Point(0, 0);
 			this->headerPanel->Name = L"headerPanel";
-			this->headerPanel->Size = System::Drawing::Size(1603, 100);
+			this->headerPanel->Size = System::Drawing::Size(1716, 100);
 			this->headerPanel->TabIndex = 0;
+			// 
+			// exportButton
+			// 
+			this->exportButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->exportButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(132)), static_cast<System::Int32>(static_cast<System::Byte>(169)),
+				static_cast<System::Int32>(static_cast<System::Byte>(140)));
+			this->exportButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->exportButton->FlatAppearance->BorderSize = 0;
+			this->exportButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->exportButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->exportButton->ForeColor = System::Drawing::Color::White;
+			this->exportButton->Location = System::Drawing::Point(1483, 45);
+			this->exportButton->Name = L"exportButton";
+			this->exportButton->Size = System::Drawing::Size(209, 41);
+			this->exportButton->TabIndex = 1;
+			this->exportButton->Text = L"Export Full Report";
+			this->exportButton->UseVisualStyleBackColor = false;
+			this->exportButton->Click += gcnew System::EventHandler(this, &MyForm::exportButton_Click);
+			this->exportButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
+			this->exportButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
 			// 
 			// subtitleLabel
 			// 
@@ -260,17 +309,17 @@ namespace GenoSearch {
 			this->mainContainer->Location = System::Drawing::Point(0, 100);
 			this->mainContainer->Name = L"mainContainer";
 			this->mainContainer->Padding = System::Windows::Forms::Padding(20);
-			this->mainContainer->Size = System::Drawing::Size(1603, 800);
+			this->mainContainer->Size = System::Drawing::Size(1716, 871);
 			this->mainContainer->TabIndex = 1;
 			// 
 			// rightPanel
 			// 
 			this->rightPanel->Controls->Add(this->outputTabControl);
 			this->rightPanel->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->rightPanel->Location = System::Drawing::Point(774, 20);
+			this->rightPanel->Location = System::Drawing::Point(825, 20);
 			this->rightPanel->Name = L"rightPanel";
 			this->rightPanel->Padding = System::Windows::Forms::Padding(10, 0, 0, 0);
-			this->rightPanel->Size = System::Drawing::Size(809, 760);
+			this->rightPanel->Size = System::Drawing::Size(871, 831);
 			this->rightPanel->TabIndex = 1;
 			// 
 			// outputTabControl
@@ -283,20 +332,148 @@ namespace GenoSearch {
 			this->outputTabControl->Location = System::Drawing::Point(10, 0);
 			this->outputTabControl->Name = L"outputTabControl";
 			this->outputTabControl->SelectedIndex = 0;
-			this->outputTabControl->Size = System::Drawing::Size(799, 760);
+			this->outputTabControl->Size = System::Drawing::Size(861, 831);
 			this->outputTabControl->TabIndex = 0;
 			// 
 			// tabPage1
 			// 
 			this->tabPage1->BackColor = System::Drawing::Color::White;
-			this->tabPage1->Controls->Add(this->errorGroup);
 			this->tabPage1->Controls->Add(this->normalOutputGroup);
+			this->tabPage1->Controls->Add(this->errorGroup);
 			this->tabPage1->Location = System::Drawing::Point(4, 44);
 			this->tabPage1->Name = L"tabPage1";
 			this->tabPage1->Padding = System::Windows::Forms::Padding(15);
-			this->tabPage1->Size = System::Drawing::Size(791, 712);
+			this->tabPage1->Size = System::Drawing::Size(853, 783);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Results";
+			// 
+			// normalOutputGroup
+			// 
+			this->normalOutputGroup->Controls->Add(this->resultsTableLayout);
+			this->normalOutputGroup->Controls->Add(this->resultsLabel);
+			this->normalOutputGroup->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->normalOutputGroup->Location = System::Drawing::Point(15, 15);
+			this->normalOutputGroup->Name = L"normalOutputGroup";
+			this->normalOutputGroup->Padding = System::Windows::Forms::Padding(15);
+			this->normalOutputGroup->Size = System::Drawing::Size(823, 753);
+			this->normalOutputGroup->TabIndex = 1;
+			this->normalOutputGroup->TabStop = false;
+			// 
+			// resultsTableLayout
+			// 
+			this->resultsTableLayout->ColumnCount = 2;
+			this->resultsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+				50)));
+			this->resultsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+				50)));
+			this->resultsTableLayout->Controls->Add(this->summaryGroup, 0, 0);
+			this->resultsTableLayout->Controls->Add(this->grammarGroup, 0, 1);
+			this->resultsTableLayout->Controls->Add(this->matchReportGroup, 1, 0);
+			this->resultsTableLayout->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->resultsTableLayout->Location = System::Drawing::Point(15, 42);
+			this->resultsTableLayout->Name = L"resultsTableLayout";
+			this->resultsTableLayout->RowCount = 2;
+			this->resultsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
+			this->resultsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
+			this->resultsTableLayout->Size = System::Drawing::Size(793, 696);
+			this->resultsTableLayout->TabIndex = 5;
+			// 
+			// summaryGroup
+			// 
+			this->summaryGroup->Controls->Add(this->summaryBox);
+			this->summaryGroup->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->summaryGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->summaryGroup->Location = System::Drawing::Point(3, 3);
+			this->summaryGroup->Name = L"summaryGroup";
+			this->summaryGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
+			this->summaryGroup->Size = System::Drawing::Size(390, 342);
+			this->summaryGroup->TabIndex = 2;
+			this->summaryGroup->TabStop = false;
+			this->summaryGroup->Text = L"Simulation Summary";
+			// 
+			// summaryBox
+			// 
+			this->summaryBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
+				static_cast<System::Int32>(static_cast<System::Byte>(251)));
+			this->summaryBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->summaryBox->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->summaryBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
+			this->summaryBox->Location = System::Drawing::Point(10, 36);
+			this->summaryBox->Multiline = true;
+			this->summaryBox->Name = L"summaryBox";
+			this->summaryBox->ReadOnly = true;
+			this->summaryBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->summaryBox->Size = System::Drawing::Size(370, 297);
+			this->summaryBox->TabIndex = 0;
+			// 
+			// grammarGroup
+			// 
+			this->grammarGroup->Controls->Add(this->grammarBox);
+			this->grammarGroup->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->grammarGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->grammarGroup->Location = System::Drawing::Point(3, 351);
+			this->grammarGroup->Name = L"grammarGroup";
+			this->grammarGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
+			this->grammarGroup->Size = System::Drawing::Size(390, 342);
+			this->grammarGroup->TabIndex = 3;
+			this->grammarGroup->TabStop = false;
+			this->grammarGroup->Text = L"Generated Grammar";
+			// 
+			// grammarBox
+			// 
+			this->grammarBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
+				static_cast<System::Int32>(static_cast<System::Byte>(251)));
+			this->grammarBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->grammarBox->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->grammarBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
+			this->grammarBox->Location = System::Drawing::Point(10, 36);
+			this->grammarBox->Multiline = true;
+			this->grammarBox->Name = L"grammarBox";
+			this->grammarBox->ReadOnly = true;
+			this->grammarBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->grammarBox->Size = System::Drawing::Size(370, 297);
+			this->grammarBox->TabIndex = 0;
+			// 
+			// matchReportGroup
+			// 
+			this->matchReportGroup->Controls->Add(this->resultsBox);
+			this->matchReportGroup->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->matchReportGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->matchReportGroup->Location = System::Drawing::Point(399, 3);
+			this->matchReportGroup->Name = L"matchReportGroup";
+			this->matchReportGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
+			this->resultsTableLayout->SetRowSpan(this->matchReportGroup, 2);
+			this->matchReportGroup->Size = System::Drawing::Size(391, 690);
+			this->matchReportGroup->TabIndex = 4;
+			this->matchReportGroup->TabStop = false;
+			this->matchReportGroup->Text = L"Match Report";
+			// 
+			// resultsBox
+			// 
+			this->resultsBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
+				static_cast<System::Int32>(static_cast<System::Byte>(251)));
+			this->resultsBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->resultsBox->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->resultsBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
+			this->resultsBox->Location = System::Drawing::Point(10, 36);
+			this->resultsBox->Multiline = true;
+			this->resultsBox->Name = L"resultsBox";
+			this->resultsBox->ReadOnly = true;
+			this->resultsBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->resultsBox->Size = System::Drawing::Size(371, 645);
+			this->resultsBox->TabIndex = 0;
+			// 
+			// resultsLabel
+			// 
+			this->resultsLabel->AutoSize = true;
+			this->resultsLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold));
+			this->resultsLabel->ForeColor = System::Drawing::Color::Green;
+			this->resultsLabel->Location = System::Drawing::Point(3, 0);
+			this->resultsLabel->Name = L"resultsLabel";
+			this->resultsLabel->Size = System::Drawing::Size(109, 38);
+			this->resultsLabel->TabIndex = 0;
+			this->resultsLabel->Text = L"Results";
+			this->resultsLabel->Click += gcnew System::EventHandler(this, &MyForm::resultsLabel_Click);
 			// 
 			// errorGroup
 			// 
@@ -306,7 +483,7 @@ namespace GenoSearch {
 			this->errorGroup->Location = System::Drawing::Point(15, 15);
 			this->errorGroup->Name = L"errorGroup";
 			this->errorGroup->Padding = System::Windows::Forms::Padding(15);
-			this->errorGroup->Size = System::Drawing::Size(761, 682);
+			this->errorGroup->Size = System::Drawing::Size(823, 753);
 			this->errorGroup->TabIndex = 0;
 			this->errorGroup->TabStop = false;
 			// 
@@ -324,7 +501,7 @@ namespace GenoSearch {
 			this->errorBox->Name = L"errorBox";
 			this->errorBox->ReadOnly = true;
 			this->errorBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->errorBox->Size = System::Drawing::Size(731, 573);
+			this->errorBox->Size = System::Drawing::Size(793, 644);
 			this->errorBox->TabIndex = 1;
 			// 
 			// errorLabel
@@ -340,156 +517,6 @@ namespace GenoSearch {
 			this->errorLabel->Size = System::Drawing::Size(202, 52);
 			this->errorLabel->TabIndex = 0;
 			this->errorLabel->Text = L"Simulation Error";
-			// 
-			// normalOutputGroup
-			// 
-			this->normalOutputGroup->Controls->Add(this->resultsTableLayout);
-			this->normalOutputGroup->Controls->Add(this->exportButton);
-			this->normalOutputGroup->Controls->Add(this->resultsLabel);
-			this->normalOutputGroup->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->normalOutputGroup->Location = System::Drawing::Point(15, 15);
-			this->normalOutputGroup->Name = L"normalOutputGroup";
-			this->normalOutputGroup->Padding = System::Windows::Forms::Padding(15);
-			this->normalOutputGroup->Size = System::Drawing::Size(761, 682);
-			this->normalOutputGroup->TabIndex = 1;
-			this->normalOutputGroup->TabStop = false;
-			// 
-			// resultsTableLayout
-			// 
-			this->resultsTableLayout->ColumnCount = 2;
-			this->resultsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-				50)));
-			this->resultsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-				50)));
-			this->resultsTableLayout->Controls->Add(this->summaryGroup, 0, 0);
-			this->resultsTableLayout->Controls->Add(this->grammarGroup, 0, 1);
-			this->resultsTableLayout->Controls->Add(this->matchReportGroup, 1, 0);
-			this->resultsTableLayout->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->resultsTableLayout->Location = System::Drawing::Point(15, 149);
-			this->resultsTableLayout->Name = L"resultsTableLayout";
-			this->resultsTableLayout->RowCount = 2;
-			this->resultsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
-			this->resultsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 50)));
-			this->resultsTableLayout->Size = System::Drawing::Size(731, 518);
-			this->resultsTableLayout->TabIndex = 5;
-			// 
-			// summaryGroup
-			// 
-			this->summaryGroup->Controls->Add(this->summaryBox);
-			this->summaryGroup->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->summaryGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->summaryGroup->Location = System::Drawing::Point(3, 3);
-			this->summaryGroup->Name = L"summaryGroup";
-			this->summaryGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
-			this->summaryGroup->Size = System::Drawing::Size(359, 253);
-			this->summaryGroup->TabIndex = 2;
-			this->summaryGroup->TabStop = false;
-			this->summaryGroup->Text = L"Simulation Summary";
-			// 
-			// summaryBox
-			// 
-			this->summaryBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
-				static_cast<System::Int32>(static_cast<System::Byte>(251)));
-			this->summaryBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->summaryBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->summaryBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->summaryBox->Location = System::Drawing::Point(10, 36);
-			this->summaryBox->Multiline = true;
-			this->summaryBox->Name = L"summaryBox";
-			this->summaryBox->ReadOnly = true;
-			this->summaryBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->summaryBox->Size = System::Drawing::Size(339, 208);
-			this->summaryBox->TabIndex = 0;
-			// 
-			// grammarGroup
-			// 
-			this->grammarGroup->Controls->Add(this->grammarBox);
-			this->grammarGroup->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->grammarGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->grammarGroup->Location = System::Drawing::Point(3, 262);
-			this->grammarGroup->Name = L"grammarGroup";
-			this->grammarGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
-			this->grammarGroup->Size = System::Drawing::Size(359, 253);
-			this->grammarGroup->TabIndex = 3;
-			this->grammarGroup->TabStop = false;
-			this->grammarGroup->Text = L"Generated Grammar";
-			// 
-			// grammarBox
-			// 
-			this->grammarBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
-				static_cast<System::Int32>(static_cast<System::Byte>(251)));
-			this->grammarBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->grammarBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->grammarBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->grammarBox->Location = System::Drawing::Point(10, 36);
-			this->grammarBox->Multiline = true;
-			this->grammarBox->Name = L"grammarBox";
-			this->grammarBox->ReadOnly = true;
-			this->grammarBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->grammarBox->Size = System::Drawing::Size(339, 208);
-			this->grammarBox->TabIndex = 0;
-			// 
-			// matchReportGroup
-			// 
-			this->matchReportGroup->Controls->Add(this->resultsBox);
-			this->matchReportGroup->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->matchReportGroup->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->matchReportGroup->Location = System::Drawing::Point(368, 3);
-			this->matchReportGroup->Name = L"matchReportGroup";
-			this->matchReportGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
-			this->resultsTableLayout->SetRowSpan(this->matchReportGroup, 2);
-			this->matchReportGroup->Size = System::Drawing::Size(360, 512);
-			this->matchReportGroup->TabIndex = 4;
-			this->matchReportGroup->TabStop = false;
-			this->matchReportGroup->Text = L"Match Report";
-			// 
-			// resultsBox
-			// 
-			this->resultsBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
-				static_cast<System::Int32>(static_cast<System::Byte>(251)));
-			this->resultsBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->resultsBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->resultsBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->resultsBox->Location = System::Drawing::Point(10, 90);
-			this->resultsBox->Multiline = true;
-			this->resultsBox->Name = L"resultsBox";
-			this->resultsBox->ReadOnly = true;
-			this->resultsBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->resultsBox->Size = System::Drawing::Size(340, 467);
-			this->resultsBox->TabIndex = 0;
-			// 
-			// exportButton
-			// 
-			this->exportButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(132)), static_cast<System::Int32>(static_cast<System::Byte>(169)),
-				static_cast<System::Int32>(static_cast<System::Byte>(140)));
-			this->exportButton->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->exportButton->Dock = System::Windows::Forms::DockStyle::Top;
-			this->exportButton->FlatAppearance->BorderSize = 0;
-			this->exportButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->exportButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->exportButton->ForeColor = System::Drawing::Color::White;
-			this->exportButton->Location = System::Drawing::Point(15, 100);
-			this->exportButton->Name = L"exportButton";
-			this->exportButton->Size = System::Drawing::Size(731, 49);
-			this->exportButton->TabIndex = 1;
-			this->exportButton->Text = L"Export Full Report (.txt)";
-			this->exportButton->UseVisualStyleBackColor = false;
-			this->exportButton->Click += gcnew System::EventHandler(this, &MyForm::exportButton_Click);
-			this->exportButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
-			this->exportButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
-			// 
-			// resultsLabel
-			// 
-			this->resultsLabel->AutoSize = true;
-			this->resultsLabel->Dock = System::Windows::Forms::DockStyle::Top;
-			this->resultsLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold));
-			this->resultsLabel->ForeColor = System::Drawing::Color::Green;
-			this->resultsLabel->Location = System::Drawing::Point(15, 90);
-			this->resultsLabel->Name = L"resultsLabel";
-			this->resultsLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 20);
-			this->resultsLabel->Size = System::Drawing::Size(109, 58);
-			this->resultsLabel->TabIndex = 0;
-			this->resultsLabel->Text = L"Results";
 			// 
 			// tabPage2
 			// 
@@ -512,12 +539,12 @@ namespace GenoSearch {
 			this->pdaTraceBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->pdaTraceBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->pdaTraceBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
-			this->pdaTraceBox->Location = System::Drawing::Point(15, 133);
+			this->pdaTraceBox->Location = System::Drawing::Point(15, 73);
 			this->pdaTraceBox->Multiline = true;
 			this->pdaTraceBox->Name = L"pdaTraceBox";
 			this->pdaTraceBox->ReadOnly = true;
 			this->pdaTraceBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->pdaTraceBox->Size = System::Drawing::Size(761, 564);
+			this->pdaTraceBox->Size = System::Drawing::Size(761, 624);
 			this->pdaTraceBox->TabIndex = 3;
 			// 
 			// vizPictureBox
@@ -526,22 +553,22 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->vizPictureBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->vizPictureBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->vizPictureBox->Location = System::Drawing::Point(15, 133);
+			this->vizPictureBox->Location = System::Drawing::Point(15, 73);
 			this->vizPictureBox->Name = L"vizPictureBox";
-			this->vizPictureBox->Size = System::Drawing::Size(761, 564);
+			this->vizPictureBox->Size = System::Drawing::Size(761, 624);
 			this->vizPictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->vizPictureBox->TabIndex = 2;
 			this->vizPictureBox->TabStop = false;
 			// 
 			// vizToggleGroup
 			// 
+			this->vizToggleGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->vizToggleGroup->Controls->Add(this->showDfaButton);
 			this->vizToggleGroup->Controls->Add(this->showNfaButton);
-			this->vizToggleGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->vizToggleGroup->Location = System::Drawing::Point(15, 73);
+			this->vizToggleGroup->Location = System::Drawing::Point(490, 7);
 			this->vizToggleGroup->Name = L"vizToggleGroup";
 			this->vizToggleGroup->Padding = System::Windows::Forms::Padding(0, 9, 0, 9);
-			this->vizToggleGroup->Size = System::Drawing::Size(761, 60);
+			this->vizToggleGroup->Size = System::Drawing::Size(283, 54);
 			this->vizToggleGroup->TabIndex = 1;
 			// 
 			// showDfaButton
@@ -553,9 +580,9 @@ namespace GenoSearch {
 			this->showDfaButton->FlatAppearance->BorderSize = 0;
 			this->showDfaButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->showDfaButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->showDfaButton->Location = System::Drawing::Point(180, 9);
+			this->showDfaButton->Location = System::Drawing::Point(140, 9);
 			this->showDfaButton->Name = L"showDfaButton";
-			this->showDfaButton->Size = System::Drawing::Size(180, 42);
+			this->showDfaButton->Size = System::Drawing::Size(142, 36);
 			this->showDfaButton->TabIndex = 1;
 			this->showDfaButton->Text = L"Show DFA";
 			this->showDfaButton->UseVisualStyleBackColor = false;
@@ -575,7 +602,7 @@ namespace GenoSearch {
 			this->showNfaButton->ForeColor = System::Drawing::Color::White;
 			this->showNfaButton->Location = System::Drawing::Point(0, 9);
 			this->showNfaButton->Name = L"showNfaButton";
-			this->showNfaButton->Size = System::Drawing::Size(180, 42);
+			this->showNfaButton->Size = System::Drawing::Size(140, 36);
 			this->showNfaButton->TabIndex = 0;
 			this->showNfaButton->Text = L"Show NFA";
 			this->showNfaButton->UseVisualStyleBackColor = false;
@@ -588,26 +615,24 @@ namespace GenoSearch {
 			this->vizLabel->AutoSize = true;
 			this->vizLabel->Dock = System::Windows::Forms::DockStyle::Top;
 			this->vizLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold));
-			this->vizLabel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(111)),
-				static_cast<System::Int32>(static_cast<System::Byte>(101)));
+			this->vizLabel->ForeColor = System::Drawing::Color::Green;
 			this->vizLabel->Location = System::Drawing::Point(15, 15);
 			this->vizLabel->Name = L"vizLabel";
 			this->vizLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 20);
-			this->vizLabel->Size = System::Drawing::Size(381, 58);
+			this->vizLabel->Size = System::Drawing::Size(334, 58);
 			this->vizLabel->TabIndex = 0;
-			this->vizLabel->Text = L"🎨 Visualization (NFA/DFA)";
+			this->vizLabel->Text = L"Visualization (NFA/DFA)";
 			// 
 			// leftPanel
 			// 
 			this->leftPanel->BackColor = System::Drawing::Color::White;
-			this->leftPanel->Controls->Add(this->progressBar);
 			this->leftPanel->Controls->Add(this->groupBox2);
-			this->leftPanel->Controls->Add(this->groupBox1);
+			this->leftPanel->Controls->Add(this->progressBar);
 			this->leftPanel->Dock = System::Windows::Forms::DockStyle::Left;
 			this->leftPanel->Location = System::Drawing::Point(20, 20);
 			this->leftPanel->Name = L"leftPanel";
 			this->leftPanel->Padding = System::Windows::Forms::Padding(15);
-			this->leftPanel->Size = System::Drawing::Size(754, 760);
+			this->leftPanel->Size = System::Drawing::Size(805, 831);
 			this->leftPanel->TabIndex = 0;
 			// 
 			// progressBar
@@ -615,407 +640,13 @@ namespace GenoSearch {
 			this->progressBar->Dock = System::Windows::Forms::DockStyle::Bottom;
 			this->progressBar->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(143)));
-			this->progressBar->Location = System::Drawing::Point(15, 736);
+			this->progressBar->Location = System::Drawing::Point(15, 807);
 			this->progressBar->MarqueeAnimationSpeed = 30;
 			this->progressBar->Name = L"progressBar";
-			this->progressBar->Size = System::Drawing::Size(724, 9);
+			this->progressBar->Size = System::Drawing::Size(775, 9);
 			this->progressBar->Style = System::Windows::Forms::ProgressBarStyle::Marquee;
 			this->progressBar->TabIndex = 2;
 			this->progressBar->Visible = false;
-			// 
-			// groupBox2
-			// 
-			this->groupBox2->Controls->Add(this->resetButton);
-			this->groupBox2->Controls->Add(this->showErrorButton);
-			this->groupBox2->Controls->Add(this->step2Label);
-			this->groupBox2->Controls->Add(this->runButton);
-			this->groupBox2->Controls->Add(this->fileInputGroup);
-			this->groupBox2->Controls->Add(this->pdaInputTypeGroup);
-			this->groupBox2->Controls->Add(this->editDistanceGroup);
-			this->groupBox2->Controls->Add(this->patternInputGroup);
-			this->groupBox2->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->groupBox2->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-			this->groupBox2->Location = System::Drawing::Point(15, 147);
-			this->groupBox2->Name = L"groupBox2";
-			this->groupBox2->Padding = System::Windows::Forms::Padding(15);
-			this->groupBox2->Size = System::Drawing::Size(724, 598);
-			this->groupBox2->TabIndex = 1;
-			this->groupBox2->TabStop = false;
-			// 
-			// resetButton
-			// 
-			this->resetButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->resetButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(224)), static_cast<System::Int32>(static_cast<System::Byte>(224)),
-				static_cast<System::Int32>(static_cast<System::Byte>(224)));
-			this->resetButton->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->resetButton->FlatAppearance->BorderSize = 0;
-			this->resetButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->resetButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
-			this->resetButton->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(52)),
-				static_cast<System::Int32>(static_cast<System::Byte>(71)));
-			this->resetButton->Location = System::Drawing::Point(15, 541);
-			this->resetButton->Name = L"resetButton";
-			this->resetButton->Size = System::Drawing::Size(170, 35);
-			this->resetButton->TabIndex = 7;
-			this->resetButton->Text = L"Reset All";
-			this->resetButton->UseVisualStyleBackColor = false;
-			this->resetButton->Click += gcnew System::EventHandler(this, &MyForm::resetButton_Click);
-			this->resetButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
-			this->resetButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
-			// 
-			// showErrorButton
-			// 
-			this->showErrorButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-			this->showErrorButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(233)), static_cast<System::Int32>(static_cast<System::Byte>(196)),
-				static_cast<System::Int32>(static_cast<System::Byte>(106)));
-			this->showErrorButton->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->showErrorButton->FlatAppearance->BorderSize = 0;
-			this->showErrorButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->showErrorButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
-			this->showErrorButton->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(52)),
-				static_cast<System::Int32>(static_cast<System::Byte>(71)));
-			this->showErrorButton->Location = System::Drawing::Point(540, 541);
-			this->showErrorButton->Name = L"showErrorButton";
-			this->showErrorButton->Size = System::Drawing::Size(170, 35);
-			this->showErrorButton->TabIndex = 6;
-			this->showErrorButton->Text = L"Show Error Demo";
-			this->showErrorButton->UseVisualStyleBackColor = false;
-			this->showErrorButton->Click += gcnew System::EventHandler(this, &MyForm::showErrorButton_Click);
-			this->showErrorButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
-			this->showErrorButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
-			// 
-			// step2Label
-			// 
-			this->step2Label->AutoSize = true;
-			this->step2Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
-			this->step2Label->ForeColor = System::Drawing::Color::Green;
-			this->step2Label->Location = System::Drawing::Point(15, 15);
-			this->step2Label->Name = L"step2Label";
-			this->step2Label->Size = System::Drawing::Size(292, 32);
-			this->step2Label->TabIndex = 5;
-			this->step2Label->Text = L"Step 2: Configure Inputs";
-			// 
-			// runButton
-			// 
-			this->runButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->runButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
-				static_cast<System::Int32>(static_cast<System::Byte>(143)));
-			this->runButton->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->runButton->FlatAppearance->BorderSize = 0;
-			this->runButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->runButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
-			this->runButton->ForeColor = System::Drawing::Color::White;
-			this->runButton->Location = System::Drawing::Point(15, 481);
-			this->runButton->Name = L"runButton";
-			this->runButton->Size = System::Drawing::Size(694, 49);
-			this->runButton->TabIndex = 4;
-			this->runButton->Text = L"Run Simulation";
-			this->runButton->UseVisualStyleBackColor = false;
-			this->runButton->Click += gcnew System::EventHandler(this, &MyForm::runButton_Click);
-			this->runButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
-			this->runButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
-			// 
-			// fileInputGroup
-			// 
-			this->fileInputGroup->Controls->Add(this->supportLabel);
-			this->fileInputGroup->Controls->Add(this->browseButton);
-			this->fileInputGroup->Controls->Add(this->fileInputBox);
-			this->fileInputGroup->Controls->Add(this->fileInputLabel);
-			this->fileInputGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->fileInputGroup->Location = System::Drawing::Point(15, 296);
-			this->fileInputGroup->Name = L"fileInputGroup";
-			this->fileInputGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
-			this->fileInputGroup->Size = System::Drawing::Size(694, 129);
-			this->fileInputGroup->TabIndex = 3;
-			this->fileInputGroup->TabStop = false;
-			// 
-			// supportLabel
-			// 
-			this->supportLabel->Anchor = System::Windows::Forms::AnchorStyles::Top;
-			this->supportLabel->AutoSize = true;
-			this->supportLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8));
-			this->supportLabel->ForeColor = System::Drawing::Color::Gray;
-			this->supportLabel->Location = System::Drawing::Point(26, 92);
-			this->supportLabel->Name = L"supportLabel";
-			this->supportLabel->Size = System::Drawing::Size(198, 21);
-			this->supportLabel->TabIndex = 3;
-			this->supportLabel->Text = L"Supports: .txt, .fa, .fasta files";
-			// 
-			// browseButton
-			// 
-			this->browseButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-			this->browseButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(132)), static_cast<System::Int32>(static_cast<System::Byte>(169)),
-				static_cast<System::Int32>(static_cast<System::Byte>(140)));
-			this->browseButton->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->browseButton->FlatAppearance->BorderSize = 0;
-			this->browseButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->browseButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
-			this->browseButton->ForeColor = System::Drawing::Color::White;
-			this->browseButton->Location = System::Drawing::Point(566, 55);
-			this->browseButton->Name = L"browseButton";
-			this->browseButton->Size = System::Drawing::Size(100, 34);
-			this->browseButton->TabIndex = 2;
-			this->browseButton->Text = L"Browse";
-			this->browseButton->UseVisualStyleBackColor = false;
-			this->browseButton->Click += gcnew System::EventHandler(this, &MyForm::browseButton_Click);
-			this->browseButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
-			this->browseButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
-			// 
-			// fileInputBox
-			// 
-			this->fileInputBox->Anchor = System::Windows::Forms::AnchorStyles::Top;
-			this->fileInputBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
-				static_cast<System::Int32>(static_cast<System::Byte>(251)));
-			this->fileInputBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->fileInputBox->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
-			this->fileInputBox->Location = System::Drawing::Point(28, 55);
-			this->fileInputBox->Name = L"fileInputBox";
-			this->fileInputBox->ReadOnly = true;
-			this->fileInputBox->Size = System::Drawing::Size(516, 34);
-			this->fileInputBox->TabIndex = 1;
-			// 
-			// fileInputLabel
-			// 
-			this->fileInputLabel->Anchor = System::Windows::Forms::AnchorStyles::Top;
-			this->fileInputLabel->AutoSize = true;
-			this->fileInputLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->fileInputLabel->Location = System::Drawing::Point(26, 22);
-			this->fileInputLabel->Name = L"fileInputLabel";
-			this->fileInputLabel->Size = System::Drawing::Size(101, 28);
-			this->fileInputLabel->TabIndex = 0;
-			this->fileInputLabel->Text = L"Input File";
-			// 
-			// pdaInputTypeGroup
-			// 
-			this->pdaInputTypeGroup->Controls->Add(this->sourceInputLabel);
-			this->pdaInputTypeGroup->Controls->Add(this->pdaFileRadio);
-			this->pdaInputTypeGroup->Controls->Add(this->pdaStringRadio);
-			this->pdaInputTypeGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->pdaInputTypeGroup->Location = System::Drawing::Point(15, 222);
-			this->pdaInputTypeGroup->Name = L"pdaInputTypeGroup";
-			this->pdaInputTypeGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
-			this->pdaInputTypeGroup->Size = System::Drawing::Size(694, 74);
-			this->pdaInputTypeGroup->TabIndex = 2;
-			this->pdaInputTypeGroup->TabStop = false;
-			// 
-			// sourceInputLabel
-			// 
-			this->sourceInputLabel->Anchor = System::Windows::Forms::AnchorStyles::Top;
-			this->sourceInputLabel->AutoSize = true;
-			this->sourceInputLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->sourceInputLabel->Location = System::Drawing::Point(24, 28);
-			this->sourceInputLabel->Name = L"sourceInputLabel";
-			this->sourceInputLabel->Size = System::Drawing::Size(137, 28);
-			this->sourceInputLabel->TabIndex = 2;
-			this->sourceInputLabel->Text = L"Input Source:";
-			// 
-			// pdaFileRadio
-			// 
-			this->pdaFileRadio->AutoSize = true;
-			this->pdaFileRadio->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->pdaFileRadio->Location = System::Drawing::Point(322, 29);
-			this->pdaFileRadio->Name = L"pdaFileRadio";
-			this->pdaFileRadio->Size = System::Drawing::Size(130, 29);
-			this->pdaFileRadio->TabIndex = 1;
-			this->pdaFileRadio->Text = L"Validate File";
-			this->pdaFileRadio->UseVisualStyleBackColor = true;
-			this->pdaFileRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::pdaInputType_CheckedChanged);
-			// 
-			// pdaStringRadio
-			// 
-			this->pdaStringRadio->AutoSize = true;
-			this->pdaStringRadio->Checked = true;
-			this->pdaStringRadio->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->pdaStringRadio->Location = System::Drawing::Point(166, 29);
-			this->pdaStringRadio->Name = L"pdaStringRadio";
-			this->pdaStringRadio->Size = System::Drawing::Size(150, 29);
-			this->pdaStringRadio->TabIndex = 0;
-			this->pdaStringRadio->TabStop = true;
-			this->pdaStringRadio->Text = L"Validate String";
-			this->pdaStringRadio->UseVisualStyleBackColor = true;
-			this->pdaStringRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::pdaInputType_CheckedChanged);
-			// 
-			// editDistanceGroup
-			// 
-			this->editDistanceGroup->Controls->Add(this->editDistanceInput);
-			this->editDistanceGroup->Controls->Add(this->distanceLabel);
-			this->editDistanceGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->editDistanceGroup->Location = System::Drawing::Point(15, 151);
-			this->editDistanceGroup->Name = L"editDistanceGroup";
-			this->editDistanceGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
-			this->editDistanceGroup->Size = System::Drawing::Size(694, 71);
-			this->editDistanceGroup->TabIndex = 1;
-			this->editDistanceGroup->TabStop = false;
-			// 
-			// editDistanceInput
-			// 
-			this->editDistanceInput->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)),
-				static_cast<System::Int32>(static_cast<System::Byte>(252)), static_cast<System::Int32>(static_cast<System::Byte>(251)));
-			this->editDistanceInput->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->editDistanceInput->Font = (gcnew System::Drawing::Font(L"Segoe UI", 11));
-			this->editDistanceInput->Location = System::Drawing::Point(232, 25);
-			this->editDistanceInput->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
-			this->editDistanceInput->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			this->editDistanceInput->Name = L"editDistanceInput";
-			this->editDistanceInput->Size = System::Drawing::Size(80, 37);
-			this->editDistanceInput->TabIndex = 1;
-			this->editDistanceInput->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			// 
-			// distanceLabel
-			// 
-			this->distanceLabel->AutoSize = true;
-			this->distanceLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->distanceLabel->Location = System::Drawing::Point(26, 28);
-			this->distanceLabel->Name = L"distanceLabel";
-			this->distanceLabel->Size = System::Drawing::Size(173, 28);
-			this->distanceLabel->TabIndex = 0;
-			this->distanceLabel->Text = L"Edit Distance (k):";
-			// 
-			// patternInputGroup
-			// 
-			this->patternInputGroup->Controls->Add(this->patternLabel);
-			this->patternInputGroup->Controls->Add(this->patternInputBox);
-			this->patternInputGroup->Dock = System::Windows::Forms::DockStyle::Top;
-			this->patternInputGroup->Location = System::Drawing::Point(15, 39);
-			this->patternInputGroup->Name = L"patternInputGroup";
-			this->patternInputGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
-			this->patternInputGroup->Size = System::Drawing::Size(694, 112);
-			this->patternInputGroup->TabIndex = 0;
-			this->patternInputGroup->TabStop = false;
-			// 
-			// patternLabel
-			// 
-			this->patternLabel->Anchor = System::Windows::Forms::AnchorStyles::Top;
-			this->patternLabel->AutoSize = true;
-			this->patternLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->patternLabel->Location = System::Drawing::Point(24, 23);
-			this->patternLabel->Name = L"patternLabel";
-			this->patternLabel->Size = System::Drawing::Size(282, 28);
-			this->patternLabel->TabIndex = 1;
-			this->patternLabel->Text = L"Pattern (Regular Expression)";
-			// 
-			// patternInputBox
-			// 
-			this->patternInputBox->Anchor = System::Windows::Forms::AnchorStyles::Top;
-			this->patternInputBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
-				static_cast<System::Int32>(static_cast<System::Byte>(251)));
-			this->patternInputBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->patternInputBox->Font = (gcnew System::Drawing::Font(L"Consolas", 11));
-			this->patternInputBox->Location = System::Drawing::Point(30, 62);
-			this->patternInputBox->Name = L"patternInputBox";
-			this->patternInputBox->Size = System::Drawing::Size(635, 33);
-			this->patternInputBox->TabIndex = 0;
-			// 
-			// groupBox1
-			// 
-			this->groupBox1->Controls->Add(this->sim3Label);
-			this->groupBox1->Controls->Add(this->sim2Label);
-			this->groupBox1->Controls->Add(this->sim1Label);
-			this->groupBox1->Controls->Add(this->label1);
-			this->groupBox1->Controls->Add(this->pdaRadio);
-			this->groupBox1->Controls->Add(this->approxRadio);
-			this->groupBox1->Controls->Add(this->regexRadio);
-			this->groupBox1->Dock = System::Windows::Forms::DockStyle::Top;
-			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9));
-			this->groupBox1->Location = System::Drawing::Point(15, 15);
-			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Padding = System::Windows::Forms::Padding(15);
-			this->groupBox1->Size = System::Drawing::Size(724, 132);
-			this->groupBox1->TabIndex = 0;
-			this->groupBox1->TabStop = false;
-			// 
-			// sim3Label
-			// 
-			this->sim3Label->AutoSize = true;
-			this->sim3Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->sim3Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
-			this->sim3Label->Location = System::Drawing::Point(486, 92);
-			this->sim3Label->Name = L"sim3Label";
-			this->sim3Label->Size = System::Drawing::Size(222, 21);
-			this->sim3Label->TabIndex = 6;
-			this->sim3Label->Text = L"Check nested structures (PDA).";
-			// 
-			// sim2Label
-			// 
-			this->sim2Label->AutoSize = true;
-			this->sim2Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->sim2Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
-			this->sim2Label->Location = System::Drawing::Point(254, 92);
-			this->sim2Label->Name = L"sim2Label";
-			this->sim2Label->Size = System::Drawing::Size(199, 21);
-			this->sim2Label->TabIndex = 5;
-			this->sim2Label->Text = L"Find \"fuzzy\" patterns (NFA).";
-			// 
-			// sim1Label
-			// 
-			this->sim1Label->AutoSize = true;
-			this->sim1Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->sim1Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
-			this->sim1Label->Location = System::Drawing::Point(32, 91);
-			this->sim1Label->Name = L"sim1Label";
-			this->sim1Label->Size = System::Drawing::Size(185, 21);
-			this->sim1Label->TabIndex = 4;
-			this->sim1Label->Text = L"Find exact patterns (DFA).";
-			this->sim1Label->Click += gcnew System::EventHandler(this, &MyForm::label2_Click);
-			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
-			this->label1->ForeColor = System::Drawing::Color::Green;
-			this->label1->Location = System::Drawing::Point(15, 15);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(356, 32);
-			this->label1->TabIndex = 3;
-			this->label1->Text = L"Step 1: Select Simulation Type";
-			// 
-			// pdaRadio
-			// 
-			this->pdaRadio->AutoSize = true;
-			this->pdaRadio->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->pdaRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->pdaRadio->Location = System::Drawing::Point(486, 57);
-			this->pdaRadio->Name = L"pdaRadio";
-			this->pdaRadio->Size = System::Drawing::Size(219, 32);
-			this->pdaRadio->TabIndex = 2;
-			this->pdaRadio->Text = L"Structural Validation";
-			this->pdaRadio->UseVisualStyleBackColor = true;
-			this->pdaRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Radio_CheckedChanged);
-			// 
-			// approxRadio
-			// 
-			this->approxRadio->AutoSize = true;
-			this->approxRadio->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->approxRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->approxRadio->Location = System::Drawing::Point(248, 58);
-			this->approxRadio->Name = L"approxRadio";
-			this->approxRadio->Size = System::Drawing::Size(216, 32);
-			this->approxRadio->TabIndex = 1;
-			this->approxRadio->Text = L"Approximate Match";
-			this->approxRadio->UseVisualStyleBackColor = true;
-			this->approxRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Radio_CheckedChanged);
-			// 
-			// regexRadio
-			// 
-			this->regexRadio->AutoSize = true;
-			this->regexRadio->Checked = true;
-			this->regexRadio->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->regexRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->regexRadio->Location = System::Drawing::Point(20, 57);
-			this->regexRadio->Name = L"regexRadio";
-			this->regexRadio->Size = System::Drawing::Size(208, 32);
-			this->regexRadio->TabIndex = 0;
-			this->regexRadio->TabStop = true;
-			this->regexRadio->Text = L"Regular Expression";
-			this->regexRadio->UseVisualStyleBackColor = true;
-			this->regexRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Radio_CheckedChanged);
 			// 
 			// openFileDialog1
 			// 
@@ -1031,12 +662,407 @@ namespace GenoSearch {
 			// 
 			this->animationTimer->Interval = 50;
 			// 
+			// patternInputGroup
+			// 
+			this->patternInputGroup->Controls->Add(this->patternLabel);
+			this->patternInputGroup->Controls->Add(this->patternInputBox);
+			this->patternInputGroup->Location = System::Drawing::Point(15, 188);
+			this->patternInputGroup->Name = L"patternInputGroup";
+			this->patternInputGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
+			this->patternInputGroup->Size = System::Drawing::Size(746, 112);
+			this->patternInputGroup->TabIndex = 0;
+			this->patternInputGroup->TabStop = false;
+			// 
+			// patternInputBox
+			// 
+			this->patternInputBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
+				static_cast<System::Int32>(static_cast<System::Byte>(251)));
+			this->patternInputBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->patternInputBox->Font = (gcnew System::Drawing::Font(L"Consolas", 11));
+			this->patternInputBox->Location = System::Drawing::Point(25, 62);
+			this->patternInputBox->Name = L"patternInputBox";
+			this->patternInputBox->Size = System::Drawing::Size(635, 33);
+			this->patternInputBox->TabIndex = 0;
+			// 
+			// patternLabel
+			// 
+			this->patternLabel->AutoSize = true;
+			this->patternLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->patternLabel->Location = System::Drawing::Point(19, 23);
+			this->patternLabel->Name = L"patternLabel";
+			this->patternLabel->Size = System::Drawing::Size(282, 28);
+			this->patternLabel->TabIndex = 1;
+			this->patternLabel->Text = L"Pattern (Regular Expression)";
+			// 
+			// editDistanceGroup
+			// 
+			this->editDistanceGroup->Controls->Add(this->editDistanceInput);
+			this->editDistanceGroup->Controls->Add(this->distanceLabel);
+			this->editDistanceGroup->Location = System::Drawing::Point(15, 306);
+			this->editDistanceGroup->Name = L"editDistanceGroup";
+			this->editDistanceGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
+			this->editDistanceGroup->Size = System::Drawing::Size(746, 76);
+			this->editDistanceGroup->TabIndex = 1;
+			this->editDistanceGroup->TabStop = false;
+			// 
+			// distanceLabel
+			// 
+			this->distanceLabel->AutoSize = true;
+			this->distanceLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->distanceLabel->Location = System::Drawing::Point(20, 30);
+			this->distanceLabel->Name = L"distanceLabel";
+			this->distanceLabel->Size = System::Drawing::Size(173, 28);
+			this->distanceLabel->TabIndex = 0;
+			this->distanceLabel->Text = L"Edit Distance (k):";
+			// 
+			// editDistanceInput
+			// 
+			this->editDistanceInput->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)),
+				static_cast<System::Int32>(static_cast<System::Byte>(252)), static_cast<System::Int32>(static_cast<System::Byte>(251)));
+			this->editDistanceInput->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->editDistanceInput->Font = (gcnew System::Drawing::Font(L"Segoe UI", 11));
+			this->editDistanceInput->Location = System::Drawing::Point(211, 27);
+			this->editDistanceInput->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
+			this->editDistanceInput->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->editDistanceInput->Name = L"editDistanceInput";
+			this->editDistanceInput->Size = System::Drawing::Size(80, 37);
+			this->editDistanceInput->TabIndex = 1;
+			this->editDistanceInput->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			// 
+			// pdaInputTypeGroup
+			// 
+			this->pdaInputTypeGroup->Controls->Add(this->sourceInputLabel);
+			this->pdaInputTypeGroup->Controls->Add(this->pdaFileRadio);
+			this->pdaInputTypeGroup->Controls->Add(this->pdaStringRadio);
+			this->pdaInputTypeGroup->Location = System::Drawing::Point(15, 535);
+			this->pdaInputTypeGroup->Name = L"pdaInputTypeGroup";
+			this->pdaInputTypeGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
+			this->pdaInputTypeGroup->Size = System::Drawing::Size(746, 74);
+			this->pdaInputTypeGroup->TabIndex = 2;
+			this->pdaInputTypeGroup->TabStop = false;
+			// 
+			// pdaStringRadio
+			// 
+			this->pdaStringRadio->AutoSize = true;
+			this->pdaStringRadio->Checked = true;
+			this->pdaStringRadio->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->pdaStringRadio->Location = System::Drawing::Point(165, 28);
+			this->pdaStringRadio->Name = L"pdaStringRadio";
+			this->pdaStringRadio->Size = System::Drawing::Size(150, 29);
+			this->pdaStringRadio->TabIndex = 0;
+			this->pdaStringRadio->TabStop = true;
+			this->pdaStringRadio->Text = L"Validate String";
+			this->pdaStringRadio->UseVisualStyleBackColor = true;
+			this->pdaStringRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::pdaInputType_CheckedChanged);
+			// 
+			// pdaFileRadio
+			// 
+			this->pdaFileRadio->AutoSize = true;
+			this->pdaFileRadio->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->pdaFileRadio->Location = System::Drawing::Point(321, 28);
+			this->pdaFileRadio->Name = L"pdaFileRadio";
+			this->pdaFileRadio->Size = System::Drawing::Size(130, 29);
+			this->pdaFileRadio->TabIndex = 1;
+			this->pdaFileRadio->Text = L"Validate File";
+			this->pdaFileRadio->UseVisualStyleBackColor = true;
+			this->pdaFileRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::pdaInputType_CheckedChanged);
+			// 
+			// sourceInputLabel
+			// 
+			this->sourceInputLabel->AutoSize = true;
+			this->sourceInputLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->sourceInputLabel->Location = System::Drawing::Point(20, 27);
+			this->sourceInputLabel->Name = L"sourceInputLabel";
+			this->sourceInputLabel->Size = System::Drawing::Size(137, 28);
+			this->sourceInputLabel->TabIndex = 2;
+			this->sourceInputLabel->Text = L"Input Source:";
+			this->sourceInputLabel->Click += gcnew System::EventHandler(this, &MyForm::sourceInputLabel_Click);
+			// 
+			// fileInputGroup
+			// 
+			this->fileInputGroup->Controls->Add(this->supportLabel);
+			this->fileInputGroup->Controls->Add(this->browseButton);
+			this->fileInputGroup->Controls->Add(this->fileInputBox);
+			this->fileInputGroup->Controls->Add(this->fileInputLabel);
+			this->fileInputGroup->Location = System::Drawing::Point(15, 388);
+			this->fileInputGroup->Name = L"fileInputGroup";
+			this->fileInputGroup->Padding = System::Windows::Forms::Padding(10, 9, 10, 9);
+			this->fileInputGroup->Size = System::Drawing::Size(746, 129);
+			this->fileInputGroup->TabIndex = 3;
+			this->fileInputGroup->TabStop = false;
+			this->fileInputGroup->Enter += gcnew System::EventHandler(this, &MyForm::fileInputGroup_Enter);
+			// 
+			// fileInputLabel
+			// 
+			this->fileInputLabel->AutoSize = true;
+			this->fileInputLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
+			this->fileInputLabel->Location = System::Drawing::Point(21, 22);
+			this->fileInputLabel->Name = L"fileInputLabel";
+			this->fileInputLabel->Size = System::Drawing::Size(101, 28);
+			this->fileInputLabel->TabIndex = 0;
+			this->fileInputLabel->Text = L"Input File";
+			// 
+			// fileInputBox
+			// 
+			this->fileInputBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(248)), static_cast<System::Int32>(static_cast<System::Byte>(252)),
+				static_cast<System::Int32>(static_cast<System::Byte>(251)));
+			this->fileInputBox->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->fileInputBox->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10));
+			this->fileInputBox->Location = System::Drawing::Point(24, 55);
+			this->fileInputBox->Name = L"fileInputBox";
+			this->fileInputBox->ReadOnly = true;
+			this->fileInputBox->Size = System::Drawing::Size(516, 34);
+			this->fileInputBox->TabIndex = 1;
+			// 
+			// browseButton
+			// 
+			this->browseButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->browseButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(132)), static_cast<System::Int32>(static_cast<System::Byte>(169)),
+				static_cast<System::Int32>(static_cast<System::Byte>(140)));
+			this->browseButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->browseButton->FlatAppearance->BorderSize = 0;
+			this->browseButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->browseButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
+			this->browseButton->ForeColor = System::Drawing::Color::White;
+			this->browseButton->Location = System::Drawing::Point(618, 55);
+			this->browseButton->Name = L"browseButton";
+			this->browseButton->Size = System::Drawing::Size(100, 34);
+			this->browseButton->TabIndex = 2;
+			this->browseButton->Text = L"Browse";
+			this->browseButton->UseVisualStyleBackColor = false;
+			this->browseButton->Click += gcnew System::EventHandler(this, &MyForm::browseButton_Click);
+			this->browseButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
+			this->browseButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
+			// 
+			// supportLabel
+			// 
+			this->supportLabel->AutoSize = true;
+			this->supportLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8));
+			this->supportLabel->ForeColor = System::Drawing::Color::Gray;
+			this->supportLabel->Location = System::Drawing::Point(21, 92);
+			this->supportLabel->Name = L"supportLabel";
+			this->supportLabel->Size = System::Drawing::Size(198, 21);
+			this->supportLabel->TabIndex = 3;
+			this->supportLabel->Text = L"Supports: .txt, .fa, .fasta files";
+			// 
+			// runButton
+			// 
+			this->runButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->runButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
+				static_cast<System::Int32>(static_cast<System::Byte>(143)));
+			this->runButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->runButton->FlatAppearance->BorderSize = 0;
+			this->runButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->runButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
+			this->runButton->ForeColor = System::Drawing::Color::White;
+			this->runButton->Location = System::Drawing::Point(15, 666);
+			this->runButton->Name = L"runButton";
+			this->runButton->Size = System::Drawing::Size(745, 49);
+			this->runButton->TabIndex = 4;
+			this->runButton->Text = L"Run Simulation";
+			this->runButton->UseVisualStyleBackColor = false;
+			this->runButton->Click += gcnew System::EventHandler(this, &MyForm::runButton_Click);
+			this->runButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
+			this->runButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
+			// 
+			// step2Label
+			// 
+			this->step2Label->AutoSize = true;
+			this->step2Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
+			this->step2Label->ForeColor = System::Drawing::Color::Green;
+			this->step2Label->Location = System::Drawing::Point(9, 159);
+			this->step2Label->Name = L"step2Label";
+			this->step2Label->Size = System::Drawing::Size(292, 32);
+			this->step2Label->TabIndex = 5;
+			this->step2Label->Text = L"Step 2: Configure Inputs";
+			this->step2Label->Click += gcnew System::EventHandler(this, &MyForm::step2Label_Click);
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 12, System::Drawing::FontStyle::Bold));
+			this->label1->ForeColor = System::Drawing::Color::Green;
+			this->label1->Location = System::Drawing::Point(9, 29);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(356, 32);
+			this->label1->TabIndex = 3;
+			this->label1->Text = L"Step 1: Select Simulation Type";
+			this->label1->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
+			// 
+			// showErrorButton
+			// 
+			this->showErrorButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->showErrorButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(233)), static_cast<System::Int32>(static_cast<System::Byte>(196)),
+				static_cast<System::Int32>(static_cast<System::Byte>(106)));
+			this->showErrorButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->showErrorButton->FlatAppearance->BorderSize = 0;
+			this->showErrorButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->showErrorButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
+			this->showErrorButton->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(52)),
+				static_cast<System::Int32>(static_cast<System::Byte>(71)));
+			this->showErrorButton->Location = System::Drawing::Point(591, 726);
+			this->showErrorButton->Name = L"showErrorButton";
+			this->showErrorButton->Size = System::Drawing::Size(170, 35);
+			this->showErrorButton->TabIndex = 6;
+			this->showErrorButton->Text = L"Show Error Demo";
+			this->showErrorButton->UseVisualStyleBackColor = false;
+			this->showErrorButton->Click += gcnew System::EventHandler(this, &MyForm::showErrorButton_Click);
+			this->showErrorButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
+			this->showErrorButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
+			// 
+			// groupBox1
+			// 
+			this->groupBox1->Controls->Add(this->sim3Label);
+			this->groupBox1->Controls->Add(this->sim2Label);
+			this->groupBox1->Controls->Add(this->sim1Label);
+			this->groupBox1->Controls->Add(this->pdaRadio);
+			this->groupBox1->Controls->Add(this->approxRadio);
+			this->groupBox1->Controls->Add(this->regexRadio);
+			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9));
+			this->groupBox1->Location = System::Drawing::Point(15, 56);
+			this->groupBox1->Name = L"groupBox1";
+			this->groupBox1->Padding = System::Windows::Forms::Padding(15);
+			this->groupBox1->Size = System::Drawing::Size(746, 92);
+			this->groupBox1->TabIndex = 0;
+			this->groupBox1->TabStop = false;
+			this->groupBox1->Enter += gcnew System::EventHandler(this, &MyForm::groupBox1_Enter);
+			// 
+			// regexRadio
+			// 
+			this->regexRadio->Anchor = System::Windows::Forms::AnchorStyles::Top;
+			this->regexRadio->AutoSize = true;
+			this->regexRadio->Checked = true;
+			this->regexRadio->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->regexRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->regexRadio->Location = System::Drawing::Point(20, 26);
+			this->regexRadio->Name = L"regexRadio";
+			this->regexRadio->Size = System::Drawing::Size(208, 32);
+			this->regexRadio->TabIndex = 0;
+			this->regexRadio->TabStop = true;
+			this->regexRadio->Text = L"Regular Expression";
+			this->regexRadio->UseVisualStyleBackColor = true;
+			this->regexRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Radio_CheckedChanged);
+			// 
+			// approxRadio
+			// 
+			this->approxRadio->Anchor = System::Windows::Forms::AnchorStyles::Top;
+			this->approxRadio->AutoSize = true;
+			this->approxRadio->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->approxRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->approxRadio->Location = System::Drawing::Point(248, 27);
+			this->approxRadio->Name = L"approxRadio";
+			this->approxRadio->Size = System::Drawing::Size(216, 32);
+			this->approxRadio->TabIndex = 1;
+			this->approxRadio->Text = L"Approximate Match";
+			this->approxRadio->UseVisualStyleBackColor = true;
+			this->approxRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Radio_CheckedChanged);
+			// 
+			// pdaRadio
+			// 
+			this->pdaRadio->Anchor = System::Windows::Forms::AnchorStyles::Top;
+			this->pdaRadio->AutoSize = true;
+			this->pdaRadio->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->pdaRadio->Font = (gcnew System::Drawing::Font(L"Segoe UI Semibold", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->pdaRadio->Location = System::Drawing::Point(486, 26);
+			this->pdaRadio->Name = L"pdaRadio";
+			this->pdaRadio->Size = System::Drawing::Size(219, 32);
+			this->pdaRadio->TabIndex = 2;
+			this->pdaRadio->Text = L"Structural Validation";
+			this->pdaRadio->UseVisualStyleBackColor = true;
+			this->pdaRadio->CheckedChanged += gcnew System::EventHandler(this, &MyForm::Radio_CheckedChanged);
+			// 
+			// sim1Label
+			// 
+			this->sim1Label->Anchor = System::Windows::Forms::AnchorStyles::None;
+			this->sim1Label->AutoSize = true;
+			this->sim1Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->sim1Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
+			this->sim1Label->Location = System::Drawing::Point(32, 60);
+			this->sim1Label->Name = L"sim1Label";
+			this->sim1Label->Size = System::Drawing::Size(185, 21);
+			this->sim1Label->TabIndex = 4;
+			this->sim1Label->Text = L"Find exact patterns (DFA).";
+			this->sim1Label->Click += gcnew System::EventHandler(this, &MyForm::label2_Click);
+			// 
+			// sim2Label
+			// 
+			this->sim2Label->Anchor = System::Windows::Forms::AnchorStyles::None;
+			this->sim2Label->AutoSize = true;
+			this->sim2Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->sim2Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
+			this->sim2Label->Location = System::Drawing::Point(255, 61);
+			this->sim2Label->Name = L"sim2Label";
+			this->sim2Label->Size = System::Drawing::Size(199, 21);
+			this->sim2Label->TabIndex = 5;
+			this->sim2Label->Text = L"Find \"fuzzy\" patterns (NFA).";
+			// 
+			// sim3Label
+			// 
+			this->sim3Label->Anchor = System::Windows::Forms::AnchorStyles::None;
+			this->sim3Label->AutoSize = true;
+			this->sim3Label->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->sim3Label->ForeColor = System::Drawing::SystemColors::ControlDarkDark;
+			this->sim3Label->Location = System::Drawing::Point(486, 61);
+			this->sim3Label->Name = L"sim3Label";
+			this->sim3Label->Size = System::Drawing::Size(222, 21);
+			this->sim3Label->TabIndex = 6;
+			this->sim3Label->Text = L"Check nested structures (PDA).";
+			// 
+			// resetButton
+			// 
+			this->resetButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->resetButton->BackColor = System::Drawing::SystemColors::AppWorkspace;
+			this->resetButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->resetButton->FlatAppearance->BorderSize = 0;
+			this->resetButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->resetButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
+			this->resetButton->ForeColor = System::Drawing::Color::DarkGray;
+			this->resetButton->Location = System::Drawing::Point(15, 726);
+			this->resetButton->Name = L"resetButton";
+			this->resetButton->Size = System::Drawing::Size(170, 35);
+			this->resetButton->TabIndex = 7;
+			this->resetButton->Text = L"Reset All";
+			this->resetButton->UseVisualStyleBackColor = false;
+			this->resetButton->Click += gcnew System::EventHandler(this, &MyForm::resetButton_Click);
+			this->resetButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
+			this->resetButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
+			// 
+			// groupBox2
+			// 
+			this->groupBox2->Controls->Add(this->resetButton);
+			this->groupBox2->Controls->Add(this->groupBox1);
+			this->groupBox2->Controls->Add(this->showErrorButton);
+			this->groupBox2->Controls->Add(this->label1);
+			this->groupBox2->Controls->Add(this->pdaInputTypeGroup);
+			this->groupBox2->Controls->Add(this->editDistanceGroup);
+			this->groupBox2->Controls->Add(this->step2Label);
+			this->groupBox2->Controls->Add(this->runButton);
+			this->groupBox2->Controls->Add(this->fileInputGroup);
+			this->groupBox2->Controls->Add(this->patternInputGroup);
+			this->groupBox2->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->groupBox2->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9));
+			this->groupBox2->Location = System::Drawing::Point(15, 15);
+			this->groupBox2->Name = L"groupBox2";
+			this->groupBox2->Padding = System::Windows::Forms::Padding(15);
+			this->groupBox2->Size = System::Drawing::Size(775, 792);
+			this->groupBox2->TabIndex = 1;
+			this->groupBox2->TabStop = false;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::White;
-			this->ClientSize = System::Drawing::Size(1603, 900);
+			this->ClientSize = System::Drawing::Size(1716, 971);
 			this->Controls->Add(this->mainContainer);
 			this->Controls->Add(this->headerPanel);
 			this->MinimumSize = System::Drawing::Size(1196, 661);
@@ -1051,8 +1077,6 @@ namespace GenoSearch {
 			this->rightPanel->ResumeLayout(false);
 			this->outputTabControl->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
-			this->errorGroup->ResumeLayout(false);
-			this->errorGroup->PerformLayout();
 			this->normalOutputGroup->ResumeLayout(false);
 			this->normalOutputGroup->PerformLayout();
 			this->resultsTableLayout->ResumeLayout(false);
@@ -1062,24 +1086,26 @@ namespace GenoSearch {
 			this->grammarGroup->PerformLayout();
 			this->matchReportGroup->ResumeLayout(false);
 			this->matchReportGroup->PerformLayout();
+			this->errorGroup->ResumeLayout(false);
+			this->errorGroup->PerformLayout();
 			this->tabPage2->ResumeLayout(false);
 			this->tabPage2->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->vizPictureBox))->EndInit();
 			this->vizToggleGroup->ResumeLayout(false);
 			this->leftPanel->ResumeLayout(false);
-			this->groupBox2->ResumeLayout(false);
-			this->groupBox2->PerformLayout();
-			this->fileInputGroup->ResumeLayout(false);
-			this->fileInputGroup->PerformLayout();
-			this->pdaInputTypeGroup->ResumeLayout(false);
-			this->pdaInputTypeGroup->PerformLayout();
+			this->patternInputGroup->ResumeLayout(false);
+			this->patternInputGroup->PerformLayout();
 			this->editDistanceGroup->ResumeLayout(false);
 			this->editDistanceGroup->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->editDistanceInput))->EndInit();
-			this->patternInputGroup->ResumeLayout(false);
-			this->patternInputGroup->PerformLayout();
+			this->pdaInputTypeGroup->ResumeLayout(false);
+			this->pdaInputTypeGroup->PerformLayout();
+			this->fileInputGroup->ResumeLayout(false);
+			this->fileInputGroup->PerformLayout();
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
+			this->groupBox2->ResumeLayout(false);
+			this->groupBox2->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -1107,45 +1133,45 @@ namespace GenoSearch {
 			e->Graphics->FillRectangle(brush, this->headerPanel->ClientRectangle);
 		}
 
-		// [UPDATED] Applies the theme and FIXES the ugly text blocks
+		// [UPDATED] Applies theme with specific Dark Green buttons + Lime Error button
 		void ApplyScienceTheme() {
 			// 1. Hook up Header Gradient
 			this->headerPanel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::HeaderPanel_Paint);
 
-			// *** CRITICAL FIX: Make text background transparent ***
+			// Text Transparency
 			this->titleLabel->BackColor = System::Drawing::Color::Transparent;
 			this->subtitleLabel->BackColor = System::Drawing::Color::Transparent;
 			this->titleLabel->ForeColor = System::Drawing::Color::White;
-			this->subtitleLabel->ForeColor = System::Drawing::Color::FromArgb(220, 255, 220); // Light Green text
+			this->subtitleLabel->ForeColor = System::Drawing::Color::FromArgb(220, 255, 220);
 
-			// 2. Main Backgrounds (Clean White/Mint)
+			// 2. Main Backgrounds
 			this->BackColor = System::Drawing::Color::FromArgb(250, 252, 250);
 			this->mainContainer->BackColor = System::Drawing::Color::FromArgb(250, 252, 250);
 			this->leftPanel->BackColor = System::Drawing::Color::White;
 			this->rightPanel->BackColor = System::Drawing::Color::White;
 
-			// 3. Button Colors (Matched to the new Gradient)
-			// Primary Action (Tech Green)
-			this->runButton->BackColor = System::Drawing::Color::FromArgb(50, 160, 65);
+			// 3. Standard Buttons (Dark Green #1D623A)
+			System::Drawing::Color specificDarkGreen = System::Drawing::Color::FromArgb(29, 98, 58);
+
+			this->runButton->BackColor = specificDarkGreen;
 			this->runButton->ForeColor = System::Drawing::Color::White;
 
-			// Secondary Actions (Muted Teal/Green)
-			this->exportButton->BackColor = System::Drawing::Color::FromArgb(100, 140, 110);
+			this->exportButton->BackColor = specificDarkGreen;
 			this->exportButton->ForeColor = System::Drawing::Color::White;
 
-			this->browseButton->BackColor = System::Drawing::Color::FromArgb(100, 140, 110);
+			this->browseButton->BackColor = specificDarkGreen;
 			this->browseButton->ForeColor = System::Drawing::Color::White;
 
-			// Toggle Buttons
-			this->showNfaButton->BackColor = System::Drawing::Color::FromArgb(50, 160, 65); // Active
-			this->showDfaButton->BackColor = System::Drawing::Color::FromArgb(220, 230, 220); // Inactive Gray-Green
+			this->showNfaButton->BackColor = specificDarkGreen; // Active
+			this->showDfaButton->BackColor = System::Drawing::Color::FromArgb(220, 230, 220); // Inactive
 
-			// Reset & Error
-			this->resetButton->BackColor = System::Drawing::Color::FromArgb(240, 240, 240); // Clean Gray
+			// Reset Button
+			this->resetButton->BackColor = System::Drawing::Color::FromArgb(240, 240, 240);
 			this->resetButton->ForeColor = System::Drawing::Color::Black;
 
-			this->showErrorButton->BackColor = System::Drawing::Color::FromArgb(255, 193, 7); // Amber/Gold
-			this->showErrorButton->ForeColor = System::Drawing::Color::Black;
+			// *** UPDATED: Show Error Demo Button (#8CBF28) ***
+			this->showErrorButton->BackColor = System::Drawing::Color::FromArgb(140, 191, 40);
+			this->showErrorButton->ForeColor = System::Drawing::Color::White; // Changed to White for better contrast
 		}
 
 		// Button hover effects
@@ -1161,36 +1187,35 @@ namespace GenoSearch {
 			btn->BackColor = Color::FromArgb(r, g, b);
 		}
 
-		// [UPDATED] Restores the new Bio-Tech colors on mouse leave
+		// [UPDATED] Restores correct colors (Dark Green & Lime Green) on mouse leave
 		void Button_MouseLeave(Object^ sender, EventArgs^ e) {
 			Button^ btn = safe_cast<Button^>(sender);
+			System::Drawing::Color specificDarkGreen = System::Drawing::Color::FromArgb(29, 98, 58);
 
-			if (btn == runButton) {
-				btn->BackColor = System::Drawing::Color::FromArgb(50, 160, 65);
+			if (btn == runButton || btn == exportButton || btn == browseButton) {
+				btn->BackColor = specificDarkGreen;
 			}
-			else if (btn == exportButton || btn == browseButton) {
-				btn->BackColor = System::Drawing::Color::FromArgb(100, 140, 110);
-			}
+			// *** UPDATED: Restore Lime Green (#8CBF28) ***
 			else if (btn == showErrorButton) {
-				btn->BackColor = System::Drawing::Color::FromArgb(255, 193, 7);
+				btn->BackColor = System::Drawing::Color::FromArgb(140, 191, 40);
 			}
 			else if (btn == resetButton) {
 				btn->BackColor = System::Drawing::Color::FromArgb(240, 240, 240);
 			}
 			else if (btn == showNfaButton) {
 				if (showNfaButton->ForeColor == Color::White) {
-					btn->BackColor = System::Drawing::Color::FromArgb(50, 160, 65); // Active
+					btn->BackColor = specificDarkGreen;
 				}
 				else {
-					btn->BackColor = System::Drawing::Color::FromArgb(220, 230, 220); // Inactive
+					btn->BackColor = System::Drawing::Color::FromArgb(220, 230, 220);
 				}
 			}
 			else if (btn == showDfaButton) {
 				if (showDfaButton->ForeColor == Color::White) {
-					btn->BackColor = System::Drawing::Color::FromArgb(50, 160, 65); // Active
+					btn->BackColor = specificDarkGreen;
 				}
 				else {
-					btn->BackColor = System::Drawing::Color::FromArgb(220, 230, 220); // Inactive
+					btn->BackColor = System::Drawing::Color::FromArgb(220, 230, 220);
 				}
 			}
 		}
@@ -1273,7 +1298,6 @@ namespace GenoSearch {
 		// *** MODIFICATION: Updated ResetOutputs to fix visibility bug ***
 		void ResetOutputs() {
 			this->normalOutputGroup->Visible = true;
-			this->errorGroup->Visible = false;
 
 			// *** FIX ***
 			// Ensure all components of the results layout are visible
@@ -1307,11 +1331,16 @@ namespace GenoSearch {
 			}
 		}
 
+		// [UPDATED] Shows error in a popup window (MessageBox) instead of the tab
 		void ShowError(std::string error_message) {
-			this->normalOutputGroup->Visible = false;
-			this->errorGroup->Visible = true;
-			this->errorBox->Text = ToNetString(error_message);
-			this->outputTabControl->SelectedTab = this->tabPage1;
+			// Convert std::string to System::String^
+			System::String^ msg = ToNetString(error_message);
+
+			// Show the popup
+			MessageBox::Show(msg, "Simulation Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+
+			// We no longer need to hide/show groups or switch tabs!
+			// The previous UI logic for errorGroup is removed.
 		}
 
 		void LoadImage(PictureBox^ pb, std::string image_path) {
@@ -1573,5 +1602,18 @@ namespace GenoSearch {
 	}
 	private: System::Void subtitleLabel_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
-	};
+
+private: System::Void resultsLabel_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void groupBox1_Enter(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void fileInputGroup_Enter(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void step2Label_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void sourceInputLabel_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+};
 }
