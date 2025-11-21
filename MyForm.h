@@ -118,6 +118,8 @@ namespace GenoSearch {
 
 		   // *** MODIFICATION: Added TableLayoutPanel for 2-column results ***
 	private: System::Windows::Forms::TableLayoutPanel^ resultsTableLayout;
+	private: System::Windows::Forms::PictureBox^ logoPictureBox;
+
 
 
 	private: System::ComponentModel::IContainer^ components;
@@ -129,6 +131,7 @@ namespace GenoSearch {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->headerPanel = (gcnew System::Windows::Forms::Panel());
 			this->subtitleLabel = (gcnew System::Windows::Forms::Label());
 			this->exportButton = (gcnew System::Windows::Forms::Button());
@@ -185,6 +188,7 @@ namespace GenoSearch {
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->animationTimer = (gcnew System::Windows::Forms::Timer(this->components));
+			this->logoPictureBox = (gcnew System::Windows::Forms::PictureBox());
 			this->headerPanel->SuspendLayout();
 			this->mainContainer->SuspendLayout();
 			this->rightPanel->SuspendLayout();
@@ -205,12 +209,14 @@ namespace GenoSearch {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->editDistanceInput))->BeginInit();
 			this->patternInputGroup->SuspendLayout();
 			this->groupBox1->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->logoPictureBox))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// headerPanel
 			// 
 			this->headerPanel->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(42)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(143)));
+			this->headerPanel->Controls->Add(this->logoPictureBox);
 			this->headerPanel->Controls->Add(this->subtitleLabel);
 			this->headerPanel->Controls->Add(this->exportButton);
 			this->headerPanel->Controls->Add(this->titleLabel);
@@ -226,7 +232,7 @@ namespace GenoSearch {
 			this->subtitleLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->subtitleLabel->ForeColor = System::Drawing::SystemColors::Control;
-			this->subtitleLabel->Location = System::Drawing::Point(30, 58);
+			this->subtitleLabel->Location = System::Drawing::Point(111, 58);
 			this->subtitleLabel->Name = L"subtitleLabel";
 			this->subtitleLabel->Size = System::Drawing::Size(381, 28);
 			this->subtitleLabel->TabIndex = 1;
@@ -243,11 +249,11 @@ namespace GenoSearch {
 			this->exportButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->exportButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
 			this->exportButton->ForeColor = System::Drawing::Color::White;
-			this->exportButton->Location = System::Drawing::Point(1380, 43);
+			this->exportButton->Location = System::Drawing::Point(1351, 43);
 			this->exportButton->Name = L"exportButton";
-			this->exportButton->Size = System::Drawing::Size(203, 43);
+			this->exportButton->Size = System::Drawing::Size(232, 43);
 			this->exportButton->TabIndex = 1;
-			this->exportButton->Text = L"Export Full Report";
+			this->exportButton->Text = L"💾 Export Full Report";
 			this->exportButton->UseVisualStyleBackColor = false;
 			this->exportButton->Click += gcnew System::EventHandler(this, &MyForm::exportButton_Click);
 			this->exportButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
@@ -256,14 +262,15 @@ namespace GenoSearch {
 			// titleLabel
 			// 
 			this->titleLabel->AutoSize = true;
-			this->titleLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 20, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->titleLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 22, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->titleLabel->ForeColor = System::Drawing::Color::White;
-			this->titleLabel->Location = System::Drawing::Point(26, 9);
+			this->titleLabel->Location = System::Drawing::Point(103, 9);
 			this->titleLabel->Name = L"titleLabel";
-			this->titleLabel->Size = System::Drawing::Size(1038, 54);
+			this->titleLabel->Size = System::Drawing::Size(1144, 60);
 			this->titleLabel->TabIndex = 0;
 			this->titleLabel->Text = L"GenoSearch | Automata-Powered Pattern Recognition";
+			this->titleLabel->Click += gcnew System::EventHandler(this, &MyForm::titleLabel_Click);
 			// 
 			// mainContainer
 			// 
@@ -477,10 +484,10 @@ namespace GenoSearch {
 			this->vizToggleGroup->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->vizToggleGroup->Controls->Add(this->showDfaButton);
 			this->vizToggleGroup->Controls->Add(this->showNfaButton);
-			this->vizToggleGroup->Location = System::Drawing::Point(506, 3);
+			this->vizToggleGroup->Location = System::Drawing::Point(460, 3);
 			this->vizToggleGroup->Name = L"vizToggleGroup";
 			this->vizToggleGroup->Padding = System::Windows::Forms::Padding(0, 9, 0, 9);
-			this->vizToggleGroup->Size = System::Drawing::Size(270, 54);
+			this->vizToggleGroup->Size = System::Drawing::Size(316, 54);
 			this->vizToggleGroup->TabIndex = 1;
 			// 
 			// showDfaButton
@@ -492,11 +499,11 @@ namespace GenoSearch {
 			this->showDfaButton->FlatAppearance->BorderSize = 0;
 			this->showDfaButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->showDfaButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->showDfaButton->Location = System::Drawing::Point(142, 9);
+			this->showDfaButton->Location = System::Drawing::Point(155, 9);
 			this->showDfaButton->Name = L"showDfaButton";
-			this->showDfaButton->Size = System::Drawing::Size(133, 36);
+			this->showDfaButton->Size = System::Drawing::Size(158, 36);
 			this->showDfaButton->TabIndex = 1;
-			this->showDfaButton->Text = L"Show DFA";
+			this->showDfaButton->Text = L"🗺️ Show DFA";
 			this->showDfaButton->UseVisualStyleBackColor = false;
 			this->showDfaButton->Click += gcnew System::EventHandler(this, &MyForm::showDfaButton_Click);
 			this->showDfaButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
@@ -514,9 +521,9 @@ namespace GenoSearch {
 			this->showNfaButton->ForeColor = System::Drawing::Color::White;
 			this->showNfaButton->Location = System::Drawing::Point(0, 9);
 			this->showNfaButton->Name = L"showNfaButton";
-			this->showNfaButton->Size = System::Drawing::Size(142, 36);
+			this->showNfaButton->Size = System::Drawing::Size(155, 36);
 			this->showNfaButton->TabIndex = 0;
-			this->showNfaButton->Text = L"Show NFA";
+			this->showNfaButton->Text = L"🕸️ Show NFA";
 			this->showNfaButton->UseVisualStyleBackColor = false;
 			this->showNfaButton->Click += gcnew System::EventHandler(this, &MyForm::showNfaButton_Click);
 			this->showNfaButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
@@ -595,7 +602,7 @@ namespace GenoSearch {
 			this->resetButton->Name = L"resetButton";
 			this->resetButton->Size = System::Drawing::Size(170, 35);
 			this->resetButton->TabIndex = 7;
-			this->resetButton->Text = L"Reset All";
+			this->resetButton->Text = L"❌ Reset All";
 			this->resetButton->UseVisualStyleBackColor = false;
 			this->resetButton->Click += gcnew System::EventHandler(this, &MyForm::resetButton_Click);
 			this->resetButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
@@ -612,11 +619,11 @@ namespace GenoSearch {
 			this->showErrorButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
 			this->showErrorButton->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(52)),
 				static_cast<System::Int32>(static_cast<System::Byte>(71)));
-			this->showErrorButton->Location = System::Drawing::Point(540, 541);
+			this->showErrorButton->Location = System::Drawing::Point(507, 541);
 			this->showErrorButton->Name = L"showErrorButton";
-			this->showErrorButton->Size = System::Drawing::Size(170, 35);
+			this->showErrorButton->Size = System::Drawing::Size(203, 35);
 			this->showErrorButton->TabIndex = 6;
-			this->showErrorButton->Text = L"Show Error Demo";
+			this->showErrorButton->Text = L"⚠️ Show Error Demo";
 			this->showErrorButton->UseVisualStyleBackColor = false;
 			this->showErrorButton->Click += gcnew System::EventHandler(this, &MyForm::showErrorButton_Click);
 			this->showErrorButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
@@ -648,7 +655,7 @@ namespace GenoSearch {
 			this->runButton->Name = L"runButton";
 			this->runButton->Size = System::Drawing::Size(694, 49);
 			this->runButton->TabIndex = 4;
-			this->runButton->Text = L"Run Simulation";
+			this->runButton->Text = L"▶ Run Simulation";
 			this->runButton->UseVisualStyleBackColor = false;
 			this->runButton->Click += gcnew System::EventHandler(this, &MyForm::runButton_Click);
 			this->runButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
@@ -690,11 +697,11 @@ namespace GenoSearch {
 			this->browseButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->browseButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
 			this->browseButton->ForeColor = System::Drawing::Color::White;
-			this->browseButton->Location = System::Drawing::Point(566, 55);
+			this->browseButton->Location = System::Drawing::Point(561, 53);
 			this->browseButton->Name = L"browseButton";
-			this->browseButton->Size = System::Drawing::Size(100, 34);
+			this->browseButton->Size = System::Drawing::Size(115, 34);
 			this->browseButton->TabIndex = 2;
-			this->browseButton->Text = L"Browse";
+			this->browseButton->Text = L"📂 Browse";
 			this->browseButton->UseVisualStyleBackColor = false;
 			this->browseButton->Click += gcnew System::EventHandler(this, &MyForm::browseButton_Click);
 			this->browseButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
@@ -969,6 +976,19 @@ namespace GenoSearch {
 			// 
 			this->animationTimer->Interval = 50;
 			// 
+			// logoPictureBox
+			// 
+			this->logoPictureBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(0)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			this->logoPictureBox->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"logoPictureBox.Image")));
+			this->logoPictureBox->Location = System::Drawing::Point(14, 18);
+			this->logoPictureBox->Name = L"logoPictureBox";
+			this->logoPictureBox->Size = System::Drawing::Size(91, 65);
+			this->logoPictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
+			this->logoPictureBox->TabIndex = 2;
+			this->logoPictureBox->TabStop = false;
+			this->logoPictureBox->Click += gcnew System::EventHandler(this, &MyForm::pictureBox1_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
@@ -977,10 +997,11 @@ namespace GenoSearch {
 			this->ClientSize = System::Drawing::Size(1603, 900);
 			this->Controls->Add(this->mainContainer);
 			this->Controls->Add(this->headerPanel);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MinimumSize = System::Drawing::Size(1196, 661);
 			this->Name = L"MyForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-			this->Text = L"GenoSearch ";
+			this->Text = L"Topic 3 - Babuyo, Bao, Gamalo, Noval, Suelo (CS3B) ";
 			this->WindowState = System::Windows::Forms::FormWindowState::Maximized;
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->headerPanel->ResumeLayout(false);
@@ -1015,6 +1036,7 @@ namespace GenoSearch {
 			this->patternInputGroup->PerformLayout();
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->logoPictureBox))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -1521,5 +1543,9 @@ namespace GenoSearch {
 	}
 	private: System::Void subtitleLabel_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
-	};
+	private: System::Void pictureBox1_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+private: System::Void titleLabel_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+};
 }
