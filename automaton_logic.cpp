@@ -1,12 +1,13 @@
 /*
- * automaton_logic.cpp (Corrected)
+ * automaton_logic.cpp (Revised & Merged)
  *
- * This version fixes C6011 warnings by adding
- * NULL pointer checks in the buildThompson function.
+ * - Includes C6011 NULL pointer fixes for NFA construction.
+ * - Includes Advanced Branch 2B PDA (XML, DNA/RNA, Brackets).
+ * - Restores generateCFG() for the UI.
  */
 
-#include "automaton_logic.h" // Our engine's "menu"
-#include "Automaton.h"       // Our engine's "parts"
+#include "automaton_logic.h" 
+#include "Automaton.h"       
 
 #include <queue>
 #include <fstream>
@@ -14,8 +15,8 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
+#include <iomanip> // Required for std::setw
 
- // We wrap all our logic in the namespace
 namespace GenoSearchEngine {
 
     // --- Internal Helper Function Prototypes ---
@@ -32,23 +33,22 @@ namespace GenoSearchEngine {
     std::vector<std::string> simulateDFA(DFA* dfa, const std::string& text);
     std::string generateNfaDot(NFA* nfa);
     std::string generateDfaDot(DFA* dfa);
-    std::string generateNfaGrammar(NFA* nfa); // Simplified
+    std::string generateNfaGrammar(NFA* nfa);
 
     // Branch 2A Helpers
     std::unique_ptr<NFA> buildSimpleNFA(const std::string& pattern, std::stringstream& grammar_ss);
     void fuzzySearch(const std::string& text, size_t text_idx, const std::string& pattern, size_t pattern_idx, int k_remaining, std::string current_match, std::set<std::pair<std::string, int>>& matches, int errors_made);
 
-    // Branch 2B Helpers
-    bool runPDASimulation(PDA* pda, const std::string& input);
-    std::string getFileLines(const std::string& file_content, int max_lines = 10);
-    std::string generateCFG();
+    // Branch 2B Helpers (UPDATED)
+    std::string getNextXMLTag(const std::string& input, size_t& i, bool& isClosing);
+    bool runPDASimulation(PDA* pda, const std::string& input, const std::string& mode);
+    std::string generateCFG(); // Restored
 
     // Graphviz Fallback
     std::string GetTextFallback(const std::string& dot_string);
 
 
     // === UTILITY IMPLEMENTATION ===
-    // (This section is unchanged)
 
     std::string readFile(const std::string& filepath) {
         std::ifstream file(filepath);
@@ -64,29 +64,11 @@ namespace GenoSearchEngine {
         return buffer.str();
     }
 
-    std::string getFileLines(const std::string& file_content, int max_lines) {
-        std::stringstream ss(file_content);
-        std::string line;
-        std::stringstream out_ss;
-        int count = 0;
-        while (std::getline(ss, line) && count < max_lines) {
-            line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
-            out_ss << line << "\n";
-            count++;
-        }
-        if (count >= max_lines) {
-            out_ss << "...\n(and more lines)";
-        }
-        return out_ss.str();
-    }
-
-
     void printHeader(std::stringstream& ss, const std::string& title) {
         ss << "--- " << title << " ---" << "\r\n";
     }
 
     // === BRANCH 1: REGEX ENGINE ===
-    // (precedence and infixToPostfix are unchanged)
 
     int precedence(char op) {
         if (op == '*') return 3;
@@ -145,7 +127,6 @@ namespace GenoSearchEngine {
     std::unique_ptr<NFA> buildThompson(const std::string& postfix, std::stringstream& grammar_ss) {
         std::stack<std::unique_ptr<NFA>> nfaStack;
         g_stateIdCounter = 0;
-        int nonTerminalCounter = 0;
 
         grammar_ss << "(For: " << postfix << ")\r\n";
 
@@ -168,7 +149,7 @@ namespace GenoSearchEngine {
                 grammar_ss << NonTerminal << " -> " << NonTerminal << NonTerminal << " | E (final)\r\n";
                 if (nfaStack.empty()) {
                     grammar_ss << "[Error] NFA construction failed (Kleene star on empty stack).\r\n";
-                    return std::make_unique<NFA>(); // Return empty NFA
+                    return std::make_unique<NFA>();
                 }
                 std::unique_ptr<NFA> subNFA = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfa(new NFA());
@@ -187,7 +168,7 @@ namespace GenoSearchEngine {
                 // *** FIX C6011: Add NULL check ***
                 if (oldAccept == NULL) {
                     grammar_ss << "[Error] NFA construction failed (Kleene star).\r\n";
-                    return std::move(nfa); // Return prematurely
+                    return std::move(nfa);
                 }
                 oldAccept->isAccepting = false;
 
@@ -204,7 +185,7 @@ namespace GenoSearchEngine {
                 grammar_ss << NonTerminal << " -> ... | ...\r\n";
                 if (nfaStack.size() < 2) {
                     grammar_ss << "[Error] NFA construction failed (Union on insufficient stack).\r\n";
-                    return std::make_unique<NFA>(); // Return empty NFA
+                    return std::make_unique<NFA>();
                 }
                 std::unique_ptr<NFA> nfaB = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfaA = std::move(nfaStack.top()); nfaStack.pop();
@@ -221,7 +202,7 @@ namespace GenoSearchEngine {
                 // *** FIX C6011: Add NULL check ***
                 if (acceptA == NULL || acceptB == NULL) {
                     grammar_ss << "[Error] NFA construction failed (Union).\r\n";
-                    return std::move(nfa); // Return prematurely
+                    return std::move(nfa);
                 }
                 acceptA->isAccepting = false;
                 acceptB->isAccepting = false;
@@ -240,7 +221,7 @@ namespace GenoSearchEngine {
             else if (c == '.') {
                 if (nfaStack.size() < 2) {
                     grammar_ss << "[Error] NFA construction failed (Concat on insufficient stack).\r\n";
-                    return std::make_unique<NFA>(); // Return empty NFA
+                    return std::make_unique<NFA>();
                 }
                 std::unique_ptr<NFA> nfaB = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfaA = std::move(nfaStack.top()); nfaStack.pop();
@@ -251,7 +232,7 @@ namespace GenoSearchEngine {
                 // *** FIX C6011: Add NULL check ***
                 if (acceptA == NULL) {
                     grammar_ss << "[Error] NFA construction failed (Concat).\r\n";
-                    return std::move(nfaA); // Return prematurely
+                    return std::move(nfaA);
                 }
                 acceptA->isAccepting = false;
 
@@ -262,15 +243,13 @@ namespace GenoSearchEngine {
                 nfaStack.push(std::move(nfaA));
             }
         }
-        grammar_ss << NonTerminal << " -> E (final)\r\n"; // Epsilon
+        grammar_ss << NonTerminal << " -> E (final)\r\n";
         if (nfaStack.empty()) {
             grammar_ss << "[Error] NFA stack is empty at end of build.\r\n";
-            return std::make_unique<NFA>(); // Return empty NFA
+            return std::make_unique<NFA>();
         }
         return std::move(nfaStack.top());
     }
-
-    // ... (Rest of automaton_logic.cpp is unchanged) ...
 
     std::set<State*> epsilonClosure(std::set<State*>& states) {
         std::set<State*> closure = states;
@@ -318,7 +297,6 @@ namespace GenoSearchEngine {
 
         std::set<char> alphabet;
         if (nfa == nullptr || nfa->startState == nullptr) {
-            // Handle case where NFA build failed
             return dfa;
         }
         for (size_t i = 0; i < nfa->allStates.size(); ++i) {
@@ -334,7 +312,6 @@ namespace GenoSearchEngine {
         std::set<State*> startClosure = epsilonClosure(startNFAStates);
 
         if (startClosure.empty()) {
-            // Handle case where NFA is empty
             return dfa;
         }
 
@@ -399,7 +376,6 @@ namespace GenoSearchEngine {
                 }
             }
         }
-        // Remove duplicate substrings
         if (!matches.empty()) {
             std::set<std::string> s(matches.begin(), matches.end());
             matches.assign(s.begin(), s.end());
@@ -435,7 +411,7 @@ namespace GenoSearchEngine {
                 for (size_t j = 0; j < val.size(); ++j) {
                     State* next = val[j];
                     if (next == nullptr) continue;
-                    std::string label = (key == EPSILON) ? "E" : std::string(1, key); // Epsilon
+                    std::string label = (key == EPSILON) ? "E" : std::string(1, key);
                     dot_ss << "  q" << s->id << " -> q" << next->id << " [ label=\"" << label << "\" ];\n";
                 }
             }
@@ -486,7 +462,6 @@ namespace GenoSearchEngine {
 
 
     // === BRANCH 2A: APPROXIMATE MATCH ===
-    // (This section is unchanged)
 
     std::unique_ptr<NFA> buildSimpleNFA(const std::string& pattern, std::stringstream& grammar_ss) {
         g_stateIdCounter = 0;
@@ -504,17 +479,17 @@ namespace GenoSearchEngine {
             grammar_ss << NonTerminal << " -> " << c;
             if (i < pattern.length() - 1) {
                 char nextNonTerminal = NonTerminal + 1;
-                if (nextNonTerminal > 'Z') nextNonTerminal = 'X'; // Avoid non-alpha
+                if (nextNonTerminal > 'Z') nextNonTerminal = 'X';
                 grammar_ss << nextNonTerminal << "\r\n";
                 NonTerminal = nextNonTerminal;
             }
             else {
-                grammar_ss << "A\r\n"; // Final transition
+                grammar_ss << "A\r\n";
             }
             currentState = nextState;
         }
         currentState->isAccepting = true;
-        grammar_ss << "A -> E (final)\r\n"; // Epsilon
+        grammar_ss << "A -> E (final)\r\n";
         return nfa;
     }
 
@@ -549,97 +524,162 @@ namespace GenoSearchEngine {
         }
     }
 
-    // === BRANCH 2B: PDA ===
-    // (This section is unchanged)
+    // =========================================================
+    // === BRANCH 2B: ADVANCED PDA (DNA, RNA, XML, Brackets) ===
+    // =========================================================
 
-    bool runPDASimulation(PDA* pda, const std::string& input) {
-        pda->viz_stream.str(""); // Clear the stream
+    // Restored Grammar Generator for the UI
+    std::string generateCFG() {
+        std::stringstream ss;
+        printHeader(ss, "Context-Free Grammar (CFG)");
+        ss << "(Generic Grammar for PDA Mode)\r\n";
+        ss << "S -> (S) | [S] | {S}\r\n";
+        ss << "S -> SS\r\n";
+        ss << "S -> E (epsilon)\r\n\r\n";
+        ss << "Note: When in XML/DNA mode, the logic\r\n";
+        ss << "checks structure dynamically rather than\r\n";
+        ss << "using this static grammar.\r\n";
+        return ss.str();
+    }
+
+    // Helper: Simple XML Tag Parser
+    std::string getNextXMLTag(const std::string& input, size_t& i, bool& isClosing) {
+        std::string tag = "";
+        isClosing = false;
+        if (i >= input.length() || input[i] != '<') return "";
+        i++; // Move past '<'
+        if (i < input.length() && input[i] == '/') {
+            isClosing = true;
+            i++; // Move past '/'
+        }
+        while (i < input.length() && input[i] != '>' && input[i] != ' ') {
+            tag += input[i];
+            i++;
+        }
+        while (i < input.length() && input[i] != '>') {
+            i++;
+        }
+        return tag;
+    }
+
+    // Validates input based on detected mode (XML, DNA, or Brackets)
+    bool runPDASimulation(PDA* pda, const std::string& input, const std::string& mode) {
+        pda->viz_stream.str("");
         pda->viz_stream << std::left
-            << std::setw(20) << "Input Read"
-            << std::setw(20) << "Stack"
-            << std::setw(20) << "Action" << "\r\n";
+            << std::setw(20) << "Input" << std::setw(20) << "Stack" << std::setw(20) << "Action" << "\r\n";
         pda->viz_stream << std::string(60, '-') << "\r\n";
 
-        std::string stack_str = pda->getStackString();
-        pda->viz_stream << std::setw(20) << "(start)"
-            << std::setw(20) << stack_str
-            << std::setw(20) << "Initial State" << "\r\n";
+        bool isXML = (mode == "XML");
+        bool isDNA = (mode == "DNA" || mode == "RNA");
 
         for (size_t i = 0; i < input.length(); ++i) {
             char c = input[i];
-            std::string action = "SKIP (Terminal)";
+            std::string action = "SKIP";
 
-            if (c == '(' || c == '[' || c == '{') {
-                pda->stack.push(c);
-                action = "PUSH";
-            }
-            else if (std::isalnum(c)) {
-                action = "SKIP (Terminal)";
-            }
-            else if (c == ')' || c == ']' || c == '}') {
-                if (pda->stack.empty() || pda->stack.top() == pda->stackStartSymbol) {
-                    pda->stack.push('E'); // Error state
-                    action = "REJECT (Pop empty stack)";
-                    pda->didAccept = false;
-                    pda->viz_stream << std::setw(20) << std::string(1, c)
-                        << std::setw(20) << pda->getStackString()
-                        << std::setw(20) << action << "\r\n";
-                    break;
-                }
+            // --- MODE 1: XML PARSING ---
+            if (isXML) {
+                if (c == '<') {
+                    bool isClosing = false;
+                    std::string tagName = getNextXMLTag(input, i, isClosing);
 
-                char top = pda->stack.top();
-                bool match = (c == ')' && top == '(') ||
-                    (c == ']' && top == '[') ||
-                    (c == '}' && top == '{');
+                    if (tagName.empty()) continue;
 
-                if (match) {
-                    pda->stack.pop();
-                    action = "POP (Match)";
-                }
-                else {
-                    pda->stack.push('E'); // Error state
-                    action = "REJECT (Mismatch)";
-                    pda->didAccept = false;
-                    pda->viz_stream << std::setw(20) << std::string(1, c)
-                        << std::setw(20) << pda->getStackString()
-                        << std::setw(20) << action << "\r\n";
-                    break;
+                    if (!isClosing) {
+                        pda->stack.push('X'); // Push generic marker
+                        action = "PUSH <" + tagName + ">";
+                    }
+                    else {
+                        if (pda->stack.empty() || pda->stack.top() == pda->stackStartSymbol) {
+                            action = "REJECT (No open tag)";
+                            pda->didAccept = false;
+                            pda->viz_stream << std::setw(20) << ("</" + tagName + ">") << std::setw(20) << "EMPTY" << std::setw(20) << action << "\r\n";
+                            return false;
+                        }
+                        pda->stack.pop();
+                        action = "POP </" + tagName + ">";
+                    }
+                    pda->viz_stream << std::left << std::setw(20) << tagName << std::setw(20) << pda->getStackString() << std::setw(20) << action << "\r\n";
+                    continue;
                 }
             }
+            // --- MODE 2: DNA/RNA (HAIRPIN VALIDATOR) ---
+            else if (isDNA) {
+                if (c == '>') return true; // Skip headers
 
-            pda->viz_stream << std::setw(20) << std::string(1, c)
-                << std::setw(20) << pda->getStackString()
-                << std::setw(20) << action << "\r\n";
+                if (c == 'G' || c == 'A') {
+                    pda->stack.push(c);
+                    action = "PUSH (" + std::string(1, c) + ")";
+                }
+                else if (c == 'C' || c == 'T' || c == 'U') {
+                    if (pda->stack.empty() || pda->stack.top() == pda->stackStartSymbol) {
+                        action = "REJECT (Stack Empty)";
+                        pda->didAccept = false;
+                    }
+                    else {
+                        char top = pda->stack.top();
+                        bool match = (c == 'C' && top == 'G') ||
+                            (c == 'T' && top == 'A') ||
+                            (c == 'U' && top == 'A');
+
+                        if (match) {
+                            pda->stack.pop();
+                            action = "POP (Match)";
+                        }
+                        else {
+                            pda->stack.push('E');
+                            action = "REJECT (Mismatch)";
+                            pda->didAccept = false;
+                        }
+                    }
+                }
+            }
+            // --- MODE 3: BRACKETS (DEFAULT) ---
+            else {
+                if (c == '(' || c == '[' || c == '{') {
+                    pda->stack.push(c);
+                    action = "PUSH";
+                }
+                else if (c == ')' || c == ']' || c == '}') {
+                    if (pda->stack.empty() || pda->stack.top() == pda->stackStartSymbol) {
+                        pda->stack.push('E');
+                        action = "REJECT (Empty)";
+                        pda->didAccept = false;
+                    }
+                    else {
+                        char top = pda->stack.top();
+                        bool match = (c == ')' && top == '(') || (c == ']' && top == '[') || (c == '}' && top == '{');
+                        if (match) {
+                            pda->stack.pop();
+                            action = "POP";
+                        }
+                        else {
+                            pda->stack.push('E');
+                            action = "REJECT (Mismatch)";
+                            pda->didAccept = false;
+                        }
+                    }
+                }
+            }
+
+            if (!isXML && action != "SKIP") {
+                pda->viz_stream << std::left << std::setw(20) << c << std::setw(20) << pda->getStackString() << std::setw(20) << action << "\r\n";
+                if (!pda->didAccept) return false;
+            }
         }
 
         if (pda->stack.size() == 1 && pda->stack.top() == pda->stackStartSymbol) {
             pda->didAccept = true;
-            pda->viz_stream << std::setw(20) << "(end)"
-                << std::setw(20) << pda->getStackString()
-                << std::setw(20) << "ACCEPT (Stack empty)" << "\r\n";
+            pda->viz_stream << "Result: ACCEPT (Stack Empty)\r\n";
         }
         else {
             pda->didAccept = false;
-            pda->viz_stream << std::setw(20) << "(end)"
-                << std::setw(20) << pda->getStackString()
-                << std::setw(20) << "REJECT (Stack not empty)" << "\r\n";
+            pda->viz_stream << "Result: REJECT (Stack Not Empty)\r\n";
         }
         return pda->didAccept;
     }
 
-    std::string generateCFG() {
-        std::stringstream ss;
-        printHeader(ss, "Context-Free Grammar (CFG)");
-        ss << "(For simple balanced structures)\r\n";
-        ss << "S -> (S) | [S] | {S}\r\n";
-        ss << "S -> SS\r\n";
-        ss << "S -> E (final)\r\n"; // Epsilon
-        return ss.str();
-    }
 
-
-    // === PUBLIC WRAPPER FUNCTIONS (Called by MyForm.h) ===
-    // (This section is unchanged)
+    // === PUBLIC WRAPPER FUNCTIONS ===
 
     void runBranch1_logic(
         const std::string& regex, const std::string& filepath,
@@ -672,9 +712,9 @@ namespace GenoSearchEngine {
             ss_summary << "Automaton Used:   DFA (Optimized)\r\n";
             ss_summary << "Time Taken:       " << duration.count() / 1000.0 << "s\r\n\r\n";
             ss_summary << "NFA (Unoptimized):\r\n";
-            ss_summary << "  States:       " << nfa->allStates.size() << "\r\n";
+            ss_summary << "  States:        " << nfa->allStates.size() << "\r\n";
             ss_summary << "DFA (Optimized):\r\n";
-            ss_summary << "  States:       " << dfa->dfaStateToNFAStates.size() << "\r\n";
+            ss_summary << "  States:        " << dfa->dfaStateToNFAStates.size() << "\r\n";
 
             printHeader(ss_results, "Match Report");
             ss_results << "(" << matches.size() << " Matches Found)\r\n";
@@ -723,7 +763,7 @@ namespace GenoSearchEngine {
             ss_summary << "Errors Allowed (k): " << k << "\r\n";
             ss_summary << "Time Taken:       " << duration.count() / 1000.0 << "s\r\n\r\n";
             ss_summary << "NFA (for exact pattern):\r\n";
-            ss_summary << "  States:       " << nfa->allStates.size() << "\r\n";
+            ss_summary << "  States:        " << nfa->allStates.size() << "\r\n";
             ss_summary << "Matches Found:    " << matches.size() << "\r\n";
 
             printHeader(ss_results, "Match Report");
@@ -747,71 +787,64 @@ namespace GenoSearchEngine {
         SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg)
     {
         try {
-            std::stringstream ss_results, ss_grammar, ss_pda_trace;
-            std::string input_string = input;
+            std::stringstream ss_results, ss_pda_trace;
+            std::string full_text = input;
 
+            // Populate grammar report (so "cfg is not gone")
+            out_report.grammar = generateCFG();
+
+            // MODE DETECTION
+            std::string mode = "BRACKET";
             if (isFile) {
-                input_string = readFile(input); // 'input' is the filepath
-                if (input_string.rfind("[Error]", 0) == 0) {
-                    out_error_msg = input_string;
-                    return;
+                full_text = readFile(input);
+                if (input.find(".fasta") != std::string::npos || input.find(".txt") != std::string::npos) {
+                    // Peek for FASTA header
+                    if (full_text.find('>') != std::string::npos) mode = "DNA";
                 }
-                std::stringstream file_stream(input_string);
+                if (input.find(".xml") != std::string::npos || full_text.find('<') != std::string::npos) {
+                    mode = "XML";
+                }
+            }
+
+            printHeader(ss_results, "Validation Report");
+            ss_results << "Mode Detected: " << mode << "\r\n\r\n";
+
+            // FOR XML: Validate WHOLE file at once
+            if (mode == "XML") {
+                PDA pda;
+                // Clean newlines for cleaner XML processing
+                std::string clean_xml = full_text;
+                clean_xml.erase(std::remove(clean_xml.begin(), clean_xml.end(), '\n'), clean_xml.end());
+                clean_xml.erase(std::remove(clean_xml.begin(), clean_xml.end(), '\r'), clean_xml.end());
+
+                bool isValid = runPDASimulation(&pda, clean_xml, mode);
+                ss_results << (isValid ? "[VALID XML Structure]" : "[INVALID XML Structure]") << "\r\n";
+                out_viz.pdaTrace = pda.viz_stream.str();
+            }
+            // FOR DNA/BRACKETS: Validate line-by-line
+            else {
+                std::stringstream file_stream(full_text);
                 std::string line;
                 int line_num = 1;
-                int valid_count = 0;
-
-                printHeader(ss_results, "Validation Report");
-                ss_results << "Mode: Validating File (" << input << ")\r\n\r\n";
-
                 while (std::getline(file_stream, line)) {
                     line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
                     if (line.empty()) continue;
 
                     PDA pda;
-                    bool isValid = runPDASimulation(&pda, line);
-                    if (isValid) {
-                        ss_results << "[Line " << line_num << "] VALID: \"" << line << "\"\r\n";
-                        valid_count++;
-                    }
-                    else {
-                        ss_results << "[Line " << line_num << "] INVALID: \"" << line << "\"\r\n";
+                    bool isValid = runPDASimulation(&pda, line, mode);
+
+                    // Show trace for the first line or first error
+                    if (line_num == 1 || !isValid) {
+                        out_viz.pdaTrace = pda.viz_stream.str();
                     }
 
-                    if (line_num == 1) {
-                        ss_pda_trace << pda.viz_stream.str();
-                    }
+                    ss_results << "Line " << line_num << ": " << (isValid ? "VALID" : "INVALID") << "  (" << line.substr(0, 20) << "...)\r\n";
                     line_num++;
                 }
-                ss_results << "\r\nSummary: " << valid_count << " / " << (line_num - 1) << " lines are valid.";
-                out_viz.pdaTrace = ss_pda_trace.str();
-
-            }
-            else {
-                printHeader(ss_results, "Validation Report");
-                ss_results << "Input: \"" << input_string << "\"\r\n\r\n";
-
-                ss_results << "[DFA/NFA ATTEMPT (Level 1 Machine)]\r\n";
-                ss_results << "[!] FAILED: Regular languages are insufficient.\r\n";
-                ss_results << "Reason: A DFA/NFA has no memory (stack)\r\n";
-                ss_results << "and cannot match nested structures like '()'.\r\n\r\n";
-
-                PDA pda;
-                bool isValid = runPDASimulation(&pda, input_string);
-                out_viz.pdaTrace = pda.viz_stream.str();
-
-                ss_results << "[PDA VALIDATION (Level 2 Machine)]\r\n";
-                if (isValid) {
-                    ss_results << "[+] SUCCEEDED: The string is VALID.\r\n";
-                }
-                else {
-                    ss_results << "[!] FAILED: The string is INVALID.\r\n";
-                }
             }
 
-            out_report.grammar = generateCFG();
             out_report.matches = ss_results.str();
-            out_report.summary = ""; // No summary for PDA
+            out_report.summary = "Automaton: Pushdown Automaton (Stack-Based)";
         }
         catch (std::exception& e) {
             out_error_msg = "[C++ Engine Error]\n" + std::string(e.what());
@@ -820,7 +853,6 @@ namespace GenoSearchEngine {
 
 
     // === GRAPHVIZ & FALLBACK IMPLEMENTATION ===
-    // (This section is unchanged)
 
     bool GenerateGraphvizImage(
         const std::string& dot_string,

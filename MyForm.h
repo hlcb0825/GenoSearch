@@ -133,6 +133,7 @@ namespace GenoSearch {
 			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->headerPanel = (gcnew System::Windows::Forms::Panel());
+			this->logoPictureBox = (gcnew System::Windows::Forms::PictureBox());
 			this->subtitleLabel = (gcnew System::Windows::Forms::Label());
 			this->exportButton = (gcnew System::Windows::Forms::Button());
 			this->titleLabel = (gcnew System::Windows::Forms::Label());
@@ -188,8 +189,8 @@ namespace GenoSearch {
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->animationTimer = (gcnew System::Windows::Forms::Timer(this->components));
-			this->logoPictureBox = (gcnew System::Windows::Forms::PictureBox());
 			this->headerPanel->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->logoPictureBox))->BeginInit();
 			this->mainContainer->SuspendLayout();
 			this->rightPanel->SuspendLayout();
 			this->outputTabControl->SuspendLayout();
@@ -209,7 +210,6 @@ namespace GenoSearch {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->editDistanceInput))->BeginInit();
 			this->patternInputGroup->SuspendLayout();
 			this->groupBox1->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->logoPictureBox))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// headerPanel
@@ -225,6 +225,19 @@ namespace GenoSearch {
 			this->headerPanel->Name = L"headerPanel";
 			this->headerPanel->Size = System::Drawing::Size(1603, 100);
 			this->headerPanel->TabIndex = 0;
+			// 
+			// logoPictureBox
+			// 
+			this->logoPictureBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(0)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			this->logoPictureBox->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"logoPictureBox.Image")));
+			this->logoPictureBox->Location = System::Drawing::Point(14, 18);
+			this->logoPictureBox->Name = L"logoPictureBox";
+			this->logoPictureBox->Size = System::Drawing::Size(91, 65);
+			this->logoPictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
+			this->logoPictureBox->TabIndex = 2;
+			this->logoPictureBox->TabStop = false;
+			this->logoPictureBox->Click += gcnew System::EventHandler(this, &MyForm::pictureBox1_Click);
 			// 
 			// subtitleLabel
 			// 
@@ -976,19 +989,6 @@ namespace GenoSearch {
 			// 
 			this->animationTimer->Interval = 50;
 			// 
-			// logoPictureBox
-			// 
-			this->logoPictureBox->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(0)),
-				static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
-			this->logoPictureBox->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"logoPictureBox.Image")));
-			this->logoPictureBox->Location = System::Drawing::Point(14, 18);
-			this->logoPictureBox->Name = L"logoPictureBox";
-			this->logoPictureBox->Size = System::Drawing::Size(91, 65);
-			this->logoPictureBox->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
-			this->logoPictureBox->TabIndex = 2;
-			this->logoPictureBox->TabStop = false;
-			this->logoPictureBox->Click += gcnew System::EventHandler(this, &MyForm::pictureBox1_Click);
-			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
@@ -1001,11 +1001,13 @@ namespace GenoSearch {
 			this->MinimumSize = System::Drawing::Size(1196, 661);
 			this->Name = L"MyForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-			this->Text = L"Topic 3 - Babuyo, Bao, Gamalo, Noval, Suelo (CS3B) ";
+			this->Text = L"TOPIC 3: TEXT SEARCH ENGINE AND BIOINFORMATICS - Babuyo, Bao, Gamalo, Noval, Suel"
+				L"o (CS3B) ";
 			this->WindowState = System::Windows::Forms::FormWindowState::Maximized;
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->headerPanel->ResumeLayout(false);
 			this->headerPanel->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->logoPictureBox))->EndInit();
 			this->mainContainer->ResumeLayout(false);
 			this->rightPanel->ResumeLayout(false);
 			this->outputTabControl->ResumeLayout(false);
@@ -1036,7 +1038,6 @@ namespace GenoSearch {
 			this->patternInputGroup->PerformLayout();
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->logoPictureBox))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -1450,26 +1451,228 @@ namespace GenoSearch {
 			this->progressBar->Visible = false;
 		}
 
+		// [UPDATED - PERFECT GUI MATCH LAYOUT] Exports HTML with title and subtitle stacked correctly.
 		System::Void exportButton_Click(System::Object^ sender, System::EventArgs^ e) {
-			System::String^ fullReport = "";
-			fullReport += "==============================================\n";
-			fullReport += "  " + this->resultsLabel->Text + "\n";
-			fullReport += "==============================================\n\n";
-
-			if (this->summaryGroup->Visible) {
-				fullReport += "--- SIMULATION SUMMARY ---\n";
-				fullReport += this->summaryBox->Text + "\n\n";
-			}
-			if (this->grammarGroup->Visible) {
-				fullReport += "--- GENERATED GRAMMAR ---\n";
-				fullReport += this->grammarBox->Text + "\n\n";
-			}
-			if (this->matchReportGroup->Visible) {
-				fullReport += "--- " + this->matchReportGroup->Text + " ---\n";
-				fullReport += this->resultsBox->Text + "\n\n";
+			// 1. Simple check: Don't export if nothing has run.
+			if (this->resultsLabel->Text == "Results") {
+				MessageBox::Show("Please run a simulation before exporting.", "Nothing to Export", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return;
 			}
 
-			SaveFile(fullReport);
+			System::String^ timestamp = System::DateTime::Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+			// 2. Start building the HTML string
+			System::Text::StringBuilder^ html = gcnew System::Text::StringBuilder();
+
+			// --- HTML HEAD & CSS STYLING ---
+			html->Append("<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>GenoSearch Report</title>");
+			// Use Segoe UI font to match the application
+			html->Append("<link href='https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap' rel='stylesheet'>");
+			html->Append("<style>");
+			html->Append("body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; background-color: #FAFCFA; margin: 0; padding: 0; }");
+			html->Append(".container { max-width: 950px; margin: 30px auto; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }");
+
+			// --- ACCURATE HEADER CSS ---
+			// Use flexbox to separate left (logo+titles) and right (report info) sections.
+			html->Append(".header { background: linear-gradient(to right, #0F321E, #8CBE28); color: white; padding: 25px 30px; display: flex; align-items: center; justify-content: space-between; }");
+
+			// --- Left Section: Logo & Title Block ---
+			html->Append(".header-left { display: flex; align-items: center; }");
+			html->Append(".logo-img { height: 50px; width: auto; margin-right: 15px; }");
+			// Fallback CSS logo
+			html->Append(".logo-icon-css { width: 42px; height: 42px; background: #F6FF01; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }");
+			html->Append(".logo-text-g { color: #0F321E; font-size: 28px; font-weight: 900; font-family: sans-serif; }");
+
+			// NEW: Block to stack title and subtitle vertically
+			html->Append(".title-block { display: flex; flex-direction: column; justify-content: center; }");
+			// Main Title styling
+			html->Append(".logo-title { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; margin: 0; line-height: 1.1; color: #ffffff; }");
+			// Subtitle styling - placed directly below
+			html->Append(".app-subtitle { font-size: 14px; font-weight: 400; margin: 3px 0 0 0; color: rgba(255,255,255,0.85); }");
+
+			// --- Right Section: Report Info ---
+			// text-align: right. white-space: nowrap prevents wrapping.
+			html->Append(".header-right { text-align: right; white-space: nowrap; margin-left: 20px; }");
+			html->Append(".report-title { font-size: 14px; font-weight: 600; margin: 0; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }");
+			html->Append(".timestamp { font-size: 13px; opacity: 0.8; font-weight: 400; margin: 3px 0 0 0; }");
+
+
+			// --- Content Styling (Rest remains same) ---
+			html->Append(".content { padding: 40px; }");
+			html->Append("h2 { color: #0F321E; border-bottom: 3px solid #F6FF01; padding-bottom: 10px; margin-top: 40px; font-size: 1.6em; }");
+			html->Append("h2:first-child { margin-top: 0; }");
+
+			// Data boxes
+			html->Append(".data-box { background: #f8f9fa; border: 1px solid #e9ecef; border-left: 5px solid #0F321E; padding: 15px 20px; border-radius: 4px; font-family: 'Consolas', 'Courier New', monospace; white-space: pre-wrap; word-wrap: break-word; overflow-x: auto; font-size: 0.95em;}");
+			html->Append("ul.inputs-list { list-style-type: none; padding: 0; }");
+			html->Append("ul.inputs-list li { margin-bottom: 12px; padding-left: 25px; position: relative; font-size: 1.05em; }");
+			html->Append("ul.inputs-list li::before { content: '•'; color: #F6FF01; font-weight: bold; font-size: 1.2em; position: absolute; left: 0; top: 1px; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); }");
+			html->Append("strong { color: #0F321E; }");
+
+			// Visualization Image container
+			html->Append(".viz-container { text-align: center; margin-top: 25px; padding: 30px; background: #ffffff; border: 2px solid #eee; border-radius: 8px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); }");
+			html->Append(".viz-img { max-width: 100%; height: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 4px; }");
+			html->Append("</style></head><body>");
+
+			// --- HTML BODY CONTENT ---
+			html->Append("<div class='container'>");
+
+			// --- ACCURATE HEADER STRUCTURE ---
+			html->Append("<div class='header'>");
+
+			// --- LOGO LOADING LOGIC ---
+			String^ logoBase64 = "";
+			try {
+				// Look for "GenoSearch Logo White.png" in the same folder as your application .exe
+				String^ logoPath = System::IO::Path::Combine(System::Windows::Forms::Application::StartupPath, "GenoSearch Logo White.png");
+				if (System::IO::File::Exists(logoPath)) {
+					System::Drawing::Image^ logoImg = System::Drawing::Image::FromFile(logoPath);
+					// Use our helper function to convert it to base64 string
+					logoBase64 = ImageToBase64(logoImg);
+					delete logoImg; // Clean up memory
+				}
+			}
+			catch (Exception^ ex) {
+				// If loading fails, we'll just use the fallback CSS logo.
+			}
+			// --------------------------
+
+			// 1. Left Section: Logo and Title Block
+			html->Append("<div class='header-left'>");
+			if (!String::IsNullOrEmpty(logoBase64)) {
+				// Embed YOUR logo image
+				html->Append("<img class='logo-img' src='data:image/png;base64," + logoBase64 + "' alt='GenoSearch Logo' />");
+			}
+			else {
+				// Fallback to the CSS "G" icon if logo is missing
+				html->Append("<div class='logo-icon-css'><span class='logo-text-g'>G</span></div>");
+			}
+
+			// NEW: Title Block for stacking
+			html->Append("<div class='title-block'>");
+			html->Append("<div class='logo-title'>GenoSearch | Automata-Powered Pattern Recognition</div>");
+			html->Append("<p class='app-subtitle'>A Unified Simulator for Formal Languages.</p>");
+			html->Append("</div>"); // end title-block
+
+			html->Append("</div>"); // end header-left
+
+			// 2. Right Section: Report Info
+			html->Append("<div class='header-right'>");
+			html->Append("<p class='report-title'>Full Report</p>");
+			html->Append("<p class='timestamp'>" + timestamp + "</p>");
+			html->Append("</div>"); // end header-right
+
+			html->Append("</div>"); // end header
+
+			html->Append("<div class='content'>");
+
+			// 2. Input Configuration Section
+			html->Append("<h2>Input Configuration</h2><ul class='inputs-list'>");
+			html->Append("<li><strong>Simulation Mode:</strong> " + this->resultsLabel->Text + "</li>");
+			if (this->regexRadio->Checked || this->approxRadio->Checked || (this->pdaRadio->Checked && this->pdaStringRadio->Checked)) {
+				html->Append("<li><strong>Pattern/String:</strong> " + System::Web::HttpUtility::HtmlEncode(this->patternInputBox->Text) + "</li>");
+			}
+			if (this->fileInputGroup->Visible) {
+				html->Append("<li><strong>Input File path:</strong> " + System::Web::HttpUtility::HtmlEncode(this->fileInputBox->Text) + "</li>");
+			}
+			if (this->editDistanceGroup->Visible) {
+				html->Append("<li><strong>Edit Distance (k):</strong> " + this->editDistanceInput->Value.ToString() + "</li>");
+			}
+			html->Append("</ul>");
+
+			// 3. Results Text Sections
+			if (!String::IsNullOrWhiteSpace(this->summaryBox->Text)) {
+				html->Append("<h2>Simulation Summary</h2>");
+				html->Append("<div class='data-box'>" + System::Web::HttpUtility::HtmlEncode(this->summaryBox->Text) + "</div>");
+			}
+			if (!String::IsNullOrWhiteSpace(this->grammarBox->Text)) {
+				html->Append("<h2>Generated Grammar</h2>");
+				html->Append("<div class='data-box'>" + System::Web::HttpUtility::HtmlEncode(this->grammarBox->Text) + "</div>");
+			}
+
+			// Decide whether to show PDA Trace or standard Match Report
+			if (!String::IsNullOrWhiteSpace(this->pdaTraceBox->Text) && this->pdaTraceBox->Visible) {
+				html->Append("<h2>PDA Validation Trace</h2>");
+				html->Append("<div class='data-box'>" + System::Web::HttpUtility::HtmlEncode(this->pdaTraceBox->Text) + "</div>");
+			}
+			else if (!String::IsNullOrWhiteSpace(this->resultsBox->Text)) {
+				html->Append("<h2>Match Report</h2>");
+				html->Append("<div class='data-box'>" + System::Web::HttpUtility::HtmlEncode(this->resultsBox->Text) + "</div>");
+			}
+
+			// 4. Visualization Image Section
+			if (this->regexRadio->Checked) {
+				html->Append("<h2>Visualizations</h2>");
+
+				// --- BLOCK 1: Export NFA ---
+				if (!String::IsNullOrEmpty(this->m_nfaDot)) {
+					std::string error_msg, fallback_str;
+					std::string tempFileName = "temp_export_nfa.png";
+					// Generate PNG from NFA DOT data
+					if (GenoSearchEngine::GenerateGraphvizImage(ToStdString(this->m_nfaDot), tempFileName, error_msg, fallback_str)) {
+						try {
+							// Load the temp image
+							System::Drawing::Image^ img = System::Drawing::Image::FromFile(ToNetString(tempFileName));
+							// Convert to Base64
+							String^ imgBase64 = ImageToBase64(img);
+							delete img; // Unlock file
+							if (!String::IsNullOrEmpty(imgBase64)) {
+								// Add HTML
+								html->Append("<h3>NFA (Non-deterministic Finite Automaton)</h3>");
+								html->Append("<div class='viz-container'>");
+								html->Append("<img class='viz-img' src='data:image/png;base64," + imgBase64 + "' alt='NFA Visualization' />");
+								html->Append("</div>");
+							}
+							// Delete temp file
+							System::IO::File::Delete(ToNetString(tempFileName));
+						}
+						catch (...) { /* Silently fail if image loading messed up */ }
+					}
+				}
+
+				// --- BLOCK 2: Export DFA ---
+				if (!String::IsNullOrEmpty(this->m_dfaDot)) {
+					std::string error_msg, fallback_str;
+					std::string tempFileName = "temp_export_dfa.png";
+					// Generate PNG from DFA DOT data
+					if (GenoSearchEngine::GenerateGraphvizImage(ToStdString(this->m_dfaDot), tempFileName, error_msg, fallback_str)) {
+						try {
+							// Load the temp image
+							System::Drawing::Image^ img = System::Drawing::Image::FromFile(ToNetString(tempFileName));
+							// Convert to Base64
+							String^ imgBase64 = ImageToBase64(img);
+							delete img; // Unlock file
+							if (!String::IsNullOrEmpty(imgBase64)) {
+								// Add HTML
+								html->Append("<h3>DFA (Deterministic Finite Automaton)</h3>");
+								html->Append("<div class='viz-container'>");
+								html->Append("<img class='viz-img' src='data:image/png;base64," + imgBase64 + "' alt='DFA Visualization' />");
+								html->Append("</div>");
+							}
+							// Delete temp file
+							System::IO::File::Delete(ToNetString(tempFileName));
+						}
+						catch (...) { /* Silently fail if image loading messed up */ }
+					}
+				}
+			}
+			// --- APPROXIMATE MATCH MODE: Export the single displayed NFA ---
+			else if (this->approxRadio->Checked && this->vizPictureBox->Image != nullptr && this->vizPictureBox->Visible) {
+				String^ imgBase64 = ImageToBase64(this->vizPictureBox->Image);
+				if (!String::IsNullOrEmpty(imgBase64)) {
+					html->Append("<h2>Visualization (NFA)</h2>");
+					html->Append("<div class='viz-container'>");
+					html->Append("<img class='viz-img' src='data:image/png;base64," + imgBase64 + "' alt='Simulation Visualization' />");
+					html->Append("</div>");
+				}
+			}
+
+			html->Append("</div>"); // end content
+			html->Append("</div>"); // end container
+			html->Append("</body></html>");
+
+			// 3. Save the final HTML string to a file
+			SaveHTMLFile(html->ToString());
 		}
 
 		// *** MODIFICATION: Updated active color to Deep Green ***
@@ -1547,5 +1750,52 @@ namespace GenoSearch {
 	}
 private: System::Void titleLabel_Click(System::Object^ sender, System::EventArgs^ e) {
 }
+	   // [UPDATED HELPER] Safer version that clones the image to avoid GDI+ locking issues
+	   System::String^ ImageToBase64(System::Drawing::Image^ image) {
+		   if (image == nullptr) return "";
+		   try {
+			   // Create a temporary clone of the image to avoid GDI+ locking conflicts
+			   // when saving an image that is currently displayed on screen.
+			   System::Drawing::Image^ tempImage = (System::Drawing::Image^)image->Clone();
+			   System::IO::MemoryStream^ ms = gcnew System::IO::MemoryStream();
+			   // Save the clone to memory stream as PNG
+			   tempImage->Save(ms, System::Drawing::Imaging::ImageFormat::Png);
+			   delete tempImage; // Clean up the clone immediately
+
+			   array<Byte>^ imageBytes = ms->ToArray();
+			   System::String^ base64String = Convert::ToBase64String(imageBytes);
+			   delete ms;
+			   return base64String;
+		   }
+		   catch (Exception^ e) {
+			   // If image encoding fails, return empty string so HTML doesn't break
+			   MessageBox::Show("Warning: Could not encode visualization image for export.\n" + e->Message);
+			   return "";
+		   }
+	   }
+
+	   // [NEW HELPER] Saves the final HTML string to a file
+	   void SaveHTMLFile(System::String^ content) {
+		   SaveFileDialog^ sfd = gcnew SaveFileDialog();
+		   sfd->Filter = "HTML Web Page (*.html)|*.html";
+		   sfd->Title = "Export Full Report as HTML";
+		   sfd->FileName = "GenoSearch_Report";
+
+		   if (sfd->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+			   try {
+				   // Use UTF8 encoding so special characters work
+				   StreamWriter^ sw = gcnew StreamWriter(sfd->FileName, false, System::Text::Encoding::UTF8);
+				   sw->Write(content);
+				   sw->Close();
+				   MessageBox::Show("Full report exported successfully!\n\nYou can open this file in any web browser.", "Success",
+					   MessageBoxButtons::OK, MessageBoxIcon::Information);
+			   }
+			   catch (Exception^ e) {
+				   MessageBox::Show("Error saving HTML report:\n" + e->Message, "Export Error",
+					   MessageBoxButtons::OK, MessageBoxIcon::Error);
+			   }
+		   }
+		   delete sfd;
+	   }
 };
 }
