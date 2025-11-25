@@ -1,9 +1,3 @@
-/*
- * Automaton.h
- * Defines the "parts" of your GenoSearch engine.
- * This is PURE C++ and has no GUI code.
- */
-
 #pragma once
 
 #include <string>
@@ -16,10 +10,14 @@
 #include <sstream>      // For std::stringstream
 #include <iomanip>      // For std::setw
 
- // Use a static variable for unique state IDs
-static int g_stateIdCounter = 0;
+ // ====================================================
+ // GLOBAL STATE COUNTER (EXTERN)
+ // This prevents "multiple definition" errors.
+ // The actual variable is created in automaton_logic.cpp
+ // ====================================================
+extern int g_stateIdCounter;
 
-// Epsilon character (use '\0' for simplicity)
+// Epsilon character
 const char EPSILON = '\0';
 
 /**
@@ -30,9 +28,9 @@ class State {
 public:
     int id;
     bool isAccepting;
-    // Transitions: map<char, vector<State*>>
     std::map<char, std::vector<State*> > transitions;
 
+    // USES THE GLOBAL COUNTER
     State() : id(g_stateIdCounter++), isAccepting(false) {}
 
     void addTransition(char input, State* nextState) {
@@ -47,13 +45,12 @@ public:
 class NFA {
 public:
     State* startState;
-    std::vector<State*> allStates; // This NFA "owns" all its states
+    std::vector<State*> allStates;
 
     NFA() {
-        startState = newState(); // Create an initial start state
+        startState = newState();
     }
 
-    // Destructor to clean up all states
     ~NFA() {
         for (size_t i = 0; i < allStates.size(); ++i) {
             delete allStates[i];
@@ -75,9 +72,7 @@ class DFA {
 public:
     int startStateId;
     std::set<int> acceptingStateIds;
-    // Transition table: map<from_state_id, map<char, to_state_id>>
     std::map<int, std::map<char, int> > transitions;
-    // For visualization: maps a DFA state ID to the set of NFA states
     std::map<int, std::set<State*> > dfaStateToNFAStates;
 
     DFA() : startStateId(0) {}
@@ -86,12 +81,11 @@ public:
 /**
  * @class PDA
  * @brief Represents a Pushdown Automaton.
- * (This is a simple container, the logic is in automaton_logic.cpp)
  */
 class PDA {
 public:
     std::stack<char> stack;
-    std::stringstream viz_stream; // For capturing the visualization trace
+    std::stringstream viz_stream;
     bool didAccept;
     char stackStartSymbol;
 
@@ -99,7 +93,6 @@ public:
         stack.push(stackStartSymbol);
     }
 
-    // Helper function to get a string representation of the stack
     std::string getStackString() {
         std::stack<char> temp = stack;
         std::string s = "";

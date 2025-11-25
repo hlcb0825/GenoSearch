@@ -1,27 +1,22 @@
-/*
- * automaton_logic.h (Corrected)
- * The public "menu" for your C++ engine.
- * MyForm.h will include this file to call these functions.
- */
-
-#pragma once
+#ifndef AUTOMATON_LOGIC_H
+#define AUTOMATON_LOGIC_H
 
 #include <string>
-#include <utility> // For std::pair
+#include <memory>
+#include <utility>
 #include <vector>
+#include "Automaton.h"
 
- // We wrap our C++ engine in a namespace
- // to keep it separate from the GUI code.
 namespace GenoSearchEngine {
 
-    // This struct will hold all the results
+    // Simulation report structure
     struct SimulationReport {
         std::string summary;
         std::string grammar;
         std::string matches;
     };
 
-    // This struct will hold all the visualization data
+    // Visualization data structure
     struct VisualizationData {
         std::string nfaDot;
         std::string dfaDot;
@@ -29,42 +24,25 @@ namespace GenoSearchEngine {
         std::string fallbackText;
     };
 
-
-    // This is the function for Branch 1
+    // Branch 1: Regex Engine
     void runBranch1_logic(
-        const std::string& regex,
-        const std::string& filepath,
-        SimulationReport& out_report,      // Output
-        VisualizationData& out_viz,       // Output
-        std::string& out_error_msg        // Output
-    );
+        const std::string& regex, const std::string& filepath,
+        SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg);
 
-    // This is the function for Branch 2A
+    // Branch 2A: Approximate Matching
     void runBranch2A_logic(
-        const std::string& pattern,
-        int k,
-        const std::string& filepath,
-        SimulationReport& out_report,      // Output
-        VisualizationData& out_viz,       // Output
-        std::string& out_error_msg        // Output
-    );
+        const std::string& pattern, int k, const std::string& filepath,
+        SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg);
 
-    // This is the function for Branch 2B
+    // Branch 2B: Formal PDA
     void runBranch2B_logic(
-        const std::string& input,
-        bool isFile,
-        SimulationReport& out_report,      // Output
-        VisualizationData& out_viz,       // Output
-        std::string& out_error_msg        // Output
-    );
+        const std::string& input, bool isFile,
+        SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg);
 
-    // This function generates the Graphviz .png file
-    // It returns true on success, false on failure
-    bool GenerateGraphvizImage(
-        const std::string& dot_string,
-        const std::string& image_path,
-        std::string& out_error_message,    // Output
-        std::string& out_fallback_text     // Output
-    );
+    // Graphviz generation
+    bool GenerateGraphvizImage(const std::string& dot_string, const std::string& image_path,
+        std::string& out_error_message, std::string& out_fallback_text);
 
-} // End namespace GenoSearchEngine
+} // namespace GenoSearchEngine
+
+#endif // AUTOMATON_LOGIC_H

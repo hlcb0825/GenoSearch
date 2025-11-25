@@ -814,7 +814,6 @@ namespace GenoSearch {
 			this->editDistanceInput->Font = (gcnew System::Drawing::Font(L"Segoe UI", 11));
 			this->editDistanceInput->Location = System::Drawing::Point(232, 25);
 			this->editDistanceInput->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
-			this->editDistanceInput->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			this->editDistanceInput->Name = L"editDistanceInput";
 			this->editDistanceInput->Size = System::Drawing::Size(80, 37);
 			this->editDistanceInput->TabIndex = 1;
