@@ -123,7 +123,7 @@
     <ClCompile Include="MyForm.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Automaton.h" />
+    <ClInclude Include="automaton.h" />
     <ClInclude Include="automaton_logic.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>

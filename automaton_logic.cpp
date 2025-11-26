@@ -1,6 +1,5 @@
 ﻿#include "automaton_logic.h" 
-#include "Automaton.h"       
-
+#include "automaton.h"       
 #include <queue>
 #include <fstream>
 #include <sstream>
@@ -13,14 +12,16 @@
 #include <vector>
 #include <stack>
 
-int g_stateIdCounter = 0;
+int g_stateIdCounter = 0;  // Global counter for generating unique state IDs
 
 namespace GenoSearchEngine {
 
     // ========================================
-    // ESCAPE SEQUENCE TOKENS
+    //         ESCAPE SEQUENCE TOKENS
     // ========================================
 
+    // Special tokens to represent escaped regex metacharacters
+    // These prevent literal characters from being interpreted as operators
     const char ESCAPED_DOT = 0x01;
     const char ESCAPED_STAR = 0x02;
     const char ESCAPED_PIPE = 0x03;
@@ -28,18 +29,20 @@ namespace GenoSearchEngine {
     const char ESCAPED_RPAREN = 0x05;
     const char ESCAPED_BACKSLASH = 0x06;
 
+    // Converts escaped characters to internal token representation
     static char mapEscapeSequence(char escapedChar) {
         switch (escapedChar) {
-        case '.': return ESCAPED_DOT;
-        case '*': return ESCAPED_STAR;
-        case '|': return ESCAPED_PIPE;
-        case '(': return ESCAPED_LPAREN;
-        case ')': return ESCAPED_RPAREN;
-        case '\\': return ESCAPED_BACKSLASH;
-        default: return escapedChar;
+        case '.': return ESCAPED_DOT;      // Literal dot becomes token
+        case '*': return ESCAPED_STAR;     // Literal star becomes token
+        case '|': return ESCAPED_PIPE;     // Literal pipe becomes token
+        case '(': return ESCAPED_LPAREN;   // Literal left paren becomes token
+        case ')': return ESCAPED_RPAREN;   // Literal right paren becomes token
+        case '\\': return ESCAPED_BACKSLASH; // Literal backslash becomes token
+        default: return escapedChar;       // Non-special characters unchanged
         }
     }
 
+    // Converts internal tokens back to their original characters
     static char unmapEscapeToken(char token) {
         switch (token) {
         case ESCAPED_DOT: return '.';
@@ -52,14 +55,16 @@ namespace GenoSearchEngine {
         }
     }
 
+    // Checks if a character is an escape token
     static bool isEscapeToken(char c) {
         return (c >= 0x01 && c <= 0x06);
     }
 
     // ========================================
-    // UTILITY FUNCTIONS
+    //          UTILITY FUNCTIONS
     // ========================================
 
+    // Reads entire file content into a string
     std::string readFile(const std::string& filepath) {
         std::ifstream file(filepath);
         if (!file.is_open()) {
@@ -72,58 +77,62 @@ namespace GenoSearchEngine {
         return buffer.str();
     }
 
+    // Creates formatted header for output sections
     void printHeader(std::stringstream& ss, const std::string& title) {
         ss << "\n=== " << title << " ===\n";
     }
 
     // ========================================
-    // REGEX ENGINE (WITH ESCAPE SUPPORT)
+    //    REGEX ENGINE (WITH ESCAPE SUPPORT)
     // ========================================
 
+    // Returns operator precedence for Shunting Yard algorithm
     int precedence(char op) {
-        if (op == '*') return 3;
-        if (op == '.') return 2;
-        if (op == '|') return 1;
-        return 0;
+        if (op == '*') return 3;  // Kleene star (highest)
+        if (op == '.') return 2;  // Concatenation
+        if (op == '|') return 1;  // Alternation (lowest)
+        return 0;                 // Parentheses
     }
 
+    // Converts infix regex to postfix (RPN) notation
     std::string infixToPostfix(const std::string& infix) {
-        // PASS 1: Handle escape sequences
+        // PASS 1: Handle escape sequences (process \. \* etc.)
         std::string processed;
         bool escapeNext = false;
 
         for (size_t i = 0; i < infix.length(); ++i) {
             char c = infix[i];
             if (escapeNext) {
-                processed += mapEscapeSequence(c);
+                processed += mapEscapeSequence(c);  // Convert escaped char to token
                 escapeNext = false;
             }
             else if (c == '\\') {
-                escapeNext = true;
+                escapeNext = true;  // Next character is escaped
             }
             else {
-                processed += c;
+                processed += c;     // Normal character
             }
         }
 
-        // PASS 2: Insert concatenation operators
+        // PASS 2: Insert explicit concatenation operators (.)
         std::string formattedInfix;
         for (size_t i = 0; i < processed.length(); ++i) {
             char c = processed[i];
             formattedInfix += c;
 
+            // Insert concatenation operator between compatible elements
             if (i + 1 < processed.length()) {
                 char next = processed[i + 1];
                 bool currentIsLiteral = std::isalnum(c) || isEscapeToken(c) || c == ')' || c == '*';
                 bool nextIsLiteral = std::isalnum(next) || isEscapeToken(next) || next == '(';
 
                 if (currentIsLiteral && nextIsLiteral) {
-                    formattedInfix += '.';
+                    formattedInfix += '.';  // Add explicit concatenation
                 }
             }
         }
 
-        // PASS 3: Shunting Yard
+        // PASS 3: Shunting Yard algorithm for RPN conversion
         std::string postfix;
         std::stack<char> opStack;
 
@@ -131,28 +140,31 @@ namespace GenoSearchEngine {
             char c = formattedInfix[i];
 
             if (std::isalnum(c) || isEscapeToken(c)) {
-                postfix += c;
+                postfix += c;  // Operands go directly to output
             }
             else if (c == '(') {
-                opStack.push(c);
+                opStack.push(c);  // Push left parenthesis
             }
             else if (c == ')') {
+                // Pop operators until matching '('
                 while (!opStack.empty() && opStack.top() != '(') {
                     postfix += opStack.top();
                     opStack.pop();
                 }
-                if (!opStack.empty()) opStack.pop();
+                if (!opStack.empty()) opStack.pop();  // Discard '('
             }
             else {
+                // Operator: pop higher or equal precedence operators
                 while (!opStack.empty() && opStack.top() != '(' &&
                     precedence(opStack.top()) >= precedence(c)) {
                     postfix += opStack.top();
                     opStack.pop();
                 }
-                opStack.push(c);
+                opStack.push(c);  // Push current operator
             }
         }
 
+        // Pop remaining operators
         while (!opStack.empty()) {
             postfix += opStack.top();
             opStack.pop();
@@ -161,23 +173,26 @@ namespace GenoSearchEngine {
         return postfix;
     }
 
+    // Builds NFA from postfix regex using Thompson's construction
     std::unique_ptr<NFA> buildThompson(const std::string& postfix, std::stringstream& grammar_ss) {
-        std::stack<std::unique_ptr<NFA>> nfaStack;
-        g_stateIdCounter = 0;
+        std::stack<std::unique_ptr<NFA>> nfaStack;  // Stack for building NFA fragments
+        g_stateIdCounter = 0;  // Reset state counter
 
         for (size_t i = 0; i < postfix.length(); ++i) {
             char c = postfix[i];
 
+            // Single character/symbol
             if (std::isalnum(c) || isEscapeToken(c)) {
                 std::unique_ptr<NFA> nfa(new NFA());
                 State* start = nfa->startState;
                 State* accept = nfa->newState();
 
                 char transitionChar = isEscapeToken(c) ? unmapEscapeToken(c) : c;
-                start->addTransition(transitionChar, accept);
+                start->addTransition(transitionChar, accept);  // Single transition
                 accept->isAccepting = true;
                 nfaStack.push(std::move(nfa));
             }
+            // Kleene star (zero or more)
             else if (c == '*') {
                 if (nfaStack.empty()) return std::make_unique<NFA>();
                 std::unique_ptr<NFA> subNFA = std::move(nfaStack.top());
@@ -188,6 +203,7 @@ namespace GenoSearchEngine {
                 State* accept = nfa->newState();
                 accept->isAccepting = true;
 
+                // Find old accepting state
                 State* oldAccept = NULL;
                 for (size_t j = 0; j < subNFA->allStates.size(); ++j) {
                     if (subNFA->allStates[j]->isAccepting) {
@@ -198,16 +214,19 @@ namespace GenoSearchEngine {
                 if (oldAccept == NULL) return std::move(nfa);
                 oldAccept->isAccepting = false;
 
-                start->addTransition(EPSILON, subNFA->startState);
-                start->addTransition(EPSILON, accept);
-                oldAccept->addTransition(EPSILON, subNFA->startState);
-                oldAccept->addTransition(EPSILON, accept);
+                // Create epsilon transitions for repetition
+                start->addTransition(EPSILON, subNFA->startState);  // Skip
+                start->addTransition(EPSILON, accept);              // Zero repetitions
+                oldAccept->addTransition(EPSILON, subNFA->startState); // Loop back
+                oldAccept->addTransition(EPSILON, accept);          // Exit
 
+                // Combine states
                 nfa->allStates.insert(nfa->allStates.end(),
                     subNFA->allStates.begin(), subNFA->allStates.end());
                 subNFA->allStates.clear();
                 nfaStack.push(std::move(nfa));
             }
+            // Alternation (OR)
             else if (c == '|') {
                 if (nfaStack.size() < 2) return std::make_unique<NFA>();
                 std::unique_ptr<NFA> nfaB = std::move(nfaStack.top()); nfaStack.pop();
@@ -218,6 +237,7 @@ namespace GenoSearchEngine {
                 State* accept = nfa->newState();
                 accept->isAccepting = true;
 
+                // Find accepting states of both NFAs
                 State* acceptA = NULL; State* acceptB = NULL;
                 for (size_t j = 0; j < nfaA->allStates.size(); ++j)
                     if (nfaA->allStates[j]->isAccepting) { acceptA = nfaA->allStates[j]; break; }
@@ -227,11 +247,14 @@ namespace GenoSearchEngine {
 
                 acceptA->isAccepting = false;
                 acceptB->isAccepting = false;
-                start->addTransition(EPSILON, nfaA->startState);
-                start->addTransition(EPSILON, nfaB->startState);
-                acceptA->addTransition(EPSILON, accept);
-                acceptB->addTransition(EPSILON, accept);
 
+                // Create branching paths
+                start->addTransition(EPSILON, nfaA->startState);  // Path A
+                start->addTransition(EPSILON, nfaB->startState);  // Path B
+                acceptA->addTransition(EPSILON, accept);          // Merge A
+                acceptB->addTransition(EPSILON, accept);          // Merge B
+
+                // Combine all states
                 nfa->allStates.insert(nfa->allStates.end(),
                     nfaA->allStates.begin(), nfaA->allStates.end());
                 nfaA->allStates.clear();
@@ -240,18 +263,22 @@ namespace GenoSearchEngine {
                 nfaB->allStates.clear();
                 nfaStack.push(std::move(nfa));
             }
+            // Concatenation
             else if (c == '.') {
                 if (nfaStack.size() < 2) return std::make_unique<NFA>();
                 std::unique_ptr<NFA> nfaB = std::move(nfaStack.top()); nfaStack.pop();
                 std::unique_ptr<NFA> nfaA = std::move(nfaStack.top()); nfaStack.pop();
 
+                // Find accepting state of first NFA
                 State* acceptA = NULL;
                 for (size_t j = 0; j < nfaA->allStates.size(); ++j)
                     if (nfaA->allStates[j]->isAccepting) { acceptA = nfaA->allStates[j]; break; }
                 if (acceptA == NULL) return std::move(nfaA);
 
                 acceptA->isAccepting = false;
-                acceptA->addTransition(EPSILON, nfaB->startState);
+                acceptA->addTransition(EPSILON, nfaB->startState);  // Connect A to B
+
+                // Combine states (B appended to A)
                 nfaA->allStates.insert(nfaA->allStates.end(),
                     nfaB->allStates.begin(), nfaB->allStates.end());
                 nfaB->allStates.clear();
@@ -260,17 +287,20 @@ namespace GenoSearchEngine {
         }
 
         if (nfaStack.empty()) return std::make_unique<NFA>();
-        return std::move(nfaStack.top());
+        return std::move(nfaStack.top());  // Final complete NFA
     }
 
+    // Computes epsilon closure of a set of states
     std::set<State*> epsilonClosure(std::set<State*>& states) {
         std::set<State*> closure = states;
         std::stack<State*> stateStack;
 
+        // Initialize stack with starting states
         for (std::set<State*>::iterator it = states.begin(); it != states.end(); ++it) {
             stateStack.push(*it);
         }
 
+        // DFS to find all states reachable via epsilon transitions
         while (!stateStack.empty()) {
             State* s = stateStack.top();
             stateStack.pop();
@@ -281,7 +311,7 @@ namespace GenoSearchEngine {
                     it != nextStates.end(); ++it) {
                     if (closure.find(*it) == closure.end()) {
                         closure.insert(*it);
-                        stateStack.push(*it);
+                        stateStack.push(*it);  // Continue DFS
                     }
                 }
             }
@@ -289,12 +319,14 @@ namespace GenoSearchEngine {
         return closure;
     }
 
+    // Moves from a set of states on a given input character
     std::set<State*> move(std::set<State*>& states, char input) {
         std::set<State*> movedStates;
         for (std::set<State*>::iterator it = states.begin(); it != states.end(); ++it) {
             State* s = *it;
             if (s->transitions.count(input)) {
                 std::vector<State*>& nextStates = s->transitions[input];
+                // Add all states reachable via this input
                 for (std::vector<State*>::iterator nextIt = nextStates.begin();
                     nextIt != nextStates.end(); ++nextIt) {
                     movedStates.insert(*nextIt);
@@ -304,16 +336,17 @@ namespace GenoSearchEngine {
         return movedStates;
     }
 
+    // Converts NFA to DFA using subset construction
     std::unique_ptr<DFA> buildDFA(NFA* nfa) {
         std::unique_ptr<DFA> dfa(new DFA());
         int nextDfaId = 0;
-        std::map<std::set<State*>, int> dfaStateMap;
-        std::queue<std::set<State*>> workQueue;
-        std::set<char> alphabet;
+        std::map<std::set<State*>, int> dfaStateMap;  // Maps NFA state sets to DFA state IDs
+        std::queue<std::set<State*>> workQueue;       // States to process
+        std::set<char> alphabet;                      // Input alphabet
 
         if (nfa == nullptr || nfa->startState == nullptr) return dfa;
 
-        // Build alphabet
+        // Build alphabet from NFA transitions
         for (size_t i = 0; i < nfa->allStates.size(); ++i) {
             State* s = nfa->allStates[i];
             if (s == nullptr) continue;
@@ -323,7 +356,7 @@ namespace GenoSearchEngine {
             }
         }
 
-        // Initial state
+        // Initial DFA state = epsilon closure of NFA start state
         std::set<State*> startNFAStates;
         startNFAStates.insert(nfa->startState);
         std::set<State*> startClosure = epsilonClosure(startNFAStates);
@@ -334,13 +367,13 @@ namespace GenoSearchEngine {
         dfa->dfaStateToNFAStates[dfa->startStateId] = startClosure;
         workQueue.push(startClosure);
 
-        // Subset construction
+        // Process each DFA state
         while (!workQueue.empty()) {
             std::set<State*> currentNFAStates = workQueue.front();
             workQueue.pop();
             int currentDFAId = dfaStateMap[currentNFAStates];
 
-            // Check if accepting
+            // Check if this DFA state contains any NFA accepting states
             for (std::set<State*>::iterator it = currentNFAStates.begin();
                 it != currentNFAStates.end(); ++it) {
                 if ((*it)->isAccepting) {
@@ -349,7 +382,7 @@ namespace GenoSearchEngine {
                 }
             }
 
-            // Build transitions
+            // Build transitions for each input symbol
             for (std::set<char>::iterator it = alphabet.begin(); it != alphabet.end(); ++it) {
                 char c = *it;
                 std::set<State*> moved = move(currentNFAStates, c);
@@ -360,6 +393,7 @@ namespace GenoSearchEngine {
 
                 int nextDFAId;
                 if (dfaStateMap.find(nextNFAStates) == dfaStateMap.end()) {
+                    // New DFA state discovered
                     nextDFAId = nextDfaId++;
                     dfaStateMap[nextNFAStates] = nextDFAId;
                     dfa->dfaStateToNFAStates[nextDFAId] = nextNFAStates;
@@ -374,26 +408,30 @@ namespace GenoSearchEngine {
         return dfa;
     }
 
+    // Simulates DFA on input text to find all matches
     std::vector<std::string> simulateDFA(DFA* dfa, const std::string& text) {
         std::vector<std::string> matches;
 
-        // Try every starting position
+        // Try every possible starting position
         for (size_t start = 0; start < text.length(); ++start) {
             int currentState = dfa->startStateId;
 
+            // Process text from start position
             for (size_t end = start; end < text.length(); ++end) {
                 char c = text[end];
 
+                // Follow transition if exists
                 if (dfa->transitions.count(currentState) &&
                     dfa->transitions[currentState].count(c)) {
                     currentState = dfa->transitions[currentState].at(c);
 
+                    // If reached accepting state, record match
                     if (dfa->acceptingStateIds.count(currentState)) {
                         matches.push_back(text.substr(start, end - start + 1));
                     }
                 }
                 else {
-                    break;
+                    break;  // No transition, stop this path
                 }
             }
         }
@@ -401,6 +439,7 @@ namespace GenoSearchEngine {
         return matches;
     }
 
+    // Generates Graphviz DOT representation of NFA
     std::string generateNfaDot(NFA* nfa) {
         std::stringstream dot_ss;
         dot_ss << "digraph NFA {\n  rankdir=LR;\n  node [shape=circle];\n";
@@ -413,11 +452,13 @@ namespace GenoSearchEngine {
         dot_ss << "  start_node [shape=point];\n";
         dot_ss << "  start_node -> q" << nfa->startState->id << ";\n";
 
+        // Add all states and transitions
         for (size_t i = 0; i < nfa->allStates.size(); ++i) {
             State* s = nfa->allStates[i];
             if (s == nullptr) continue;
             if (s->isAccepting) dot_ss << "  q" << s->id << " [shape=doublecircle];\n";
 
+            // Add all transitions from this state
             for (std::map<char, std::vector<State*>>::iterator it = s->transitions.begin();
                 it != s->transitions.end(); ++it) {
                 char key = it->first;
@@ -435,6 +476,7 @@ namespace GenoSearchEngine {
         return dot_ss.str();
     }
 
+    // Generates Graphviz DOT representation of DFA
     std::string generateDfaDot(DFA* dfa) {
         std::stringstream dot_ss;
         dot_ss << "digraph DFA {\n  rankdir=LR;\n  node [shape=circle];\n";
@@ -447,11 +489,13 @@ namespace GenoSearchEngine {
         dot_ss << "  start_node [shape=point];\n";
         dot_ss << "  start_node -> q" << dfa->startStateId << ";\n";
 
+        // Mark accepting states
         for (std::set<int>::iterator it = dfa->acceptingStateIds.begin();
             it != dfa->acceptingStateIds.end(); ++it) {
             dot_ss << "  q" << *it << " [shape=doublecircle];\n";
         }
 
+        // Add all transitions
         for (std::map<int, std::map<char, int>>::iterator it = dfa->transitions.begin();
             it != dfa->transitions.end(); ++it) {
             int from = it->first;
@@ -466,6 +510,7 @@ namespace GenoSearchEngine {
         return dot_ss.str();
     }
 
+    // Generates right-linear grammar from NFA
     std::string generateRightLinearGrammar(NFA* nfa) {
         std::stringstream grammar_ss;
 
@@ -475,23 +520,26 @@ namespace GenoSearchEngine {
 
         grammar_ss << "Right-Linear Grammar:\n";
 
-        std::map<int, char> stateToNonTerminal;
-        char nonTerminal = 'S';
+        std::map<int, char> stateToNonTerminal;  // Map states to grammar symbols
+        char nonTerminal = 'S';  // Start symbol
 
         stateToNonTerminal[nfa->startState->id] = nonTerminal++;
 
+        // Assign non-terminals to all states
         for (size_t i = 0; i < nfa->allStates.size(); ++i) {
             State* s = nfa->allStates[i];
             if (s != nfa->startState && stateToNonTerminal.find(s->id) == stateToNonTerminal.end()) {
-                if (nonTerminal > 'Z') nonTerminal = 'A';
+                if (nonTerminal > 'Z') nonTerminal = 'A';  // Wrap around if needed
                 stateToNonTerminal[s->id] = nonTerminal++;
             }
         }
 
+        // Generate grammar productions
         for (size_t i = 0; i < nfa->allStates.size(); ++i) {
             State* s = nfa->allStates[i];
             char fromNT = stateToNonTerminal[s->id];
 
+            // Regular transitions
             for (std::map<char, std::vector<State*>>::iterator it = s->transitions.begin();
                 it != s->transitions.end(); ++it) {
                 char symbol = it->first;
@@ -505,6 +553,7 @@ namespace GenoSearchEngine {
                 }
             }
 
+            // Accepting state produces epsilon
             if (s->isAccepting) {
                 grammar_ss << fromNT << " -> ε\n";
             }
@@ -513,10 +562,12 @@ namespace GenoSearchEngine {
         return grammar_ss.str();
     }
 
+    // Wrapper for grammar generation
     std::string generateNfaGrammar(NFA* nfa) {
         return generateRightLinearGrammar(nfa);
     }
 
+    // Generates ASCII diagram of NFA states
     std::string generateASCIIDiagram(NFA* nfa) {
         std::stringstream ascii_ss;
 
@@ -529,14 +580,15 @@ namespace GenoSearchEngine {
             State* s = nfa->allStates[i];
             if (s == nullptr) continue;
 
-            std::string prefix = (s == nfa->startState) ? "→" : " ";
-            std::string suffix = (s->isAccepting) ? "✓" : " ";
+            std::string prefix = (s == nfa->startState) ? "→" : " ";  // Start state marker
+            std::string suffix = (s->isAccepting) ? "✓" : " ";        // Accept state marker
             ascii_ss << prefix << "(q" << s->id << ")" << suffix << "\n";
         }
 
         return ascii_ss.str();
     }
 
+    // Generates ASCII diagram of DFA
     std::string generateASCIIDiagram(DFA* dfa) {
         std::stringstream ascii_ss;
 
@@ -560,6 +612,7 @@ namespace GenoSearchEngine {
     // LEVENSHTEIN NFA (FULL ASCII SUPPORT)
     // ========================================
 
+    // Builds NFA for approximate matching with edit distance
     std::unique_ptr<NFA> buildLevenshteinNFA(const std::string& pattern, int maxErrors,
         std::stringstream& grammar_ss) {
         g_stateIdCounter = 0;
@@ -567,28 +620,28 @@ namespace GenoSearchEngine {
 
         grammar_ss << "Levenshtein NFA for: \"" << pattern << "\" (k=" << maxErrors << ")\n";
 
-        std::map<std::pair<int, int>, State*> stateMap;
+        std::map<std::pair<int, int>, State*> stateMap;  // (position, errors) -> State
         int n = pattern.length();
 
-        // Create states
+        // Create grid of states: position in pattern vs number of errors
         for (int pos = 0; pos <= n; ++pos) {
             for (int err = 0; err <= maxErrors; ++err) {
                 State* state = (pos == 0 && err == 0) ? nfa->startState : nfa->newState();
                 stateMap[std::make_pair(pos, err)] = state;
 
                 if (pos == n) {
-                    state->isAccepting = true;
+                    state->isAccepting = true;  // Accept if reached end of pattern
                 }
             }
         }
 
-        // Create transitions - FULL PRINTABLE ASCII (32-126)
+        // Create transitions for edit operations
         for (int pos = 0; pos < n; ++pos) {
             for (int err = 0; err <= maxErrors; ++err) {
                 State* currentState = stateMap[std::make_pair(pos, err)];
                 char patternChar = pattern[pos];
 
-                // Match
+                // Match (correct character)
                 State* matchState = stateMap[std::make_pair(pos + 1, err)];
                 currentState->addTransition(patternChar, matchState);
 
@@ -597,15 +650,15 @@ namespace GenoSearchEngine {
                     State* insState = stateMap[std::make_pair(pos, err + 1)];
                     State* delState = stateMap[std::make_pair(pos + 1, err + 1)];
 
-                    // PROFESSOR'S FIX: Full printable ASCII (32-126)
-                    for (char c = 32; c <= 126; ++c) {
+                    // Substitution: any character except correct one
+                    for (char c = 32; c <= 126; ++c) {  // Full printable ASCII
                         if (c != patternChar) {
-                            currentState->addTransition(c, subState);  // Substitution
+                            currentState->addTransition(c, subState);
                         }
                         currentState->addTransition(c, insState);  // Insertion
                     }
 
-                    // Deletion
+                    // Deletion (epsilon transition)
                     currentState->addTransition(EPSILON, delState);
                 }
             }
@@ -615,23 +668,27 @@ namespace GenoSearchEngine {
         return nfa;
     }
 
+    // Simulates Levenshtein NFA to find approximate matches
     std::vector<std::pair<std::string, int>> simulateLevenshteinNFA(NFA* nfa, const std::string& text,
         const std::string& pattern, int k) {
-        std::set<std::pair<std::string, int>> uniqueMatches;
+        std::set<std::pair<std::string, int>> uniqueMatches;  // Avoid duplicates
 
+        // Try every starting position
         for (size_t start = 0; start < text.length(); ++start) {
-            std::queue<std::tuple<State*, size_t, int, std::string>> queue;
-            std::set<std::tuple<int, size_t, int>> visited;
+            std::queue<std::tuple<State*, size_t, int, std::string>> queue;  // BFS queue
+            std::set<std::tuple<int, size_t, int>> visited;  // (state_id, position, errors)
 
+            // Start with epsilon closure of start state
             std::set<State*> initialSet;
             initialSet.insert(nfa->startState);
             std::set<State*> initialClosure = epsilonClosure(initialSet);
 
             for (std::set<State*>::iterator it = initialClosure.begin();
                 it != initialClosure.end(); ++it) {
-                queue.push(std::make_tuple(*it, start, 0, ""));
+                queue.push(std::make_tuple(*it, start, 0, ""));  // (state, text_pos, errors, matched)
             }
 
+            // BFS simulation
             while (!queue.empty()) {
                 std::tuple<State*, size_t, int, std::string> current = queue.front();
                 queue.pop();
@@ -645,12 +702,14 @@ namespace GenoSearchEngine {
                 if (visited.count(key)) continue;
                 visited.insert(key);
 
+                // Check acceptance condition
                 if (state->isAccepting && matched.length() >= pattern.length() - k) {
                     uniqueMatches.insert(std::make_pair(matched, errors));
                 }
 
-                if (matched.length() > pattern.length() + k) continue;
+                if (matched.length() > pattern.length() + k) continue;  // Prune
 
+                // Epsilon transitions
                 if (state->transitions.count(EPSILON)) {
                     std::vector<State*>& nextStates = state->transitions[EPSILON];
                     for (size_t i = 0; i < nextStates.size(); ++i) {
@@ -658,6 +717,7 @@ namespace GenoSearchEngine {
                     }
                 }
 
+                // Regular transitions
                 if (textPos < text.length()) {
                     char c = text[textPos];
                     if (state->transitions.count(c)) {
@@ -679,19 +739,21 @@ namespace GenoSearchEngine {
     // PDA STRUCTURES
     // ========================================
 
+    // PDA transition: (from, input, stack_top) -> (to, push_string)
     struct PDATransition {
         int fromState;
-        char inputSymbol;
-        char stackTop;
+        char inputSymbol;      // '\0' for epsilon
+        char stackTop;         // '\0' for any/empty
         int toState;
-        std::string stackPush;
+        std::string stackPush; // "" for pop only
     };
 
+    // PDA configuration during simulation
     struct PDASnapshot {
         int state;
         std::stack<char> stack;
         size_t inputPos;
-        std::vector<std::string> path;
+        std::vector<std::string> path;  // Transition history
 
         std::string getStackString() const {
             std::stack<char> temp = stack;
@@ -704,6 +766,7 @@ namespace GenoSearchEngine {
         }
     };
 
+    // Formal PDA definition
     struct FormalPDA {
         std::vector<PDATransition> transitions;
         std::set<int> acceptStates;
@@ -718,6 +781,7 @@ namespace GenoSearchEngine {
     // DNA PDA (PROFESSOR'S FIX - ALL 4 BASES + LOOP)
     // ========================================
 
+    // Builds PDA for DNA/RNA hairpin structure recognition
     std::unique_ptr<FormalPDA> buildDNAPDA() {
         std::unique_ptr<FormalPDA> pda(new FormalPDA());
 
@@ -728,8 +792,7 @@ namespace GenoSearchEngine {
 
         pda->acceptStates.insert(2);
 
-        // PROFESSOR'S FIX: All 4 DNA bases can be pushed
-        // State 0: Push ALL bases (G, A, T, C)
+        // State 0: Push ALL bases (G, A, T, C) for first stem half
         pda->transitions.push_back({ 0, 'G', '\0', 0, "G" });
         pda->transitions.push_back({ 0, 'A', '\0', 0, "A" });
         pda->transitions.push_back({ 0, 'T', '\0', 0, "T" });
@@ -747,6 +810,7 @@ namespace GenoSearchEngine {
         pda->transitions.push_back({ 1, '\0', '\0', 2, "" });  // Epsilon to matching
 
         // State 0 → State 2: Direct transition (no loop case)
+        // Complementary base matching
         pda->transitions.push_back({ 0, 'C', 'G', 2, "" });  // C matches G
         pda->transitions.push_back({ 0, 'T', 'A', 2, "" });  // T matches A
         pda->transitions.push_back({ 0, 'U', 'A', 2, "" });  // U matches A (RNA)
@@ -765,15 +829,18 @@ namespace GenoSearchEngine {
         return pda;
     }
 
+    // Builds PDA for balanced bracket validation
     std::unique_ptr<FormalPDA> buildBracketPDA() {
         std::unique_ptr<FormalPDA> pda(new FormalPDA());
 
-        pda->acceptStates.insert(0);
+        pda->acceptStates.insert(0);  // Accept by empty stack and final state
 
+        // Push opening brackets
         pda->transitions.push_back({ 0, '(', '\0', 0, "(" });
         pda->transitions.push_back({ 0, '[', '\0', 0, "[" });
         pda->transitions.push_back({ 0, '{', '\0', 0, "{" });
 
+        // Pop matching closing brackets
         pda->transitions.push_back({ 0, ')', '(', 0, "" });
         pda->transitions.push_back({ 0, ']', '[', 0, "" });
         pda->transitions.push_back({ 0, '}', '{', 0, "" });
@@ -781,6 +848,7 @@ namespace GenoSearchEngine {
         return pda;
     }
 
+    // Builds simplified XML validation PDA
     std::unique_ptr<FormalPDA> buildXMLPDA() {
         std::unique_ptr<FormalPDA> pda(new FormalPDA());
 
@@ -797,6 +865,7 @@ namespace GenoSearchEngine {
     // NPDA SIMULATION (PROFESSOR'S FIX - BFS)
     // ========================================
 
+    // Simulates PDA using BFS to handle nondeterminism
     bool simulateFormalPDA(FormalPDA* pda, const std::string& input) {
         pda->traceStream.str("");
         pda->traceStream << std::left
@@ -812,7 +881,7 @@ namespace GenoSearchEngine {
         // Initial configuration
         PDASnapshot initial;
         initial.state = 0;
-        initial.stack.push(pda->stackStartSymbol);
+        initial.stack.push(pda->stackStartSymbol);  // Start with stack symbol
         initial.inputPos = 0;
         initial.path.push_back("START");
         queue.push(initial);
@@ -823,7 +892,7 @@ namespace GenoSearchEngine {
             PDASnapshot current = queue.front();
             queue.pop();
 
-            // Create unique config signature
+            // Create unique config signature for cycle detection
             std::stringstream configKey;
             configKey << current.state << ":" << current.inputPos << ":" << current.getStackString();
             std::string key = configKey.str();
@@ -857,7 +926,7 @@ namespace GenoSearchEngine {
             char currentInput = input[current.inputPos];
             char stackTop = current.stack.empty() ? '\0' : current.stack.top();
 
-            // Try ALL matching transitions (this is the nondeterminism)
+            // Try ALL matching transitions (nondeterminism exploration)
             for (size_t i = 0; i < pda->transitions.size(); ++i) {
                 PDATransition& trans = pda->transitions[i];
 
@@ -881,12 +950,12 @@ namespace GenoSearchEngine {
                     next.stack.pop();  // Pop if stackTop was specified
                 }
 
-                // Push new symbols (in reverse order)
+                // Push new symbols (in reverse order for stack)
                 for (int j = trans.stackPush.length() - 1; j >= 0; --j) {
                     next.stack.push(trans.stackPush[j]);
                 }
 
-                // Advance input if not epsilon
+                // Advance input if not epsilon transition
                 if (trans.inputSymbol != '\0') {
                     next.inputPos++;
                 }
@@ -909,6 +978,7 @@ namespace GenoSearchEngine {
         return false;
     }
 
+    // Generates context-free grammar description for different PDA types
     std::string generateCFGForPDA(const std::string& mode) {
         std::stringstream ss;
         printHeader(ss, "Context-Free Grammar");
@@ -932,6 +1002,7 @@ namespace GenoSearchEngine {
         return ss.str();
     }
 
+    // Fallback text generation if Graphviz fails
     std::string GetTextFallback(const std::string& dot_string) {
         std::stringstream fallback_ss;
         fallback_ss << "ASCII Transition Table:\n";
@@ -939,6 +1010,7 @@ namespace GenoSearchEngine {
         std::stringstream input_ss(dot_string);
         std::string line;
 
+        // Extract transition information from DOT format
         while (std::getline(input_ss, line)) {
             size_t pos = line.find("->");
             if (pos != std::string::npos) {
@@ -953,6 +1025,7 @@ namespace GenoSearchEngine {
     // PUBLIC WRAPPER FUNCTIONS
     // ========================================
 
+    // Branch 1: Regular Expression Search Engine
     void runBranch1_logic(
         const std::string& regex, const std::string& filepath,
         SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg)
@@ -967,6 +1040,7 @@ namespace GenoSearchEngine {
                 return;
             }
 
+            // Core regex processing pipeline
             std::string postfix = infixToPostfix(regex);
             std::unique_ptr<NFA> nfa = buildThompson(postfix, ss_grammar);
             std::unique_ptr<DFA> dfa = buildDFA(nfa.get());
@@ -975,9 +1049,11 @@ namespace GenoSearchEngine {
             auto stop = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
+            // Generate visualizations
             out_viz.nfaDot = generateNfaDot(nfa.get());
             out_viz.dfaDot = generateDfaDot(dfa.get());
 
+            // Build comprehensive report
             printHeader(ss_summary, "Regex Search Engine");
             ss_summary << "Pattern:            " << regex << "\n";
             ss_summary << "Postfix:            " << postfix << "\n";
@@ -1017,6 +1093,7 @@ namespace GenoSearchEngine {
         }
     }
 
+    // Branch 2A: Approximate String Matching with Edit Distance
     void runBranch2A_logic(
         const std::string& pattern, int k, const std::string& filepath,
         SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg)
@@ -1080,6 +1157,7 @@ namespace GenoSearchEngine {
         }
     }
 
+    // Branch 2B: PDA Validation for Context-Free Languages
     void runBranch2B_logic(
         const std::string& input, bool isFile,
         SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg)
@@ -1096,6 +1174,7 @@ namespace GenoSearchEngine {
                     return;
                 }
 
+                // Auto-detect language type from file extension/content
                 if (input.find(".fasta") != std::string::npos ||
                     full_text.find('>') != std::string::npos) {
                     mode = "DNA";
@@ -1141,6 +1220,7 @@ namespace GenoSearchEngine {
         }
     }
 
+    // Generates visual images from Graphviz DOT strings
     bool GenerateGraphvizImage(const std::string& dot_string, const std::string& image_path,
         std::string& out_error_message, std::string& out_fallback_text) {
         std::string dot_path = "temp_graph.dot";

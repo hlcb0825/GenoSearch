@@ -26,7 +26,7 @@
     <ClInclude Include="MyForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Automaton.h">
+    <ClInclude Include="automaton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="automaton_logic.h">
