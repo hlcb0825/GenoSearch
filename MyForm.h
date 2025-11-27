@@ -80,7 +80,7 @@ namespace GenoSearch {
 	private: System::Windows::Forms::Label^ step2Label;
 	private: System::Windows::Forms::Button^ runButton;
 	private: System::Windows::Forms::Label^ label1;
-	private: System::Windows::Forms::Button^ showErrorButton;
+
 	private: System::Windows::Forms::TabControl^ outputTabControl;
 	private: System::Windows::Forms::TabPage^ tabPage1;
 
@@ -135,8 +135,8 @@ namespace GenoSearch {
 			this->headerPanel = (gcnew System::Windows::Forms::Panel());
 			this->logoPictureBox = (gcnew System::Windows::Forms::PictureBox());
 			this->subtitleLabel = (gcnew System::Windows::Forms::Label());
-			this->exportButton = (gcnew System::Windows::Forms::Button());
 			this->titleLabel = (gcnew System::Windows::Forms::Label());
+			this->exportButton = (gcnew System::Windows::Forms::Button());
 			this->mainContainer = (gcnew System::Windows::Forms::Panel());
 			this->rightPanel = (gcnew System::Windows::Forms::Panel());
 			this->outputTabControl = (gcnew System::Windows::Forms::TabControl());
@@ -160,7 +160,6 @@ namespace GenoSearch {
 			this->progressBar = (gcnew System::Windows::Forms::ProgressBar());
 			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
 			this->resetButton = (gcnew System::Windows::Forms::Button());
-			this->showErrorButton = (gcnew System::Windows::Forms::Button());
 			this->step2Label = (gcnew System::Windows::Forms::Label());
 			this->runButton = (gcnew System::Windows::Forms::Button());
 			this->fileInputGroup = (gcnew System::Windows::Forms::GroupBox());
@@ -218,7 +217,6 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(143)));
 			this->headerPanel->Controls->Add(this->logoPictureBox);
 			this->headerPanel->Controls->Add(this->subtitleLabel);
-			this->headerPanel->Controls->Add(this->exportButton);
 			this->headerPanel->Controls->Add(this->titleLabel);
 			this->headerPanel->Dock = System::Windows::Forms::DockStyle::Top;
 			this->headerPanel->Location = System::Drawing::Point(0, 0);
@@ -252,26 +250,6 @@ namespace GenoSearch {
 			this->subtitleLabel->Text = L"A Unified Simulator for Formal Languages.";
 			this->subtitleLabel->Click += gcnew System::EventHandler(this, &MyForm::subtitleLabel_Click);
 			// 
-			// exportButton
-			// 
-			this->exportButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-			this->exportButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(132)), static_cast<System::Int32>(static_cast<System::Byte>(169)),
-				static_cast<System::Int32>(static_cast<System::Byte>(140)));
-			this->exportButton->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->exportButton->FlatAppearance->BorderSize = 0;
-			this->exportButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->exportButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold));
-			this->exportButton->ForeColor = System::Drawing::Color::White;
-			this->exportButton->Location = System::Drawing::Point(1351, 43);
-			this->exportButton->Name = L"exportButton";
-			this->exportButton->Size = System::Drawing::Size(232, 43);
-			this->exportButton->TabIndex = 1;
-			this->exportButton->Text = L"💾 Export Full Report";
-			this->exportButton->UseVisualStyleBackColor = false;
-			this->exportButton->Click += gcnew System::EventHandler(this, &MyForm::exportButton_Click);
-			this->exportButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
-			this->exportButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
-			// 
 			// titleLabel
 			// 
 			this->titleLabel->AutoSize = true;
@@ -284,6 +262,27 @@ namespace GenoSearch {
 			this->titleLabel->TabIndex = 0;
 			this->titleLabel->Text = L"GenoSearch | Automata-Powered Pattern Recognition";
 			this->titleLabel->Click += gcnew System::EventHandler(this, &MyForm::titleLabel_Click);
+			// 
+			// exportButton
+			// 
+			this->exportButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
+			this->exportButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(132)), static_cast<System::Int32>(static_cast<System::Byte>(169)),
+				static_cast<System::Int32>(static_cast<System::Byte>(140)));
+			this->exportButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->exportButton->FlatAppearance->BorderSize = 0;
+			this->exportButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->exportButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->exportButton->ForeColor = System::Drawing::Color::White;
+			this->exportButton->Location = System::Drawing::Point(490, 541);
+			this->exportButton->Name = L"exportButton";
+			this->exportButton->Size = System::Drawing::Size(219, 35);
+			this->exportButton->TabIndex = 1;
+			this->exportButton->Text = L"💾 Export Full Report";
+			this->exportButton->UseVisualStyleBackColor = false;
+			this->exportButton->Click += gcnew System::EventHandler(this, &MyForm::exportButton_Click);
+			this->exportButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
+			this->exportButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
 			// 
 			// mainContainer
 			// 
@@ -371,7 +370,8 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->summaryBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->summaryBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->summaryBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
+			this->summaryBox->Font = (gcnew System::Drawing::Font(L"Courier New", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->summaryBox->Location = System::Drawing::Point(10, 36);
 			this->summaryBox->Multiline = true;
 			this->summaryBox->Name = L"summaryBox";
@@ -399,7 +399,8 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->grammarBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->grammarBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->grammarBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
+			this->grammarBox->Font = (gcnew System::Drawing::Font(L"Courier New", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->grammarBox->Location = System::Drawing::Point(10, 36);
 			this->grammarBox->Multiline = true;
 			this->grammarBox->Name = L"grammarBox";
@@ -428,7 +429,8 @@ namespace GenoSearch {
 				static_cast<System::Int32>(static_cast<System::Byte>(251)));
 			this->resultsBox->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->resultsBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->resultsBox->Font = (gcnew System::Drawing::Font(L"Consolas", 9));
+			this->resultsBox->Font = (gcnew System::Drawing::Font(L"Courier New", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->resultsBox->Location = System::Drawing::Point(10, 36);
 			this->resultsBox->Multiline = true;
 			this->resultsBox->Name = L"resultsBox";
@@ -584,8 +586,8 @@ namespace GenoSearch {
 			// groupBox2
 			// 
 			this->groupBox2->Controls->Add(this->resetButton);
-			this->groupBox2->Controls->Add(this->showErrorButton);
 			this->groupBox2->Controls->Add(this->step2Label);
+			this->groupBox2->Controls->Add(this->exportButton);
 			this->groupBox2->Controls->Add(this->runButton);
 			this->groupBox2->Controls->Add(this->fileInputGroup);
 			this->groupBox2->Controls->Add(this->pdaInputTypeGroup);
@@ -620,27 +622,6 @@ namespace GenoSearch {
 			this->resetButton->Click += gcnew System::EventHandler(this, &MyForm::resetButton_Click);
 			this->resetButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
 			this->resetButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
-			// 
-			// showErrorButton
-			// 
-			this->showErrorButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-			this->showErrorButton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(233)), static_cast<System::Int32>(static_cast<System::Byte>(196)),
-				static_cast<System::Int32>(static_cast<System::Byte>(106)));
-			this->showErrorButton->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->showErrorButton->FlatAppearance->BorderSize = 0;
-			this->showErrorButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->showErrorButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold));
-			this->showErrorButton->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(52)),
-				static_cast<System::Int32>(static_cast<System::Byte>(71)));
-			this->showErrorButton->Location = System::Drawing::Point(507, 541);
-			this->showErrorButton->Name = L"showErrorButton";
-			this->showErrorButton->Size = System::Drawing::Size(203, 35);
-			this->showErrorButton->TabIndex = 6;
-			this->showErrorButton->Text = L"⚠️ Show Error Demo";
-			this->showErrorButton->UseVisualStyleBackColor = false;
-			this->showErrorButton->Click += gcnew System::EventHandler(this, &MyForm::showErrorButton_Click);
-			this->showErrorButton->MouseEnter += gcnew System::EventHandler(this, &MyForm::Button_MouseEnter);
-			this->showErrorButton->MouseLeave += gcnew System::EventHandler(this, &MyForm::Button_MouseLeave);
 			// 
 			// step2Label
 			// 
@@ -1096,8 +1077,8 @@ namespace GenoSearch {
 			this->browseButton->ForeColor = System::Drawing::Color::White;
 
 			// Export Full Report (Neon Yellow)
-			this->exportButton->BackColor = neonYellow;
-			this->exportButton->ForeColor = System::Drawing::Color::Black;
+			this->exportButton->BackColor = alertLime;
+			this->exportButton->ForeColor = System::Drawing::Color::White;
 
 			// Visualization Toggles (Green)
 			this->showNfaButton->BackColor = deepScienceGreen;
@@ -1108,10 +1089,6 @@ namespace GenoSearch {
 			// Reset Button (Dark Gray)
 			this->resetButton->BackColor = resetDarkGray;
 			this->resetButton->ForeColor = System::Drawing::Color::White;
-
-			// Show Error Demo (Orange - NEW)
-			this->showErrorButton->BackColor = alertLime;
-			this->showErrorButton->ForeColor = System::Drawing::Color::White; // White text looks better on dark orange
 		}
 
 		// Button hover effects
@@ -1141,9 +1118,6 @@ namespace GenoSearch {
 			}
 			else if (btn == exportButton) {
 				btn->BackColor = neonYellow;
-			}
-			else if (btn == showErrorButton) { // Specific check for Error Button
-				btn->BackColor = alertLime;
 			}
 			else if (btn == resetButton) {
 				btn->BackColor = resetDarkGray;

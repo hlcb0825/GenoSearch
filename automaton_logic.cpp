@@ -439,7 +439,7 @@ namespace GenoSearchEngine {
         return matches;
     }
 
-    // Generates Graphviz DOT representation of NFA
+    // Generates Graphviz DOT representation of NFA (with WILDCARD support)
     std::string generateNfaDot(NFA* nfa) {
         std::stringstream dot_ss;
         dot_ss << "digraph NFA {\n  rankdir=LR;\n  node [shape=circle];\n";
@@ -466,7 +466,16 @@ namespace GenoSearchEngine {
                 for (size_t j = 0; j < val.size(); ++j) {
                     State* next = val[j];
                     if (next == nullptr) continue;
-                    std::string label = (key == EPSILON) ? "ε" : std::string(1, key);
+
+                    // Handle special characters in labels
+                    std::string label;
+                    if (key == EPSILON)
+                        label = "ε";
+                    else if (key == WILDCARD)
+                        label = "?";  // WILDCARD symbol
+                    else
+                        label = std::string(1, key);
+
                     dot_ss << "  q" << s->id << " -> q" << next->id
                         << " [label=\"" << label << "\"];\n";
                 }
@@ -609,10 +618,10 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    // LEVENSHTEIN NFA (FULL ASCII SUPPORT)
+    // LEVENSHTEIN NFA (OPTIMIZED WITH WILDCARD)
     // ========================================
 
-    // Builds NFA for approximate matching with edit distance
+    // Builds OPTIMIZED NFA for approximate matching with edit distance
     std::unique_ptr<NFA> buildLevenshteinNFA(const std::string& pattern, int maxErrors,
         std::stringstream& grammar_ss) {
         g_stateIdCounter = 0;
@@ -635,13 +644,13 @@ namespace GenoSearchEngine {
             }
         }
 
-        // Create transitions for edit operations
+        // Create OPTIMIZED transitions for edit operations
         for (int pos = 0; pos < n; ++pos) {
             for (int err = 0; err <= maxErrors; ++err) {
                 State* currentState = stateMap[std::make_pair(pos, err)];
                 char patternChar = pattern[pos];
 
-                // Match (correct character)
+                // Match (correct character) - keep exact match
                 State* matchState = stateMap[std::make_pair(pos + 1, err)];
                 currentState->addTransition(patternChar, matchState);
 
@@ -650,33 +659,43 @@ namespace GenoSearchEngine {
                     State* insState = stateMap[std::make_pair(pos, err + 1)];
                     State* delState = stateMap[std::make_pair(pos + 1, err + 1)];
 
-                    // Substitution: any character except correct one
-                    for (char c = 32; c <= 126; ++c) {  // Full printable ASCII
-                        if (c != patternChar) {
-                            currentState->addTransition(c, subState);
-                        }
-                        currentState->addTransition(c, insState);  // Insertion
-                    }
-
-                    // Deletion (epsilon transition)
-                    currentState->addTransition(EPSILON, delState);
+                    // ✅ OPTIMIZED: Use single WILDCARD transitions instead of 95 ASCII chars
+                    currentState->addTransition(WILDCARD, subState);  // Substitution (any char)
+                    currentState->addTransition(WILDCARD, insState);  // Insertion (any char)
+                    currentState->addTransition(EPSILON, delState);   // Deletion (epsilon)
                 }
             }
         }
 
-        grammar_ss << "Alphabet: Full printable ASCII (32-126)\n";
+        grammar_ss << "Alphabet: Exact match + WILDCARD (any character)\n";
+        grammar_ss << "States: " << ((pattern.length() + 1) * (maxErrors + 1)) << " grid positions\n";
         return nfa;
     }
 
-    // Simulates Levenshtein NFA to find approximate matches
+    // Optimized simulation with wildcard support and safety limits
     std::vector<std::pair<std::string, int>> simulateLevenshteinNFA(NFA* nfa, const std::string& text,
         const std::string& pattern, int k) {
-        std::set<std::pair<std::string, int>> uniqueMatches;  // Avoid duplicates
+        std::set<std::pair<std::string, int>> uniqueMatches;
+
+        // TIMEOUT PROTECTION
+        auto startTime = std::chrono::high_resolution_clock::now();
+        int totalMatchesFound = 0;
 
         // Try every starting position
         for (size_t start = 0; start < text.length(); ++start) {
-            std::queue<std::tuple<State*, size_t, int, std::string>> queue;  // BFS queue
-            std::set<std::tuple<int, size_t, int>> visited;  // (state_id, position, errors)
+            // TIMEOUT CHECK
+            auto currentTime = std::chrono::high_resolution_clock::now();
+            if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count() > 10) {
+                break;
+            }
+
+            // GLOBAL MATCH LIMIT
+            if (totalMatchesFound >= 100) {
+                break;
+            }
+
+            std::queue<std::tuple<State*, size_t, int, std::string>> queue;
+            std::set<std::tuple<int, size_t, int, size_t>> visited;  // (state_id, text_pos, errors, matched_length)
 
             // Start with epsilon closure of start state
             std::set<State*> initialSet;
@@ -685,11 +704,17 @@ namespace GenoSearchEngine {
 
             for (std::set<State*>::iterator it = initialClosure.begin();
                 it != initialClosure.end(); ++it) {
-                queue.push(std::make_tuple(*it, start, 0, ""));  // (state, text_pos, errors, matched)
+                queue.push(std::make_tuple(*it, start, 0, ""));
             }
 
             // BFS simulation
             while (!queue.empty()) {
+                // TIMEOUT CHECK INSIDE BFS
+                currentTime = std::chrono::high_resolution_clock::now();
+                if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count() > 10) {
+                    break;
+                }
+
                 std::tuple<State*, size_t, int, std::string> current = queue.front();
                 queue.pop();
 
@@ -698,36 +723,66 @@ namespace GenoSearchEngine {
                 int errors = std::get<2>(current);
                 std::string matched = std::get<3>(current);
 
-                std::tuple<int, size_t, int> key = std::make_tuple(state->id, textPos, errors);
+                // FIXED: Include matched length in visited key
+                std::tuple<int, size_t, int, size_t> key = std::make_tuple(state->id, textPos, errors, matched.length());
                 if (visited.count(key)) continue;
                 visited.insert(key);
 
                 // Check acceptance condition
                 if (state->isAccepting && matched.length() >= pattern.length() - k) {
-                    uniqueMatches.insert(std::make_pair(matched, errors));
+                    if (uniqueMatches.insert(std::make_pair(matched, errors)).second) {
+                        totalMatchesFound++;
+                    }
+
+                    // PRUNING: Prevent state explosion
+                    if (totalMatchesFound >= 100) {
+                        break;
+                    }
                 }
 
-                if (matched.length() > pattern.length() + k) continue;  // Prune
+                // PRUNING: More aggressive limits
+                if (matched.length() > pattern.length() + k * 2) continue;
+                if (errors > k) continue;
 
-                // Epsilon transitions
+                // Epsilon transitions (deletions)
                 if (state->transitions.count(EPSILON)) {
                     std::vector<State*>& nextStates = state->transitions[EPSILON];
                     for (size_t i = 0; i < nextStates.size(); ++i) {
-                        queue.push(std::make_tuple(nextStates[i], textPos, errors, matched));
+                        queue.push(std::make_tuple(nextStates[i], textPos, errors + 1, matched));
                     }
                 }
 
-                // Regular transitions
+                // Regular transitions (consume input character)
                 if (textPos < text.length()) {
                     char c = text[textPos];
+
+                    // Check for exact character match
                     if (state->transitions.count(c)) {
                         std::vector<State*>& nextStates = state->transitions[c];
                         for (size_t i = 0; i < nextStates.size(); ++i) {
-                            queue.push(std::make_tuple(nextStates[i], textPos + 1,
-                                errors, matched + c));
+                            queue.push(std::make_tuple(nextStates[i], textPos + 1, errors, matched + c));
+                        }
+                    }
+
+                    // Check for WILDCARD transitions (substitutions and insertions)
+                    if (state->transitions.count(WILDCARD)) {
+                        std::vector<State*>& nextStates = state->transitions[WILDCARD];
+                        for (size_t i = 0; i < nextStates.size(); ++i) {
+                            // For wildcard, we need to determine if it's substitution or insertion
+                            State* nextState = nextStates[i];
+
+                            // Heuristic: If next state advances pattern position, it's substitution
+                            // If next state stays at same pattern position, it's insertion
+                            // Both count as +1 error
+                            queue.push(std::make_tuple(nextState, textPos + 1, errors + 1, matched + c));
                         }
                     }
                 }
+            }
+
+            // Break outer loop if we hit match limit in inner loop
+            if (totalMatchesFound >= 100) {
+                break;
             }
         }
 
@@ -1053,22 +1108,22 @@ namespace GenoSearchEngine {
             out_viz.nfaDot = generateNfaDot(nfa.get());
             out_viz.dfaDot = generateDfaDot(dfa.get());
 
-            // Build comprehensive report
+            // Build comprehensive report with PROPER ALIGNMENT
             printHeader(ss_summary, "Regex Search Engine");
-            ss_summary << "Pattern:            " << regex << "\n";
-            ss_summary << "Postfix:            " << postfix << "\n";
-            ss_summary << "File:               " << filepath << "\n";
-            ss_summary << "Strategy:           All-substring (overlapping)\n";
-            ss_summary << "Escape Support:     ✓ (use \\ for literal . * | ( ) \\)\n";
-            ss_summary << "Time Complexity:    O(N²·M)\n";
-            ss_summary << "Execution Time:     " << duration.count() / 1000.0 << "s\n\n";
+            ss_summary << std::left << std::setw(25) << "Pattern:" << regex << "\n";
+            ss_summary << std::left << std::setw(25) << "Postfix:" << postfix << "\n";
+            ss_summary << std::left << std::setw(25) << "File:" << filepath << "\n";
+            ss_summary << std::left << std::setw(25) << "Strategy:" << "All-substring (overlapping)\n";
+            ss_summary << std::left << std::setw(25) << "Escape Support:" << "✓ (use \\ for literal . * | ( ) \\)\n";
+            ss_summary << std::left << std::setw(25) << "Time Complexity:" << "O(N²·M)\n";
+            ss_summary << std::left << std::setw(25) << "Execution Time:" << duration.count() / 1000.0 << "s\n\n";
 
             ss_summary << "Note: Production engines use Aho-Corasick for O(N) multi-pattern search.\n";
             ss_summary << "Our O(N²) is acceptable for educational purposes and finds ALL matches.\n\n";
 
-            ss_summary << "=== Statistics ===\n";
-            ss_summary << "NFA States:         " << nfa->allStates.size() << "\n";
-            ss_summary << "DFA States:         " << dfa->dfaStateToNFAStates.size() << "\n\n";
+            printHeader(ss_summary, "Statistics");
+            ss_summary << std::left << std::setw(25) << "NFA States:" << nfa->allStates.size() << "\n";
+            ss_summary << std::left << std::setw(25) << "DFA States:" << dfa->dfaStateToNFAStates.size() << "\n\n";
 
             ss_grammar << generateNfaGrammar(nfa.get());
             ss_grammar << "\n" << generateASCIIDiagram(dfa.get());
@@ -1093,7 +1148,7 @@ namespace GenoSearchEngine {
         }
     }
 
-    // Branch 2A: Approximate String Matching with Edit Distance
+    // Branch 2A: Approximate String Matching with Edit Distance (OPTIMIZED)
     void runBranch2A_logic(
         const std::string& pattern, int k, const std::string& filepath,
         SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg)
@@ -1115,33 +1170,52 @@ namespace GenoSearchEngine {
             auto stop = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
-            out_viz.nfaDot = generateNfaDot(levenshteinNFA.get());
+            // SMART VISUALIZATION: Only generate if not too large
+            size_t nfaStateCount = levenshteinNFA->allStates.size();
+            if (nfaStateCount <= 50) {
+                out_viz.nfaDot = generateNfaDot(levenshteinNFA.get());
+            }
+            else {
+                // Generate simplified educational diagram
+                std::stringstream simpleViz;
+                simpleViz << "digraph SimplifiedLevenshtein {\n";
+                simpleViz << "  rankdir=TB;\n  node [shape=rectangle];\n";
+                simpleViz << "  label=\"Levenshtein NFA (Too large: " << nfaStateCount << " states)\\n";
+                simpleViz << "Pattern: " << pattern << " (k=" << k << ")\\n";
+                simpleViz << "Grid: " << pattern.length() + 1 << " positions × " << (k + 1) << " errors\";\n";
+                simpleViz << "  info [shape=note, label=\"";
+                simpleViz << "Edit Operations:\\n";
+                simpleViz << "• Match: exact char → same errors\\n";
+                simpleViz << "• Substitute: ? → errors+1\\n";
+                simpleViz << "• Insert: ? → errors+1\\n";
+                simpleViz << "• Delete: ε → errors+1\"];\n";
+                simpleViz << "}\n";
+                out_viz.nfaDot = simpleViz.str();
+                ss_grammar << "\n[Note] Simplified visualization shown (NFA has " << nfaStateCount << " states)\n";
+            }
 
+            // PROPER ALIGNMENT for clean display
             printHeader(ss_summary, "Approximate Matching (Levenshtein)");
-            ss_summary << "Pattern:            \"" << pattern << "\"\n";
-            ss_summary << "Max Errors (k):     " << k << "\n";
-            ss_summary << "File:               " << filepath << "\n";
-            ss_summary << "Alphabet:           Full printable ASCII (32-126)\n";
-            ss_summary << "Execution Time:     " << duration.count() / 1000.0 << "s\n\n";
+            ss_summary << std::left << std::setw(25) << "Pattern:" << "\"" << pattern << "\"\n";
+            ss_summary << std::left << std::setw(25) << "Max Errors (k):" << k << "\n";
+            ss_summary << std::left << std::setw(25) << "File:" << filepath << "\n";
+            ss_summary << std::left << std::setw(25) << "Alphabet:" << "Exact match + WILDCARD (any char)\n";
+            ss_summary << std::left << std::setw(25) << "NFA States:" << nfaStateCount << "\n";
+            ss_summary << std::left << std::setw(25) << "Execution Time:"
+                << std::fixed << std::setprecision(3) << duration.count() / 1000.0 << "s\n\n";
 
-            ss_summary << "=== Statistics ===\n";
-            int expectedStates = (pattern.length() + 1) * (k + 1);
-            ss_summary << "NFA States:         " << levenshteinNFA->allStates.size()
-                << " (Expected: " << expectedStates << ")\n\n";
-
-            ss_summary << "=== Edit Operations ===\n";
-            ss_summary << "Match:              Cost 0\n";
-            ss_summary << "Substitution:       Cost 1\n";
-            ss_summary << "Insertion:          Cost 1\n";
-            ss_summary << "Deletion:           Cost 1 (ε-transition)\n\n";
+            printHeader(ss_summary, "Edit Operations");
+            ss_summary << std::left << std::setw(25) << "Match (exact):" << "Cost 0\n";
+            ss_summary << std::left << std::setw(25) << "Substitution (?):" << "Cost 1\n";
+            ss_summary << std::left << std::setw(25) << "Insertion (?):" << "Cost 1\n";
+            ss_summary << std::left << std::setw(25) << "Deletion (ε):" << "Cost 1\n\n";
 
             printHeader(ss_results, "Approximate Matches");
             ss_results << "Total: " << matches.size() << " matches\n\n";
 
             for (size_t i = 0; i < std::min(matches.size(), size_t(50)); ++i) {
-                ss_results << std::setw(4) << (i + 1) << ": \""
-                    << matches[i].first << "\" (distance: "
-                    << matches[i].second << ")\n";
+                ss_results << std::setw(4) << (i + 1) << ": \"" << matches[i].first
+                    << "\" (errors: " << matches[i].second << ")\n";
             }
 
             if (matches.size() > 50) {
@@ -1187,11 +1261,12 @@ namespace GenoSearchEngine {
 
             out_report.grammar = generateCFGForPDA(mode);
 
+            // PROPER ALIGNMENT for clean display
             printHeader(ss_summary, "PDA Validation");
-            ss_summary << "Mode:               " << mode << "\n";
-            ss_summary << "Language Class:     Context-Free (Type-2)\n";
-            ss_summary << "Recognizer:         Nondeterministic PDA\n";
-            ss_summary << "Simulation:         BFS (explores all paths)\n\n";
+            ss_summary << std::left << std::setw(25) << "Mode:" << mode << "\n";
+            ss_summary << std::left << std::setw(25) << "Language Class:" << "Context-Free (Type-2)\n";
+            ss_summary << std::left << std::setw(25) << "Recognizer:" << "Nondeterministic PDA\n";
+            ss_summary << std::left << std::setw(25) << "Simulation:" << "BFS (explores all paths)\n\n";
 
             std::unique_ptr<FormalPDA> pda;
             if (mode == "DNA" || mode == "RNA") {
@@ -1207,8 +1282,10 @@ namespace GenoSearchEngine {
             bool isValid = simulateFormalPDA(pda.get(), full_text);
 
             printHeader(ss_results, "Validation Result");
-            ss_results << "Input: " << (isFile ? input : full_text.substr(0, 50)) << "\n";
-            ss_results << "Status: " << (isValid ? "✓ VALID" : "✗ INVALID") << "\n\n";
+            ss_results << std::left << std::setw(15) << "Input:"
+                << (isFile ? input : full_text.substr(0, 50)) << "\n";
+            ss_results << std::left << std::setw(15) << "Status:"
+                << (isValid ? "✓ VALID" : "✗ INVALID") << "\n\n";
 
             out_viz.pdaTrace = pda->traceStream.str();
 

@@ -19,6 +19,7 @@ extern int g_stateIdCounter;
 
 // Epsilon character
 const char EPSILON = '\0';
+const char WILDCARD = '?';
 
 /**
  * @class State
