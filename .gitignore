@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 *.dot
+/approx_viz.png
