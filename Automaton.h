@@ -18,8 +18,9 @@
 extern int g_stateIdCounter;
 
 // Epsilon character
-const char EPSILON = '\0';
-const char WILDCARD = '?';
+const char EPSILON = '\0';    // Deletions
+const char SUB_WILDCARD = '*'; // Substitutions (any char)
+const char INS_WILDCARD = '+'; // Insertions (any char)
 
 /**
  * @class State

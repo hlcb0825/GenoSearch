@@ -1,42 +1,39 @@
-/*
- * MyForm.cpp
- * This is the main C++/CLI entry point.
- * Its only job is to load and run your MyForm.h form.
- */
-
-#include "MyForm.h" // Your GUI header file
-
-// Use Win32 API for DPI awareness when targeting .NET Framework
+#include "MyForm.h"
 #include <windows.h>
+#include <iostream>
 
 using namespace System;
 using namespace System::Windows::Forms;
+using namespace System::Text;
 
-[STAThreadAttribute] // Required for Windows Forms
+// GLOBAL UTF-8 SETUP - RUNS BEFORE ANYTHING
+class UnicodeSetup {
+public:
+    UnicodeSetup() {
+        // Set console to UTF-8 (in case you use console output)
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
+    }
+};
+
+// This runs before main()
+UnicodeSetup unicodeSetup;
+
+[STAThreadAttribute]
 int main(array<System::String^>^ args)
 {
-    // *** THIS IS THE FIX for blurry text ***
-    // Application::SetHighDpiMode(...) is available on .NET Core / .NET 5+ only.
-    // For projects targeting .NET Framework, call the Win32 DPI API instead.
-    typedef BOOL(WINAPI* SetProcessDPIAware_t)();
+    // Set DPI awareness for crisp text
     HMODULE user32 = LoadLibraryW(L"user32.dll");
-    if (user32)
-    {
-        SetProcessDPIAware_t pSetProcessDPIAware = (SetProcessDPIAware_t)GetProcAddress(user32, "SetProcessDPIAware");
-        if (pSetProcessDPIAware)
-        {
-            // Sets the process to system-DPI aware (closest equivalent to SystemAware)
-            pSetProcessDPIAware();
-        }
+    if (user32) {
+        auto pSetProcessDPIAware = (BOOL(WINAPI*)())GetProcAddress(user32, "SetProcessDPIAware");
+        if (pSetProcessDPIAware) pSetProcessDPIAware();
         FreeLibrary(user32);
     }
 
-    // Enable visual styles
     Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);
 
-    // Create the main window and run it
-    // "GenoSearch" MUST match the namespace in MyForm.h
+    // Create and run main form
     GenoSearch::MyForm form;
     Application::Run(% form);
 
