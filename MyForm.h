@@ -51,41 +51,6 @@ namespace GenoSearch {
 				delete components;
 			}
 		}
-
-	private:
-		// ADD THIS FUNCTION
-		void SetupUnicodeDisplay()
-		{
-			// Force Unicode support
-			SetConsoleOutputCP(CP_UTF8);
-
-			// Set form and controls to use Unicode fonts
-			this->Font = gcnew System::Drawing::Font("Microsoft Sans Serif", 10, FontStyle::Regular);
-
-			// Apply Unicode font to all controls
-			ApplyUnicodeFontToControls(this);
-		}
-
-		// ADD THIS FUNCTION
-		void ApplyUnicodeFontToControls(Control^ parent)
-		{
-			for each (Control ^ ctrl in parent->Controls)
-			{
-				ctrl->Font = gcnew System::Drawing::Font("Segoe UI Symbol", 10, FontStyle::Regular);
-				ApplyUnicodeFontToControls(ctrl); // Recursive for containers
-			}
-		}
-
-		// ADD THIS CONVERSION FUNCTION
-		String^ ConvertToUnicodeString(const std::string& input)
-		{
-			// Convert std::string to System::String with proper encoding
-			array<Byte>^ bytes = gcnew array<Byte>(input.length());
-			for (int i = 0; i < input.length(); i++)
-				bytes[i] = input[i];
-
-			return System::Text::Encoding::UTF8->GetString(bytes);
-		}
 	private: System::Windows::Forms::Panel^ headerPanel;
 	private: System::Windows::Forms::Label^ titleLabel;
 	private: System::Windows::Forms::Label^ subtitleLabel;
@@ -1232,8 +1197,19 @@ namespace GenoSearch {
 			return msclr::interop::marshal_as<std::string>(netString);
 		}
 
-		System::String^ ToNetString(const std::string& stdString) {
-			return gcnew System::String(stdString.c_str());
+		// *** THIS IS THE CORRECT, UNIQUE DEFINITION ***
+		System::String^ ToNetString(const std::string& utf8String) {
+			// FIX: Correctly marshal UTF-8 std::string to System::String (Unicode/UTF-16).
+			if (utf8String.empty()) {
+				return String::Empty;
+			}
+			// 1. Get the UTF-8 bytes from the std::string
+			array<unsigned char>^ bytes = gcnew array<unsigned char>((int)utf8String.length());
+			for (int i = 0; i < utf8String.length(); i++)
+				bytes[i] = (unsigned char)utf8String[i];
+
+			// 2. Decode the bytes explicitly using UTF8 encoding
+			return System::Text::Encoding::UTF8->GetString(bytes);
 		}
 
 		void OpenFile(TextBox^ textBox) {
@@ -1996,13 +1972,5 @@ private: System::Void saveFileDialog1_FileOk(System::Object^ sender, System::Com
 }
 private: System::Void animationTimer_Tick(System::Object^ sender, System::EventArgs^ e) {
 }
-private:
-	System::String^ ConvertUtf8ToSystemString(const std::string& utf8_string) {
-		array<unsigned char>^ bytes = gcnew array<unsigned char>(utf8_string.size());
-		for (int i = 0; i < utf8_string.size(); i++) {
-			bytes[i] = utf8_string[i];
-		}
-		return System::Text::Encoding::UTF8->GetString(bytes);
-	}
 };
 }
