@@ -1182,7 +1182,7 @@ namespace GenoSearchEngine {
 
                     std::string label;
                     if (key == EPSILON)
-                        label = "ε";
+                        label = "&epsilon;";
                     else if (key == SUB_WILDCARD)
                         label = "sub(*)";
                     else if (key == INS_WILDCARD)
