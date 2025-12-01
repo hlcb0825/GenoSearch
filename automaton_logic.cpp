@@ -57,7 +57,7 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    //          THEORETICAL ANALYSIS FUNCTIONS
+    //     THEORETICAL ANALYSIS FUNCTIONS
     // ========================================
 
     // Analyzes language class and properties
@@ -172,8 +172,6 @@ namespace GenoSearchEngine {
             if (match.second == 0) perfectMatches++;
             if (match.second <= 1) within1Error++;
             if (match.second <= 2) within2Errors++;
-
-            // Simplified error type estimation (in real implementation, track operations)
             if (match.first.length() > pattern.length()) totalInsertions++;
             else if (match.first.length() < pattern.length()) totalDeletions++;
             else if (match.second > 0) totalSubstitutions++;
@@ -220,7 +218,7 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    //    REGEX ENGINE (WITH ESCAPE SUPPORT)
+    //    SIMULATION 1: REGULAR EXPRESSION
     // ========================================
 
     int precedence(char op) {
@@ -537,9 +535,9 @@ namespace GenoSearchEngine {
         return matches;
     }
 
-    // ========================================
+    // ============================================
     //    THEORETICAL ANALYSIS FOR SIMULATION 1
-    // ========================================
+    // ============================================
 
     std::string generateRegexSearchParameters(const std::string& regex, const std::string& postfix,
         const std::string& filepath, double executionTime) {
@@ -626,7 +624,7 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    // LEVENSHTEIN NFA (THEORETICAL VERSION)
+    //    SIMULATION 2: APPROXIMATE MATCH
     // ========================================
 
     const char EPSILON = '\0';
@@ -792,9 +790,9 @@ namespace GenoSearchEngine {
         return result;
     }
 
-    // ========================================
-    //    THEORETICAL ANALYSIS FOR SIMULATION 2
-    // ========================================
+    // =============================================
+    //     THEORETICAL ANALYSIS FOR SIMULATION 2
+    // =============================================
 
     std::string generateFuzzySearchParameters(const std::string& pattern, int k,
         const std::string& filepath, double executionTime,
@@ -858,9 +856,9 @@ namespace GenoSearchEngine {
         return ss.str();
     }
 
-    // ========================================
-    // PDA STRUCTURES (THEORETICAL VERSION)
-    // ========================================
+    // =============================================
+    //      SIMULATION 3: STRUCTURAL VALIDATION 
+    // =============================================
 
     struct PDATransition {
         int fromState;
@@ -1068,9 +1066,9 @@ namespace GenoSearchEngine {
         return false;
     }
 
-    // ========================================
-    //    THEORETICAL ANALYSIS FOR SIMULATION 3
-    // ========================================
+    // ==============================================
+    //     THEORETICAL ANALYSIS FOR SIMULATION 3
+    // ==============================================
 
     std::string generateStructureValidationParameters(const std::string& mode, const std::string& input) {
         std::stringstream ss;
@@ -1153,7 +1151,7 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    //    VISUALIZATION FUNCTIONS (UNCHANGED)
+    //         VISUALIZATION FUNCTIONS 
     // ========================================
 
     std::string generateNfaDot(NFA* nfa) {
@@ -1231,7 +1229,7 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    //    PUBLIC WRAPPER FUNCTIONS (UPDATED)
+    //         PUBLIC WRAPPER FUNCTIONS
     // ========================================
 
     void runBranch1_logic(
@@ -1249,7 +1247,6 @@ namespace GenoSearchEngine {
 
             std::string postfix = infixToPostfix(regex);
 
-            // FIX: Create temporary stringstream for buildThompson
             std::stringstream grammar_ss;
             std::unique_ptr<NFA> nfa = buildThompson(postfix, grammar_ss);
 
@@ -1375,7 +1372,7 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    //    GRAPHVIZ FUNCTIONS (UNCHANGED)
+    //           GRAPHVIZ FUNCTIONS
     // ========================================
 
     std::string GetTextFallback(const std::string& dot_string) {
