@@ -5,12 +5,12 @@
 
 #include <string>
 
-// Forward declarations for report structures
 namespace GenoSearchEngine {
+    // Report structure matches the 3 UI tables
     struct SimulationReport {
-        std::string summary;
-        std::string grammar;
-        std::string matches;
+        std::string summary; // Table 1
+        std::string grammar; // Table 2 (Config)
+        std::string matches; // Table 3 (Details/Trace)
     };
 
     struct VisualizationData {
