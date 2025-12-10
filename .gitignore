@@ -365,3 +365,4 @@ FodyWeavers.xsd
 *.dot
 /approx_viz.png
 /nfa_viz.png
+/dfa_viz.png
