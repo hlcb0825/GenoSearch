@@ -1,4 +1,4 @@
-#include "automaton_logic.h" 
+﻿#include "automaton_logic.h" 
 #include "automaton.h"       
 #include <queue>
 #include <fstream>
@@ -19,12 +19,34 @@ int g_stateIdCounter = 0;
 namespace GenoSearchEngine {
 
     // ========================================
-    //      FORWARD DECLARATIONS
+    //          FORWARD DECLARATIONS
     // ========================================
-    // These tell the compiler these functions exist, 
-    // even though they are defined at the bottom of the file.
+    struct PDAEngine;
     std::string generateNfaDot(NFA* nfa);
     std::string generateDfaDot(DFA* dfa);
+    std::string generatePDADot(PDAEngine* pda);
+
+    // ========================================
+    //         BIO-VALIDATION HELPERS
+    // ========================================
+    bool isBioChar(char c) {
+        char upper = std::toupper(static_cast<unsigned char>(c));
+        return (upper == 'A' || upper == 'C' || upper == 'G' || upper == 'T' || upper == 'U' ||
+            upper == 'N' || std::isspace(static_cast<unsigned char>(c)));
+    }
+
+    // Step 1: Input Validation
+    bool validateBioContent(const std::string& text, std::string& errorOut) {
+        for (size_t i = 0; i < text.length(); ++i) {
+            char c = text[i];
+            if (!isBioChar(c)) {
+                errorOut = "Invalid Input: Non-biological character detected ('" + std::string(1, c) + "').\n"
+                    "GenoSearch only accepts DNA/RNA sequences (A, C, G, T, U, N).";
+                return false;
+            }
+        }
+        return true;
+    }
 
     // ========================================
     //         ESCAPE SEQUENCE TOKENS
@@ -82,7 +104,34 @@ namespace GenoSearchEngine {
     }
 
     void printTableRow(std::stringstream& ss, const std::string& label, const std::string& value) {
-        ss << std::left << std::setw(30) << label << ": " << value << "\n";
+        const int TARGET_WIDTH = 18; // Adjust this number to make the gap wider/narrower
+
+        // Calculate how many spaces we need
+        int padding = TARGET_WIDTH - (int)label.length();
+        if (padding < 0) padding = 0;
+
+        //                                             Here is the change
+        //                                                   vvvvv
+        ss << label << std::string(padding, ' ') << ": " << value << "\r\n";
+    }
+
+    // PASTE THIS AFTER printTableRow function
+
+    std::string centerText(std::string text, int width) {
+        int visualLength = (int)text.length();
+
+        // FIX: If text is Epsilon (2 bytes), treat it as length 1
+        if (text == "ε") {
+            visualLength = 1;
+        }
+
+        int padding = width - visualLength;
+        if (padding <= 0) return text; // No padding needed
+
+        int leftPad = padding / 2;
+        int rightPad = padding - leftPad;
+
+        return std::string(leftPad, ' ') + text + std::string(rightPad, ' ');
     }
 
     // ========================================
@@ -96,6 +145,7 @@ namespace GenoSearchEngine {
         return 0;
     }
 
+	// Step 1 : Infix to Postfix Conversion with Escape Handling
     std::string infixToPostfix(const std::string& infix) {
         std::string processed;
         bool escapeNext = false;
@@ -173,6 +223,7 @@ namespace GenoSearchEngine {
         return postfix;
     }
 
+	// Step 2 : Thompson's Construction
     std::unique_ptr<NFA> buildThompson(const std::string& postfix) {
         std::stack<std::unique_ptr<NFA>> nfaStack;
         g_stateIdCounter = 0;
@@ -289,6 +340,7 @@ namespace GenoSearchEngine {
         return closure;
     }
 
+	//Step 3 : Subset Construction (NFA to DFA)
     std::unique_ptr<DFA> buildDFA(NFA* nfa) {
         std::unique_ptr<DFA> dfa(new DFA());
         if (!nfa || !nfa->startState) return dfa;
@@ -355,8 +407,10 @@ namespace GenoSearchEngine {
         return dfa;
     }
 
+	//Step 4 : Simulation 
     std::vector<std::string> simulateDFA(DFA* dfa, const std::string& text) {
         std::vector<std::string> matches;
+
         // Brute force substring search
         for (size_t i = 0; i < text.length(); ++i) {
             int current = dfa->startStateId;
@@ -377,13 +431,14 @@ namespace GenoSearchEngine {
     }
 
     // ========================================
-    //    SIMULATION 2: APPROXIMATE MATCH
+    //     SIMULATION 2: APPROXIMATE MATCH
     // ========================================
 
     const char LEV_EPSILON = '\0';
     const char LEV_SUB = '*';
     const char LEV_INS = '+';
 
+	//Step 1: Grid NFA Construction
     std::unique_ptr<NFA> buildLevenshteinNFA(const std::string& pattern, int maxErrors) {
         g_stateIdCounter = 0;
         std::unique_ptr<NFA> nfa(new NFA());
@@ -417,12 +472,10 @@ namespace GenoSearchEngine {
     }
 
     std::vector<std::pair<std::string, int>> simulateLevenshteinNFA(NFA* nfa, const std::string& text, const std::string& pattern, int k) {
-        // --- CONSTANTS DEFINED LOCALLY TO PREVENT ERRORS ---
         const char LOCAL_EPSILON = '\0';
         const char LOCAL_SUB_WILDCARD = '*';
         const char LOCAL_INS_WILDCARD = '+';
 
-        // Helper to clean string (removes newlines/invisible chars)
         auto cleanString = [](const std::string& s) -> std::string {
             std::string result;
             for (char c : s) {
@@ -433,18 +486,18 @@ namespace GenoSearchEngine {
             return result;
             };
 
-        // Map to store only the BEST (lowest error) count for each CLEANED string
         std::map<std::string, int> bestMatches;
 
-        // Tuple: StateID, TextIndex, Errors, MatchedString, PatternIndex
         typedef std::tuple<State*, size_t, int, std::string, int> SearchState;
 
         auto start_time = std::chrono::steady_clock::now();
 
+		//Step 2: Pipeline Initialization
         for (size_t startPos = 0; startPos < text.length(); ++startPos) {
             auto now = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::seconds>(now - start_time).count() > 5) break;
 
+			//Step 3: BFS Simulation
             std::queue<SearchState> localQ;
             std::set<std::tuple<int, size_t, int>> visited;
 
@@ -461,7 +514,7 @@ namespace GenoSearchEngine {
                 std::string accStr = std::get<3>(currentTuple);
                 int patIdx = std::get<4>(currentTuple);
 
-                // Pruning
+                // Step 4: Pruning
                 std::tuple<int, size_t, int> visitKey = std::make_tuple(currState->id, txtIdx, err);
                 if (visited.count(visitKey)) continue;
                 visited.insert(visitKey);
@@ -471,6 +524,7 @@ namespace GenoSearchEngine {
                     // Clean the string (remove \r, \n, etc) before checking duplicates
                     std::string clean = cleanString(accStr);
                     if (!clean.empty()) {
+						//Step 5.A : Deduplication 
                         if (bestMatches.find(clean) == bestMatches.end() || err < bestMatches[clean]) {
                             bestMatches[clean] = err;
                         }
@@ -526,28 +580,25 @@ namespace GenoSearchEngine {
             }
         }
 
-        // --- CLEANUP PHASE ---
         std::vector<std::pair<std::string, int>> rawResults;
         for (std::map<std::string, int>::iterator it = bestMatches.begin(); it != bestMatches.end(); ++it) {
             rawResults.push_back(*it);
         }
 
-        // Sort: Primary=Lowest Error, Secondary=Longest Length
         struct {
             bool operator()(const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) const {
-                if (a.second != b.second) return a.second < b.second; // Lower error first
-                return a.first.length() > b.first.length();           // Then Longer string
+                if (a.second != b.second) return a.second < b.second; 
+                return a.first.length() > b.first.length();           
             }
         } sorter;
         std::sort(rawResults.begin(), rawResults.end(), sorter);
 
-        // Filter: Remove strings that are just substrings of better matches
         std::vector<std::pair<std::string, int>> finalResults;
 
+        //Step 5.B: Substring Removal
         for (size_t i = 0; i < rawResults.size(); ++i) {
             bool isRedundant = false;
             for (size_t j = 0; j < finalResults.size(); ++j) {
-                // If current string is inside a better result, drop it
                 if (finalResults[j].first.find(rawResults[i].first) != std::string::npos) {
                     isRedundant = true;
                     break;
@@ -562,9 +613,9 @@ namespace GenoSearchEngine {
         return finalResults;
     }
 
-    // ========================================
-    //      SIMULATION 3: STRUCTURAL VALIDATION
-    // ========================================
+    // ===========================================
+    //     SIMULATION 3: STRUCTURAL VALIDATION
+    // ===========================================
 
     struct PDATransition {
         int from;
@@ -588,9 +639,9 @@ namespace GenoSearchEngine {
         void addTrace(int state, char input, const std::string& stackStr, const std::string& action) {
             if (traceLines < 10) {
                 trace << std::left << std::setw(10) << state
-                    << std::setw(10) << (input == '\0' ? "eps" : std::string(1, input))
-                    << std::setw(15) << (stackStr.empty() ? "eps" : stackStr)
-                    << action << "\n";
+                    << std::setw(10) << (input == '\0' ? "ε" : std::string(1, input))
+                    << std::setw(15) << (stackStr.empty() ? "ε" : stackStr)
+                    << action;
                 traceLines++;
             }
             else if (traceLines == 10) {
@@ -600,62 +651,42 @@ namespace GenoSearchEngine {
         }
     };
 
-    std::unique_ptr<PDAEngine> buildDNAPDA() {
+	// Step 2: PDA Construction for Nucleotide Pairing
+    std::unique_ptr<PDAEngine> buildNucleotidePDA() {
         std::unique_ptr<PDAEngine> pda(new PDAEngine());
         pda->startSymbol = 'Z';
         pda->acceptStates.insert(2);
 
         PDATransition t;
 
-        // Push Rule
+        // PHASE 1: PUSH RULES (State 0)
         t = { 0, 'G', '\0', 0, "G" }; pda->transitions.push_back(t);
         t = { 0, 'C', '\0', 0, "C" }; pda->transitions.push_back(t);
         t = { 0, 'A', '\0', 0, "A" }; pda->transitions.push_back(t);
         t = { 0, 'T', '\0', 0, "T" }; pda->transitions.push_back(t);
+        t = { 0, 'U', '\0', 0, "U" }; pda->transitions.push_back(t); // Added RNA
 
-        // Switch
+        // MIDPOINT: SWITCH (State 0 -> State 1)
         t = { 0, '\0', '\0', 1, "" }; pda->transitions.push_back(t);
 
-        // Pop Rules
-        t = { 1, 'C', 'G', 1, "" }; pda->transitions.push_back(t);
-        t = { 1, 'G', 'C', 1, "" }; pda->transitions.push_back(t);
-        t = { 1, 'A', 'T', 1, "" }; pda->transitions.push_back(t);
-        t = { 1, 'T', 'A', 1, "" }; pda->transitions.push_back(t);
+        // PHASE 2: POP RULES (State 1)
+        t = { 1, 'C', 'G', 1, "" }; pda->transitions.push_back(t); // G-C
+        t = { 1, 'G', 'C', 1, "" }; pda->transitions.push_back(t); // C-G
 
-        // Accept
+        // DNA Pairing
+        t = { 1, 'T', 'A', 1, "" }; pda->transitions.push_back(t); // A-T
+        t = { 1, 'A', 'T', 1, "" }; pda->transitions.push_back(t); // T-A
+
+        // RNA Pairing
+        t = { 1, 'U', 'A', 1, "" }; pda->transitions.push_back(t); // A-U
+        t = { 1, 'A', 'U', 1, "" }; pda->transitions.push_back(t); // U-A
+
+        // ACCEPT: Empty Stack Check (State 1 -> State 2)
         t = { 1, '\0', 'Z', 2, "Z" }; pda->transitions.push_back(t);
 
         return pda;
     }
 
-    std::unique_ptr<PDAEngine> buildBracketPDA() {
-        std::unique_ptr<PDAEngine> pda(new PDAEngine());
-        pda->startSymbol = 'Z';
-        pda->acceptStates.insert(0);
-
-        PDATransition t;
-        t = { 0, '(', '\0', 0, "(" }; pda->transitions.push_back(t);
-        t = { 0, '[', '\0', 0, "[" }; pda->transitions.push_back(t);
-        t = { 0, '{', '\0', 0, "{" }; pda->transitions.push_back(t);
-
-        t = { 0, ')', '(', 0, "" }; pda->transitions.push_back(t);
-        t = { 0, ']', '[', 0, "" }; pda->transitions.push_back(t);
-        t = { 0, '}', '{', 0, "" }; pda->transitions.push_back(t);
-
-        return pda;
-    }
-
-    std::unique_ptr<PDAEngine> buildXMLPDA() {
-        std::unique_ptr<PDAEngine> pda(new PDAEngine());
-        pda->startSymbol = 'Z';
-        pda->acceptStates.insert(0);
-
-        PDATransition t;
-        t = { 0, '<', '\0', 0, "X" }; pda->transitions.push_back(t);
-        t = { 0, '/', 'X', 0, "" }; pda->transitions.push_back(t);
-
-        return pda;
-    }
 
     bool simulatePDA(PDAEngine* pda, const std::string& input) {
         struct Config {
@@ -674,13 +705,14 @@ namespace GenoSearchEngine {
         startConfig.state = 0;
         startConfig.inputIdx = 0;
         startConfig.stack = startStack;
-        startConfig.pathMaxDepth = 1;             // Start depth is 1 (Z)
+        startConfig.pathMaxDepth = 1;             
         q.push(startConfig);
 
         // Reset global metrics
         pda->maxStackDepth = 0;
         int iterations = 0;
 
+		//Step 3: Simulation with History Tracking
         while (!q.empty()) {
             if (iterations++ > 30000) break; // Safety break
 
@@ -690,7 +722,7 @@ namespace GenoSearchEngine {
             std::string stackStr;
             for (std::vector<char>::reverse_iterator it = curr.stack.rbegin(); it != curr.stack.rend(); ++it) stackStr += *it;
 
-            // CHECK ACCEPTANCE
+            // Step 4: Acceptance Check
             if (curr.inputIdx == input.length() && pda->acceptStates.count(curr.state)) {
                 // Stack must be effectively empty (just start symbol)
                 if (curr.stack.size() == 1 && curr.stack.back() == pda->startSymbol) {
@@ -701,17 +733,21 @@ namespace GenoSearchEngine {
 
                     // 2. Overwrite the trace with ONLY this winning history
                     pda->trace.str("");
-                    pda->trace << std::left << std::setw(10) << "State" << std::setw(10) << "Input" << std::setw(15) << "Stack" << "Action\n";
-                    pda->trace << "--------------------------------------------------\n";
+                    // CENTERED HEADERS
+                    pda->trace << centerText("State", 10)
+                        << centerText("Input", 10)
+                        << centerText("Stack", 15)
+                        << "Action\r\n";
+                    pda->trace << "---------------------------------------------\r\n";
 
                     // Print the history of the winner
                     size_t limit = std::min((size_t)12, curr.history.size());
                     for (size_t i = 0; i < limit; ++i) {
-                        pda->trace << curr.history[i] << "\n";
+                        pda->trace << curr.history[i] << "\r\n";
                     }
-                    if (curr.history.size() > 12) pda->trace << "... (trace truncated) ...\n";
+                    if (curr.history.size() > 12) pda->trace << "... (trace truncated) ...\r\n";
 
-                    pda->trace << "\n>>> ACCEPTED <<<\n";
+                    pda->trace << "\r\n>>> ACCEPTED <<<\r\n";
                     return true;
                 }
             }
@@ -756,14 +792,20 @@ namespace GenoSearchEngine {
                 std::string actionName;
                 if (t.input == '\0' && t.pop == '\0' && t.push.empty()) actionName = "Switch";
                 else {
-                    if (t.input == '\0') actionName += "eps ";
+                    if (t.input == '\0') actionName += "ε ";
                     if (t.pop != '\0') actionName += "Pop " + std::string(1, t.pop) + " ";
                     if (!t.push.empty()) actionName += "Push " + t.push;
                 }
 
-                actionSS << std::left << std::setw(10) << curr.state
-                    << std::setw(10) << (t.input == '\0' ? "eps" : std::string(1, inputChar))
-                    << std::setw(15) << (stackStr.empty() ? "eps" : stackStr)
+                // Prepare strings for centering
+                std::string s_state = std::to_string(curr.state);
+                std::string s_input = (t.input == '\0' ? "ε" : std::string(1, inputChar));
+                std::string s_stack = (stackStr.empty() ? "ε" : stackStr);
+
+                // USE CENTERTEXT TO FIX ZIGZAG
+                actionSS << centerText(s_state, 10)
+                    << centerText(s_input, 10)
+                    << centerText(s_stack, 15)
                     << actionName;
 
                 next.history.push_back(actionSS.str());
@@ -892,6 +934,7 @@ namespace GenoSearchEngine {
         try {
             std::string text = readFile(filepath);
             if (text.rfind("[Error]", 0) == 0) { out_error_msg = text; return; }
+            if (!validateBioContent(text, out_error_msg)) return;
 
             auto start = std::chrono::high_resolution_clock::now();
             std::string postfix = infixToPostfix(regex);
@@ -917,6 +960,10 @@ namespace GenoSearchEngine {
         try {
             std::string text = readFile(filepath);
             if (text.rfind("[Error]", 0) == 0) { out_error_msg = text; return; }
+            if (!validateBioContent(text, out_error_msg)) return;
+            // Validate Pattern too
+            std::string patErr;
+            if (!validateBioContent(pattern, patErr)) { out_error_msg = "Pattern Error: " + patErr; return; }
 
             auto start = std::chrono::high_resolution_clock::now();
             std::unique_ptr<NFA> nfa = buildLevenshteinNFA(pattern, k);
@@ -938,55 +985,39 @@ namespace GenoSearchEngine {
     void runBranch2B_logic(const std::string& input, bool isFile, SimulationReport& out_report, VisualizationData& out_viz, std::string& out_error_msg) {
         try {
             std::string text = input;
-            std::string mode = "BRACKET"; // Default
-
             if (isFile) {
                 text = readFile(input);
                 if (text.rfind("[Error]", 0) == 0) { out_error_msg = text; return; }
-
-                // --- SMART MODE DETECTION ---
-                // 1. Check for XML
-                if (input.find(".xml") != std::string::npos || text.find('<') != std::string::npos) {
-                    mode = "XML";
-                }
-                // 2. Check for DNA (Explicit FASTA or Content Scan)
-                else if (input.find(".fasta") != std::string::npos || text.find('>') != std::string::npos) {
-                    mode = "DNA";
-                }
-                else {
-                    // Content Scan: If it contains only G, A, T, C, it's likely DNA
-                    bool isDNA = true;
-                    bool hasContent = false;
-                    for (size_t i = 0; i < text.length(); ++i) {
-                        char c = text[i];
-                        if (std::isspace(static_cast<unsigned char>(c))) continue;
-                        hasContent = true;
-                        if (std::string("GATCgatc").find(c) == std::string::npos) {
-                            isDNA = false;
-                            break;
-                        }
-                    }
-                    if (isDNA && hasContent) mode = "DNA";
-                }
             }
 
-            auto start = std::chrono::steady_clock::now();
-            std::unique_ptr<PDAEngine> pda;
-            if (mode == "DNA") pda = buildDNAPDA();
-            else if (mode == "XML") pda = buildXMLPDA();
-            else pda = buildBracketPDA();
+            // 1. STRICT BIO VALIDATION (No XML, No Brackets)
+            if (!validateBioContent(text, out_error_msg)) return;
 
-            bool valid = simulatePDA(pda.get(), text);
+            std::string mode = "Nucleotide Palindrome";
+
+            auto start = std::chrono::steady_clock::now();
+
+            // 2. Use the new Unified Builder
+            std::unique_ptr<PDAEngine> pda = buildNucleotidePDA();
+
+            // 3. Strip whitespace for cleaner trace processing
+            std::string cleanText;
+            for (size_t i = 0; i < text.length(); ++i) {
+                if (!std::isspace(static_cast<unsigned char>(text[i]))) cleanText += text[i];
+            }
+
+            bool valid = simulatePDA(pda.get(), cleanText);
             auto end = std::chrono::steady_clock::now();
             double time = std::chrono::duration<double>(end - start).count();
 
-            generatePDASummary(mode, text.length(), time, valid, pda->maxStackDepth, out_report);
+            generatePDASummary(mode, cleanText.length(), time, valid, pda->maxStackDepth, out_report);
             generatePDAConfig(mode, (int)pda->transitions.size(), (int)pda->acceptStates.size(), pda->startSymbol, out_report);
 
             out_report.matches = pda->trace.str();
-            if (out_report.matches.empty()) out_report.matches = "(No trace available)";
+            if (out_report.matches.empty()) out_report.matches = "Trace unavailable (Sequence Rejected)";
 
             out_viz.pdaTrace = out_report.matches;
+            out_viz.pdaDot = generatePDADot(pda.get()); 
 
         }
         catch (std::exception& e) { out_error_msg = e.what(); }
@@ -1013,7 +1044,7 @@ namespace GenoSearchEngine {
                 for (size_t j = 0; j < v.size(); ++j) {
                     State* next = v[j];
                     std::string label;
-                    if (k == '\0') label = "eps";
+                    if (k == '\0') label = "&epsilon;";
                     else if (k == '*') label = "sub(*)";
                     else if (k == '+') label = "ins(+)";
                     else label = std::string(1, k);
@@ -1048,6 +1079,51 @@ namespace GenoSearchEngine {
 
     std::string GetTextFallback(const std::string& dot_string) {
         return "Graphviz not available. Text representation: \n" + dot_string;
+    }
+
+    std::string generatePDADot(PDAEngine* pda) {
+        std::stringstream dot_ss;
+        dot_ss << "digraph PDA {\n  rankdir=LR;\n  node [shape=circle];\n";
+        if (!pda) return "digraph G {}";
+
+        // Start Node
+        dot_ss << "  start [shape=point];\n  start -> 0;\n";
+
+        // 1. Identify all unique states
+        std::set<int> states;
+        states.insert(0); // Start is always 0
+        for (const auto& t : pda->transitions) {
+            states.insert(t.from);
+            states.insert(t.to);
+        }
+        for (int s : pda->acceptStates) states.insert(s);
+
+        // 2. Draw Nodes (Double circle for accept)
+        for (int s : states) {
+            if (pda->acceptStates.count(s)) dot_ss << "  " << s << " [shape=doublecircle];\n";
+            else dot_ss << "  " << s << " [shape=circle];\n";
+        }
+
+        // 3. Draw Edges (Label format: "Input, Pop / Push")
+        for (const auto& t : pda->transitions) {
+            std::string label;
+
+            // Input char
+            label += (t.input == '\0' ? "&epsilon;" : std::string(1, t.input));
+            label += ", ";
+
+            // Pop char
+            label += (t.pop == '\0' ? "&epsilon;" : std::string(1, t.pop));
+            label += " / "; // Standard PDA separator
+
+            // Push string
+            label += (t.push.empty() ? "&epsilon;" : t.push);
+
+            dot_ss << "  " << t.from << " -> " << t.to << " [label=\"" << label << "\"];\n";
+        }
+
+        dot_ss << "}\n";
+        return dot_ss.str();
     }
 
     bool GenerateGraphvizImage(const std::string& dot_string, const std::string& image_path, std::string& out_error_message, std::string& out_fallback_text) {

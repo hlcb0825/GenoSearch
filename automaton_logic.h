@@ -16,6 +16,7 @@ namespace GenoSearchEngine {
     struct VisualizationData {
         std::string nfaDot;
         std::string dfaDot;
+		std::string pdaDot;
         std::string pdaTrace;
     };
 
