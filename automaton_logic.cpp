@@ -625,6 +625,15 @@ namespace GenoSearchEngine {
         std::string push;
     };
 
+    struct TraceStep {
+        int stateId;
+        std::string stackContent;
+        char inputRaw;
+        char popRaw;
+        std::string pushRaw;
+        bool isInitial;
+    };
+
     struct PDAEngine {
         std::vector<PDATransition> transitions;
         std::set<int> acceptStates;
@@ -634,13 +643,15 @@ namespace GenoSearchEngine {
         bool accepted;
         int traceLines;
 
+        std::vector<TraceStep> executionPath;
+
         PDAEngine() : maxStackDepth(0), accepted(false), traceLines(0), startSymbol('Z') {}
 
         void addTrace(int state, char input, const std::string& stackStr, const std::string& action) {
             if (traceLines < 10) {
                 trace << std::left << std::setw(10) << state
-                    << std::setw(10) << (input == '\0' ? "ε" : std::string(1, input))
-                    << std::setw(15) << (stackStr.empty() ? "ε" : stackStr)
+                    << std::setw(10) << (input == '\0' ? "epsilon" : std::string(1, input))
+                    << std::setw(15) << (stackStr.empty() ? "epsilon" : stackStr)
                     << action;
                 traceLines++;
             }
@@ -694,6 +705,7 @@ namespace GenoSearchEngine {
             size_t inputIdx;
             std::vector<char> stack;
             std::vector<std::string> history;     // Store valid path history
+            std::vector<TraceStep> structHistory; // New Data History
             int pathMaxDepth;                     // Track max depth for THIS path only
         };
 
@@ -705,11 +717,21 @@ namespace GenoSearchEngine {
         startConfig.state = 0;
         startConfig.inputIdx = 0;
         startConfig.stack = startStack;
-        startConfig.pathMaxDepth = 1;             
+        startConfig.pathMaxDepth = 1;    
+
+        // Record Initial State
+        TraceStep initialStep;
+        initialStep.stateId = 0;
+        initialStep.stackContent = std::string(1, pda->startSymbol);
+        initialStep.isInitial = true;       
+        startConfig.structHistory.push_back(initialStep);
+
         q.push(startConfig);
 
         // Reset global metrics
         pda->maxStackDepth = 0;
+        pda->accepted = false; // Reset accepted status
+        pda->executionPath.clear();
         int iterations = 0;
 
 		//Step 3: Simulation with History Tracking
@@ -730,6 +752,10 @@ namespace GenoSearchEngine {
                     // FOUND IT! 
                     // 1. Update Global Max Depth with THIS path's max
                     pda->maxStackDepth = curr.pathMaxDepth;
+                    pda->accepted = true;
+
+                    // Save the structured path for the Diagram
+                    pda->executionPath = curr.structHistory;
 
                     // 2. Overwrite the trace with ONLY this winning history
                     pda->trace.str("");
@@ -770,19 +796,11 @@ namespace GenoSearchEngine {
                 // Execute Transition
                 Config next = curr;
                 next.state = t.to;
-
-                // Consume Input
                 if (t.input != '\0') next.inputIdx++;
-
-                // Pop Stack
                 if (t.pop != '\0') next.stack.pop_back();
-
-                // Push Stack
                 for (int j = (int)t.push.length() - 1; j >= 0; --j) {
                     next.stack.push_back(t.push[j]);
                 }
-
-                // Update Path Max Depth
                 if ((int)next.stack.size() > next.pathMaxDepth) {
                     next.pathMaxDepth = (int)next.stack.size();
                 }
@@ -809,7 +827,23 @@ namespace GenoSearchEngine {
                     << actionName;
 
                 next.history.push_back(actionSS.str());
+                
+				// Record structured step
+                TraceStep step;
+                step.stateId = next.state;
+                step.isInitial = false;
 
+                // Save the stack state of the NEW node
+                std::string nextStackStr;
+                for (std::vector<char>::reverse_iterator it = next.stack.rbegin(); it != next.stack.rend(); ++it) nextStackStr += *it;
+                step.stackContent = nextStackStr;
+
+                // Save the TRANSITION that got us here
+                step.inputRaw = t.input;
+                step.popRaw = t.pop;
+                step.pushRaw = t.push;
+
+                next.structHistory.push_back(step);
                 q.push(next);
             }
         }
@@ -909,7 +943,7 @@ namespace GenoSearchEngine {
 
     void generatePDASummary(const std::string& mode, size_t len, double time, bool valid, int depth, SimulationReport& report) {
         std::stringstream ss;
-        printTableRow(ss, "Search mode", mode);
+        printTableRow(ss, "Structure type", mode);
         printTableRow(ss, "Input length", std::to_string(len));
         printTableRow(ss, "Execution time", std::to_string(time) + " s");
         printTableRow(ss, "Result", valid ? "ACCEPTED" : "REJECTED");
@@ -919,7 +953,6 @@ namespace GenoSearchEngine {
 
     void generatePDAConfig(const std::string& mode, int transitions, int accepts, char start, SimulationReport& report) {
         std::stringstream ss;
-        printTableRow(ss, "Structure type", mode);
         printTableRow(ss, "Total transitions", std::to_string(transitions));
         printTableRow(ss, "Accept state count", std::to_string(accepts));
         printTableRow(ss, "Start stack symbol", std::string(1, start));
@@ -1082,47 +1115,53 @@ namespace GenoSearchEngine {
     }
 
     std::string generatePDADot(PDAEngine* pda) {
-        std::stringstream dot_ss;
-        dot_ss << "digraph PDA {\n  rankdir=LR;\n  node [shape=circle];\n";
         if (!pda) return "digraph G {}";
 
-        // Start Node
-        dot_ss << "  start [shape=point];\n  start -> 0;\n";
+        std::stringstream dot_ss;
 
-        // 1. Identify all unique states
-        std::set<int> states;
-        states.insert(0); // Start is always 0
-        for (const auto& t : pda->transitions) {
-            states.insert(t.from);
-            states.insert(t.to);
+        // MODE A: If we have a linear trace (Accepted), draw the Timeline
+        if (pda->accepted && !pda->executionPath.empty()) {
+            dot_ss << "digraph PDA_Trace {\n";
+            dot_ss << "  rankdir=LR;\n";
+            dot_ss << "  node [shape=circle];\n"; // Standard Circles
+
+            for (size_t i = 0; i < pda->executionPath.size(); ++i) {
+                TraceStep& step = pda->executionPath[i];
+
+                // Draw State Node (Just the number)
+                // Use doublecircle for the very last step
+                if (i == pda->executionPath.size() - 1) {
+                    dot_ss << "  step" << i << " [label=\"" << step.stateId << "\", shape=doublecircle];\n";
+                }
+                else {
+                    dot_ss << "  step" << i << " [label=\"" << step.stateId << "\"];\n";
+                }
+
+                // Draw Arrow from Previous -> Current
+                if (i > 0) {
+                    std::string label;
+
+                    // Input
+                    label += (step.inputRaw == '\0' ? "&epsilon;" : std::string(1, step.inputRaw));
+                    label += ", ";
+
+                    // Pop
+                    label += (step.popRaw == '\0' ? "&epsilon;" : std::string(1, step.popRaw));
+
+                    // Arrow + Push
+                    label += " -> ";
+                    label += (step.pushRaw.empty() ? "&epsilon;" : step.pushRaw);
+
+                    dot_ss << "  step" << (i - 1) << " -> step" << i
+                        << " [label=\"" << label << "\"];\n";
+                }
+            }
+            dot_ss << "}\n";
         }
-        for (int s : pda->acceptStates) states.insert(s);
-
-        // 2. Draw Nodes (Double circle for accept)
-        for (int s : states) {
-            if (pda->acceptStates.count(s)) dot_ss << "  " << s << " [shape=doublecircle];\n";
-            else dot_ss << "  " << s << " [shape=circle];\n";
+        // MODE B: Fallback (Static Diagram) if rejected
+        else {
+			return "digraph G {}";
         }
-
-        // 3. Draw Edges (Label format: "Input, Pop / Push")
-        for (const auto& t : pda->transitions) {
-            std::string label;
-
-            // Input char
-            label += (t.input == '\0' ? "&epsilon;" : std::string(1, t.input));
-            label += ", ";
-
-            // Pop char
-            label += (t.pop == '\0' ? "&epsilon;" : std::string(1, t.pop));
-            label += " / "; // Standard PDA separator
-
-            // Push string
-            label += (t.push.empty() ? "&epsilon;" : t.push);
-
-            dot_ss << "  " << t.from << " -> " << t.to << " [label=\"" << label << "\"];\n";
-        }
-
-        dot_ss << "}\n";
         return dot_ss.str();
     }
 
